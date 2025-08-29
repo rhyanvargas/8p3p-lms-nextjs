@@ -1,4 +1,23 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 8P3P Learning Management System (LMS)
+
+A minimal, production-ready LMS scaffold built with Next.js 15, TypeScript, and shadcn/ui. This application provides a foundation for building a full-featured learning management system for EMDR therapist training.
+
+## Features
+
+- **Authentication**: Login and signup pages with form validation
+- **App Shell**: Responsive layout with sidebar navigation and top navbar
+- **Course Viewing**: Video player with content tabs and resource listings
+- **Progress Tracking**: Client-side progress tracking for course completion
+- **Profile Management**: User profile editing functionality
+
+## Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: TailwindCSS
+- **UI Components**: shadcn/ui
+- **Form Handling**: React Hook Form with Zod validation
+- **State Management**: React useState/useContext
 
 ## Getting Started
 
@@ -6,31 +25,54 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+/src
+  /app                    # App Router structure
+    /(auth)               # Authentication routes (login, signup)
+    /(dashboard)          # Main application routes
+      /courses            # Course viewing pages
+      /profile            # User profile page
+  /components             # Reusable components
+    /course               # Course-specific components
+    /navbar               # Navigation components
+    /sidebar              # Sidebar components
+    /ui                   # shadcn/ui components
+  /data                   # Mock data
+  /lib                    # Utility functions
+  /types                  # TypeScript type definitions
+```
 
-## Learn More
+## Authentication
 
-To learn more about Next.js, take a look at the following resources:
+The authentication system is currently client-side only. In a production environment, you would integrate with:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- NextAuth.js for authentication
+- A database for user storage
+- API routes for secure data handling
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Data Model
 
-## Deploy on Vercel
+The application uses a typed data model for courses, modules, and chapters:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Course**: Contains multiple modules and metadata
+- **Module**: Contains multiple chapters and belongs to a course
+- **Chapter**: Contains content, video, and resources
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Future Enhancements
+
+- Backend integration with a database
+- Server-side authentication
+- Progress persistence
+- Admin dashboard for course management
+- Payment integration
+- Analytics and reporting
+
+## License
+
+MIT
