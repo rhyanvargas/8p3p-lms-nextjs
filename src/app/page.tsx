@@ -1,15 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import Link from "next/link";
 import Image from "next/image";
 
@@ -63,7 +53,7 @@ export default function Home() {
 
 					<div className="flex justify-center">
 						<Button size="lg" className="px-8 py-6 text-lg" asChild>
-							<Link href="/login">Start Here</Link>
+							<Link href="/dashboard">Start Here</Link>
 						</Button>
 					</div>
 				</div>
