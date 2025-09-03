@@ -52,7 +52,12 @@ export default function Home() {
 					</div>
 
 					<div className="flex justify-center">
-						<Button size="lg" className="px-8 py-6 text-lg" asChild>
+						<Button
+							variant="outline"
+							size="lg"
+							className="px-8 py-6 text-lg"
+							asChild
+						>
 							<Link href="/dashboard">Start Here</Link>
 						</Button>
 					</div>

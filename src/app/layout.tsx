@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Navbar } from "@/components/ui/navbar";
 
 export const metadata: Metadata = {
 	title: "8P3P LMS",
@@ -14,7 +15,8 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className="min-h-screen bg-background font-sans antialiased">
+			<body className="min-h-screen bg-primary font-sans antialiased">
+				<Navbar />
 				{children}
 			</body>
 		</html>
