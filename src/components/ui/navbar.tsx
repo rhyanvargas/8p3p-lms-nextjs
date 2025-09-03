@@ -40,12 +40,23 @@ const navItems: NavItem[] = [
 	},
 ];
 
+const navButtons: NavItem[] = [
+	{
+		title: "Login",
+		href: "/login",
+	},
+	{
+		title: "Schedule a Demo",
+		href: "/demo",
+	},
+];
+
 export function Navbar() {
 	const pathname = usePathname();
 	const isMobile = useIsMobile();
 
 	return (
-		<header className="sticky top-0 z-50 w-full bg-primary text-white">
+		<header className="w-full backdrop-blur-md bg-primary/50 border-b border-white/10 sticky top-0 z-50">
 			<div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6 lg:px-8">
 				{/* Logo */}
 				<div className="flex items-center">
@@ -87,15 +98,15 @@ export function Navbar() {
 						asChild
 						className="hidden md:flex items-center space-x-1"
 					>
-						<Link href="/login">
+						<Link href={navButtons[0].href}>
 							<UserIcon className="h-4 w-4 mr-1" />
-							Login
+							{navButtons[0].title}
 						</Link>
 					</Button>
 
 					{/* Demo button */}
 					<Button variant="outline" asChild className="hidden md:flex">
-						<Link href="/demo">Schedule a Demo</Link>
+						<Link href={navButtons[1].href}>{navButtons[1].title}</Link>
 					</Button>
 
 					{/* Mobile menu */}
@@ -125,12 +136,13 @@ export function Navbar() {
 											{item.title}
 										</Link>
 									))}
-									<Link href="/login" className="block px-2 py-1 text-lg">
-										Login
-									</Link>
-									<Link href="/demo" className="block px-2 py-1 text-lg">
-										Schedule a Demo
-									</Link>
+									<div className="flex flex-col px-2 py-2 gap-2">
+										{navButtons.map((item) => (
+											<Button key={item.href} asChild>
+												<Link href={item.href}>{item.title}</Link>
+											</Button>
+										))}
+									</div>
 								</nav>
 							</SheetContent>
 						</Sheet>
