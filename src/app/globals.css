@@ -5,17 +5,17 @@
 :root {
 	/* === Brand inserts from 8p3p theme === */
 	/* Approximate OKLCH for brand colors with hex aliases for direct use */
-	--brand-gold: oklch(0.79 0.09 84); /* ≈ #d4af37 */
+	--brand-gold: oklch(76.65% 0.139 91.06); /* #d4af37 */
 	--brand-gold-hex: #d4af37;
-	--brand-gray: oklch(0.75 0.02 250); /* ≈ #9ca3af */
+	--brand-gray: oklch(71.37% 0.019 261.32); /* #9ca3af */
 	--brand-gray-hex: #9ca3af;
-	--brand-blue: oklch(0.33 0.075 264); /* ≈ #1a2942 */
+	--brand-blue: oklch(28.08% 0.051 260.2); /* #1a2942 */
 	--brand-blue-hex: #1a2942;
-	--brand-light-blue: oklch(0.28 0.051 260.2); /* ≈ #f0f4f8 */
+	--brand-light-blue: oklch(96.53% 0.007 247.9); /* #f0f4f8 */
 	--brand-light-blue-hex: #f0f4f8;
-	--brand-green: oklch(0.62 0.16 150); /* ≈ #4caf50 */
+	--brand-green: oklch(67.31% 0.162 144.21); /* #4caf50 */
 	--brand-green-hex: #4caf50;
-	--brand-red: oklch(0.63 0.24 25); /* ≈ #f44336 */
+	--brand-red: oklch(64.27% 0.215 28.81); /* #f44336 */
 	--brand-red-hex: #f44336;
 
 	/* Typography (from 8p3p) */
@@ -26,41 +26,41 @@
 	/* === Core shadcn tokens (light) === */
 	--radius: 0.375rem;
 
-	--background: var(--brand-light-blue);
+	--background: white;
 	--foreground: var(--brand-blue);
 
-	--card: oklch(1 0 0);
+	--card: oklch(100% 0 0);
 	--card-foreground: var(--brand-blue);
 
-	--popover: oklch(1 0 0);
+	--popover: oklch(100% 0 0);
 	--popover-foreground: var(--brand-blue);
 
 	/* Primary colors - using brand blue as primary and gold as accent */
 	--primary: var(--brand-blue);
-	--primary-foreground: oklch(1 0 0); /* white text on blue */
+	--primary-foreground: oklch(100% 0 0); /* white text on blue */
 
-	--secondary: oklch(0.9816 0.0017 247.839);
-	--secondary-foreground: oklch(0.551 0.0234 264.3637);
+	--secondary: oklch(98.16% 0.0017 247.839);
+	--secondary-foreground: oklch(55.1% 0.0234 264.3637);
 
-	--muted: oklch(0.967 0.0029 264.5419);
-	--muted-foreground: var(--brand-gray); /* ≈ #9ca3af */
+	--muted: oklch(96.7% 0.0029 264.5419);
+	--muted-foreground: var(--brand-gray); /* #9ca3af */
 
 	--accent: var(--brand-gold);
 	--accent-foreground: var(--brand-blue);
 
 	--destructive: var(--brand-red);
-	--destructive-foreground: oklch(1 0 0);
+	--destructive-foreground: oklch(100% 0 0);
 
-	--border: oklch(0.967 0.0029 264.5419);
-	--input: oklch(0.967 0.0029 264.5419);
+	--border: oklch(96.7% 0.0029 264.5419);
+	--input: oklch(96.7% 0.0029 264.5419);
 	--ring: var(--brand-gold);
 
 	/* Charts (kept consistent; seed with brand) */
 	--chart-1: var(--brand-gold);
 	--chart-2: var(--brand-blue);
-	--chart-3: oklch(0.551 0.0234 264.3637);
-	--chart-4: oklch(0.7137 0.0192 261.3246);
-	--chart-5: oklch(0.9816 0.0017 247.839);
+	--chart-3: oklch(55.1% 0.0234 264.3637);
+	--chart-4: oklch(71.37% 0.0192 261.3246);
+	--chart-5: oklch(98.16% 0.0017 247.839);
 
 	/* Sidebar palette */
 	--sidebar: var(--brand-light-blue);
@@ -68,8 +68,8 @@
 	--sidebar-primary: var(--brand-gold);
 	--sidebar-primary-foreground: var(--brand-blue);
 	--sidebar-accent: var(--brand-blue);
-	--sidebar-accent-foreground: oklch(1 0 0);
-	--sidebar-border: oklch(0.967 0.0029 264.5419);
+	--sidebar-accent-foreground: oklch(100% 0 0);
+	--sidebar-border: oklch(96.7% 0.0029 264.5419);
 	--sidebar-ring: var(--brand-gold);
 
 	/* Shadows & misc preserved */
@@ -101,47 +101,47 @@
 .dark {
 	/* Dark mode using brand blue as background and gold as accent */
 	--background: var(--brand-blue);
-	--foreground: oklch(1 0 0);
+	--foreground: oklch(100% 0 0);
 
 	--card: var(--brand-blue);
-	--card-foreground: oklch(1 0 0);
+	--card-foreground: oklch(100% 0 0);
 
 	--popover: var(--brand-blue);
-	--popover-foreground: oklch(1 0 0);
+	--popover-foreground: oklch(100% 0 0);
 
 	--primary: var(--brand-gold);
 	--primary-foreground: var(--brand-blue);
 
-	--secondary: oklch(0.2808 0.0507 260.1968);
-	--secondary-foreground: oklch(0.9816 0.0017 247.839);
+	--secondary: oklch(28.08% 0.0507 260.1968);
+	--secondary-foreground: oklch(98.16% 0.0017 247.839);
 
-	--muted: oklch(0.2808 0.0507 260.1968);
+	--muted: oklch(28.08% 0.0507 260.1968);
 	--muted-foreground: var(--brand-gray);
 
 	--accent: var(--brand-gold);
 	--accent-foreground: var(--brand-blue);
 
 	--destructive: var(--brand-red);
-	--destructive-foreground: oklch(1 0 0);
+	--destructive-foreground: oklch(100% 0 0);
 
-	--border: oklch(0.551 0.0234 264.3637);
-	--input: oklch(0.551 0.0234 264.3637);
+	--border: oklch(55.1% 0.0234 264.3637);
+	--input: oklch(55.1% 0.0234 264.3637);
 	--ring: var(--brand-gold);
 
 	--chart-1: var(--brand-gold);
-	--chart-2: oklch(1 0 0);
-	--chart-3: oklch(0.551 0.0234 264.3637);
-	--chart-4: oklch(0.7137 0.0192 261.3246);
+	--chart-2: oklch(100% 0 0);
+	--chart-3: oklch(55.1% 0.0234 264.3637);
+	--chart-4: oklch(71.37% 0.0192 261.3246);
 	--chart-5: var(--brand-blue);
 
 	/* Sidebar in dark */
-	--sidebar: oklch(0.2046 0 0);
-	--sidebar-foreground: oklch(0.9816 0.0017 247.839);
+	--sidebar: oklch(20.46% 0 0);
+	--sidebar-foreground: oklch(98.16% 0.0017 247.839);
 	--sidebar-primary: var(--brand-gold);
 	--sidebar-primary-foreground: var(--brand-blue);
 	--sidebar-accent: var(--brand-gold);
 	--sidebar-accent-foreground: var(--brand-blue);
-	--sidebar-border: oklch(0.551 0.0234 264.3637);
+	--sidebar-border: oklch(55.1% 0.0234 264.3637);
 	--sidebar-ring: var(--brand-gold);
 
 	/* Typography (keep consistent) */
@@ -174,7 +174,7 @@
 	--shadow-2xl: 0px 2px 4px 0px hsl(0 0% 0% / 0.25);
 }
 
-@theme {
+@theme inline {
 	/* Core colors */
 	--color-primary: var(--primary);
 	--color-primary-foreground: var(--primary-foreground);
@@ -184,11 +184,11 @@
 	--color-accent-foreground: var(--accent-foreground);
 	--color-destructive: var(--destructive);
 	--color-destructive-foreground: var(--destructive-foreground);
-	
+
 	/* Background colors */
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
-	
+
 	/* Component colors */
 	--color-card: var(--card);
 	--color-card-foreground: var(--card-foreground);
@@ -196,12 +196,12 @@
 	--color-popover-foreground: var(--popover-foreground);
 	--color-muted: var(--muted);
 	--color-muted-foreground: var(--muted-foreground);
-	
+
 	/* UI elements */
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
-	
+
 	/* Brand colors */
 	--color-brand-blue: var(--brand-blue);
 	--color-brand-gold: var(--brand-gold);
