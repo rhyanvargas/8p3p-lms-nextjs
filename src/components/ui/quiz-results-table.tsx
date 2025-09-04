@@ -9,6 +9,8 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, XCircle } from "lucide-react";
 
 export type QuizResult = {
 	id: string;
@@ -33,34 +35,66 @@ export function QuizResultsTable({
 		<div className="w-full">
 			<Table>
 				<TableHeader>
-					<TableRow>
-						<TableHead>Quiz</TableHead>
-						<TableHead className="text-center">Score</TableHead>
-						<TableHead className="text-center">Status</TableHead>
-						<TableHead className="text-right">Date</TableHead>
+					<TableRow className="border-none hover:bg-transparent">
+						<TableHead className="text-muted-foreground">Quiz</TableHead>
+						<TableHead className="text-center text-muted-foreground">
+							Score
+						</TableHead>
+						<TableHead className="text-center text-muted-foreground">
+							Status
+						</TableHead>
+						<TableHead className="text-right text-muted-foreground">
+							Date
+						</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
 					{results.map((result) => (
-						<TableRow key={result.id}>
-							<TableCell className="font-medium">{result.quiz}</TableCell>
-							<TableCell className="text-center">{result.score}%</TableCell>
-							<TableCell className="text-center">
+						<TableRow key={result.id} className="border-none">
+							<TableCell className="font-medium py-4">{result.quiz}</TableCell>
+							<TableCell className="text-center font-medium py-4">
+								{result.score}%
+							</TableCell>
+							<TableCell className="text-center py-4">
 								<span
-									className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+									className={`inline-flex items-center gap-1 px-4 py-1 rounded-full text-sm font-medium ${
 										result.status === "pass"
-											? "bg-green-100 text-green-800"
-											: "bg-red-100 text-red-800"
+											? "bg-green-50 text-green-700"
+											: "bg-red-50 text-red-700"
 									}`}
 								>
-									{result.status === "pass" ? "Pass" : "Fail"}
+									{result.status === "pass" ? (
+										<>
+											<CheckCircle className="h-4 w-4" />
+											Pass
+										</>
+									) : (
+										<>
+											<XCircle className="h-4 w-4" />
+											Fail
+										</>
+									)}
 								</span>
 							</TableCell>
-							<TableCell className="text-right">{result.date}</TableCell>
+							<TableCell className="text-right text-muted-foreground py-4">
+								{result.date}
+							</TableCell>
 						</TableRow>
 					))}
 				</TableBody>
 			</Table>
+
+			{showViewAll && (
+				<div className="flex justify-end mt-4">
+					<Button
+						variant="link"
+						onClick={onViewAll}
+						className="text-amber-500 hover:text-amber-600 font-medium"
+					>
+						View All Results
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 }

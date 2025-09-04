@@ -144,16 +144,13 @@ export default function Page() {
 			{/* Dashboard Widgets */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 				{/* Quiz Results */}
-				<WidgetCard 
+				<WidgetCard
 					title="Recent Quiz Results"
 					showViewAll={true}
 					onViewAll={() => console.log("View all results clicked")}
 				>
-					<div className="border rounded-md">
-						<QuizResultsTable
-							results={quizResults}
-							showViewAll={false}
-						/>
+					<div className="">
+						<QuizResultsTable results={quizResults} showViewAll={false} />
 					</div>
 				</WidgetCard>
 

@@ -8,6 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export interface WidgetCardProps {
 	title: string;
@@ -31,19 +32,21 @@ export function WidgetCard({
 			<CardHeader className="pb-0">
 				<div className="flex justify-between items-center">
 					<CardTitle className="text-lg font-medium">{title}</CardTitle>
-					{showViewAll && (
-						<button
-							onClick={onViewAll}
-							className="text-sm text-primary hover:underline"
-						>
-							View All
-						</button>
-					)}
 				</div>
 			</CardHeader>
 			<CardContent>{children}</CardContent>
 			{footerContent && <CardFooter>{footerContent}</CardFooter>}
+			{showViewAll && (
+				<div className="flex justify-center">
+					<Button
+						variant="link"
+						onClick={onViewAll}
+						className="text-accent hover:underline"
+					>
+						View All
+					</Button>
+				</div>
+			)}
 		</Card>
 	);
 }
-
