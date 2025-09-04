@@ -9,6 +9,8 @@ A minimal, production-ready LMS scaffold built with Next.js 15, TypeScript, and 
 - **Course Viewing**: Video player with content tabs and resource listings
 - **Progress Tracking**: Client-side progress tracking for course completion
 - **Profile Management**: User profile editing functionality
+- **Dashboard Widgets**: Interactive dashboard with quiz results and progress tracking
+- **Community Feed**: Social interaction features with form validation using React Hook Form and Zod
 
 ## Tech Stack
 
@@ -18,6 +20,7 @@ A minimal, production-ready LMS scaffold built with Next.js 15, TypeScript, and 
 - **UI Components**: shadcn/ui
 - **Form Handling**: React Hook Form with Zod validation
 - **State Management**: React useState/useContext
+- **Data Tables**: Planned integration with TanStack Table for advanced data display
 
 ## Getting Started
 
@@ -35,15 +38,21 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 /src
   /app                    # App Router structure
     /(auth)               # Authentication routes (login, signup)
-    /(dashboard)          # Main application routes
-      /courses            # Course viewing pages
-      /profile            # User profile page
+    /dashboard            # Dashboard with widgets and activity tracking
+    /courses              # Course viewing pages
+    /profile              # User profile page
   /components             # Reusable components
     /course               # Course-specific components
-    /navbar               # Navigation components
-    /sidebar              # Sidebar components
     /ui                   # shadcn/ui components
+      /button.tsx         # Button component
+      /card.tsx           # Card component
+      /form.tsx           # Form components with React Hook Form integration
+      /quiz-results-table.tsx # Quiz results display component
+      /widget-card.tsx    # Dashboard widget container
+      /navbar.tsx         # Navigation component
   /data                   # Mock data
+  /hooks                  # Custom React hooks
+    /use-mobile.ts        # Mobile detection hook
   /lib                    # Utility functions
   /types                  # TypeScript type definitions
 ```
@@ -72,6 +81,9 @@ The application uses a typed data model for courses, modules, and chapters:
 - Admin dashboard for course management
 - Payment integration
 - Analytics and reporting
+- TanStack Table integration for quiz results
+- Enhanced form validation across all user inputs
+- Expanded dashboard widgets and visualizations
 
 ## License
 
