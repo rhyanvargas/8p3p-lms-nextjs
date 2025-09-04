@@ -39,6 +39,8 @@ export function CourseCard({
 					fill
 					className="object-coverw-full h-full object-cover transition-transform duration-300 hover:scale-105"
 					priority
+					loading="eager"
+					sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 				/>
 			</div>
 			<CardHeader>
