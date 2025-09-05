@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/ui/navbar";
+import AuthClient from "@/components/auth/AuthClient";
 
 export const metadata: Metadata = {
 	title: "8P3P LMS",

@@ -4,7 +4,7 @@ A minimal, production-ready LMS scaffold built with Next.js 15, TypeScript, and 
 
 ## Features
 
-- **Authentication**: Login and signup pages with form validation
+- **Authentication**: Login and signup pages with form validation, Google Sign-In integration
 - **App Shell**: Responsive layout with sidebar navigation and top navbar
 - **Course Viewing**: Video player with content tabs and resource listings
 - **Progress Tracking**: Client-side progress tracking for course completion
@@ -59,9 +59,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Authentication
 
-The authentication system is currently client-side only. In a production environment, you would integrate with:
+The authentication system includes:
 
-- NextAuth.js for authentication
+- Google Sign-In integration for streamlined user authentication
+- Client-side authentication flow
+- Form validation for email/password login
+
+In a production environment, additional integrations include:
+
+- NextAuth.js for enhanced authentication options
 - A database for user storage
 - API routes for secure data handling
 
@@ -84,6 +90,8 @@ The application uses a typed data model for courses, modules, and chapters:
 - TanStack Table integration for quiz results
 - Enhanced form validation across all user inputs
 - Expanded dashboard widgets and visualizations
+- Edge case handling for unregistered users attempting to sign in (redirect to sign-up flow)
+- Additional social login providers
 
 ## License
 
