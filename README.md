@@ -59,17 +59,21 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Authentication
 
-The authentication system includes:
+The authentication system is built with AWS Amplify Gen 2 and includes:
 
+- Email-based authentication with secure password policies
 - Google Sign-In integration for streamlined user authentication
-- Client-side authentication flow
-- Form validation for email/password login
+- Multi-factor authentication (SMS) as an optional security feature
+- Custom user attributes for storing user profile information
+- Email-based account recovery
 
-In a production environment, additional integrations include:
+Key authentication features:
 
-- NextAuth.js for enhanced authentication options
-- A database for user storage
-- API routes for secure data handling
+- **User Attributes**: Required attributes include email and given name, with optional attributes for family name and profile picture
+- **Custom Attributes**: Support for organization and role custom attributes
+- **MFA**: Optional multi-factor authentication with SMS support
+- **Account Recovery**: Email-based account recovery flow
+- **External Providers**: Google authentication integration with proper callback and logout URL configuration
 
 ## Data Model
 
