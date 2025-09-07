@@ -17,6 +17,12 @@ export const auth = defineAuth({
 				clientId: secret("GOOGLE_CLIENT_ID"),
 				clientSecret: secret("GOOGLE_CLIENT_SECRET"),
 				scopes: ["email", "profile"],
+				attributeMapping: {
+					email: "email",
+					givenName: "given_name",
+					familyName: "family_name",
+					profilePicture: "picture",
+				},
 			},
 			// Callback and logout URLs must be inside externalProviders
 			callbackUrls: [
