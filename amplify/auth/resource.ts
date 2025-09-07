@@ -75,10 +75,5 @@ export const auth = defineAuth({
 	// Account Recovery Configuration
 	accountRecovery: "EMAIL_ONLY",
 
-	// Email Sender Configuration
-	senders: {
-		email: {
-			fromEmail: "support@8p3p.io",
-		},
-	},
+
 });
