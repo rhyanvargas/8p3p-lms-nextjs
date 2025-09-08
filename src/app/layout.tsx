@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/ui/navbar";
 import AuthProvider from "@/components/auth/AuthProvider";
+import SessionHandler from "@/components/auth/SessionHandler";
 
 export const metadata: Metadata = {
 	title: "8P3P LMS",
@@ -18,6 +19,7 @@ export default function RootLayout({
 		<html lang="en" suppressHydrationWarning>
 			<body className="min-h-screen bg-primary">
 				<AuthProvider>
+					<SessionHandler />
 					<Navbar />
 					{children}
 				</AuthProvider>
