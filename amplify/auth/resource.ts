@@ -26,15 +26,14 @@ export const auth = defineAuth({
 			},
 			// Callback and logout URLs must be inside externalProviders
 			callbackUrls: [
-				"http://localhost:3000/login",
 				"http://localhost:3000/dashboard",
 				"https://main.dk50b1ut1cu9u.amplifyapp.com/dashboard",
 				"https://8p3p.io/dashboard",
 			],
 			logoutUrls: [
-				"http://localhost:3000/login",
-				"https://main.dk50b1ut1cu9u.amplifyapp.com/login",
-				"https://8p3p.io/login",
+				"http://localhost:3000/",
+				"https://main.dk50b1ut1cu9u.amplifyapp.com/",
+				"https://8p3p.io",
 			],
 		},
 	},
