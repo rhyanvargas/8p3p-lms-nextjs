@@ -1,0 +1,98 @@
+name: Auto PR Description
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  auto-description:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate PR Description
+        id: generate
+        run: |
+          # Get changed files and stats
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          TOTAL_FILES=$(echo "$CHANGED_FILES" | wc -l)
+          
+          # Analyze file types
+          COMPONENTS=$(echo "$CHANGED_FILES" | grep -c "src/components/" || echo "0")
+          PAGES=$(echo "$CHANGED_FILES" | grep -c "src/app/" || echo "0")
+          AUTH=$(echo "$CHANGED_FILES" | grep -c "auth" || echo "0")
+          CONFIG=$(echo "$CHANGED_FILES" | grep -c -E "(amplify/|middleware\.ts|\.yml$|\.json$)" || echo "0")
+          
+          # Get commit messages for context
+          COMMITS=$(git log --oneline origin/${{ github.base_ref }}...HEAD)
+          
+          # Determine PR type based on changes
+          PR_TYPE="🔧 General Changes"
+          if [ "$AUTH" -gt "0" ]; then
+            PR_TYPE="🔐 Authentication Changes"
+          elif [ "$COMPONENTS" -gt "5" ]; then
+            PR_TYPE="🧩 Major Component Updates"
+          elif [ "$CONFIG" -gt "0" ]; then
+            PR_TYPE="⚙️ Configuration Updates"
+          fi
+          
+          # Generate dynamic description
+          cat > pr_description.md << EOF
+          # $PR_TYPE
+          
+          ## 📊 Change Statistics
+          - **Total Files:** $TOTAL_FILES
+          - 🧩 **Components:** $COMPONENTS
+          - 📄 **Pages/Routes:** $PAGES
+          - 🔐 **Auth Related:** $AUTH
+          - ⚙️ **Configuration:** $CONFIG
+          
+          ## 📝 Recent Commits
+          \`\`\`
+          $COMMITS
+          \`\`\`
+          
+          ## 📁 Modified Files
+          <details>
+          <summary>Click to expand file list</summary>
+          
+          \`\`\`
+          $CHANGED_FILES
+          \`\`\`
+          </details>
+          
+          ## 🧪 Testing Checklist
+          $(if [ "$AUTH" -gt "0" ]; then echo "- [ ] Authentication flows tested"; fi)
+          $(if [ "$PAGES" -gt "0" ]; then echo "- [ ] Page routing verified"; fi)
+          $(if [ "$COMPONENTS" -gt "0" ]; then echo "- [ ] UI components render correctly"; fi)
+          - [ ] No TypeScript errors
+          - [ ] Build passes successfully
+          
+          ---
+          *Auto-generated based on PR changes*
+          EOF
+          
+          # Set output for next step
+          echo "description<<EOF" >> $GITHUB_OUTPUT
+          cat pr_description.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Update PR Description
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const description = `${{ steps.generate.outputs.description }}`;
+            
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              body: description
+            });
