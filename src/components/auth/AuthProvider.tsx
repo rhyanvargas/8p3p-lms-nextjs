@@ -1,23 +1,16 @@
 "use client";
 
 import { Authenticator } from "@aws-amplify/ui-react";
-import { Amplify } from "aws-amplify";
 import "@aws-amplify/ui-react/styles.css";
+import outputs from "@/amplify_outputs.json";
+import { Amplify } from "aws-amplify";
 
-// Configure Amplify only if outputs are available
-if (typeof window !== 'undefined') {
-  try {
-    const outputs = require('@/amplify_outputs.json');
-    Amplify.configure(outputs);
-  } catch (error) {
-    console.warn('Amplify outputs not found during build');
-  }
-}
+Amplify.configure(outputs);
 
-export default function AuthProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <Authenticator.Provider>
-      {children}
-    </Authenticator.Provider>
-  );
+export default function AuthProvider({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
+	return <Authenticator.Provider>{children}</Authenticator.Provider>;
 }
