@@ -3,7 +3,9 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, UserIcon } from "lucide-react";
+import { Menu, UserIcon, LogOut } from "lucide-react";
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import { signOut } from "aws-amplify/auth";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -54,6 +56,15 @@ const navButtons: NavItem[] = [
 export function Navbar() {
 	const pathname = usePathname();
 	const isMobile = useIsMobile();
+	const { authStatus } = useAuthenticator();
+
+	const handleSignOut = async () => {
+		try {
+			await signOut();
+		} catch (error) {
+			console.error('Error signing out:', error);
+		}
+	};
 
 	return (
 		<header className="w-full backdrop-blur-md bg-primary/50 border-b border-white/10 sticky top-0 z-50">
@@ -80,7 +91,9 @@ export function Navbar() {
 								"text-sm font-medium transition-colors hover:text-accent/80",
 								pathname === item.href
 									? "text-white font-semibold"
-									: "text-white"
+									: authStatus === "authenticated" 
+										? "text-white/60 hover:text-white/80" 
+										: "text-white"
 							)}
 						>
 							{item.title}
@@ -88,26 +101,47 @@ export function Navbar() {
 					))}
 				</nav>
 
-				{/* Right side - Login and Demo buttons */}
+				{/* Right side - Auth-aware buttons */}
 				<div className="flex items-center space-x-2">
-					{/* Search icon - removed based on image */}
-
-					{/* Login button */}
-					<Button
-						variant="ghost"
-						asChild
-						className="hidden md:flex items-center space-x-1"
-					>
-						<Link href={navButtons[0].href}>
-							<UserIcon className="h-4 w-4 mr-1" />
-							{navButtons[0].title}
-						</Link>
-					</Button>
-
-					{/* Demo button */}
-					<Button variant="outline" asChild className="hidden md:flex">
-						<Link href={navButtons[1].href}>{navButtons[1].title}</Link>
-					</Button>
+					{authStatus === "authenticated" ? (
+						<>
+							{/* Dashboard link */}
+							<Button variant="ghost" asChild className="hidden md:flex">
+								<Link href="/dashboard">Dashboard</Link>
+							</Button>
+							{/* Courses link */}
+							<Button variant="ghost" asChild className="hidden md:flex">
+								<Link href="/courses">Courses</Link>
+							</Button>
+							{/* Logout button */}
+							<Button
+								variant="outline"
+								onClick={handleSignOut}
+								className="hidden md:flex items-center space-x-1"
+							>
+								<LogOut className="h-4 w-4 mr-1" />
+								Logout
+							</Button>
+						</>
+					) : (
+						<>
+							{/* Login button */}
+							<Button
+								variant="ghost"
+								asChild
+								className="hidden md:flex items-center space-x-1"
+							>
+								<Link href="/login">
+									<UserIcon className="h-4 w-4 mr-1" />
+									Login
+								</Link>
+							</Button>
+							{/* Demo button */}
+							<Button variant="outline" asChild className="hidden md:flex">
+								<Link href="/demo">Schedule a Demo</Link>
+							</Button>
+						</>
+					)}
 
 					{/* Mobile menu */}
 					{isMobile && (
@@ -131,17 +165,38 @@ export function Navbar() {
 										<Link
 											key={item.href}
 											href={item.href}
-											className="block px-2 py-1 text-lg hover:bg-brand-light-blue"
+											className={cn(
+												"block px-2 py-1 text-lg hover:bg-brand-light-blue",
+												authStatus === "authenticated" ? "opacity-60" : ""
+											)}
 										>
 											{item.title}
 										</Link>
 									))}
 									<div className="flex flex-col px-2 py-2 gap-2">
-										{navButtons.map((item) => (
-											<Button key={item.href} asChild>
-												<Link href={item.href}>{item.title}</Link>
-											</Button>
-										))}
+										{authStatus === "authenticated" ? (
+											<>
+												<Button asChild>
+													<Link href="/dashboard">Dashboard</Link>
+												</Button>
+												<Button asChild>
+													<Link href="/courses">Courses</Link>
+												</Button>
+												<Button variant="outline" onClick={handleSignOut}>
+													<LogOut className="h-4 w-4 mr-1" />
+													Logout
+												</Button>
+											</>
+										) : (
+											<>
+												<Button asChild>
+													<Link href="/login">Login</Link>
+												</Button>
+												<Button asChild>
+													<Link href="/demo">Schedule a Demo</Link>
+												</Button>
+											</>
+										)}
 									</div>
 								</nav>
 							</SheetContent>

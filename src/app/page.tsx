@@ -62,7 +62,7 @@ export default function Home() {
 							className="px-8 py-6 text-lg"
 							asChild
 						>
-							<Link href="/dashboard">Start Here</Link>
+							<Link href="/login">Get Started</Link>
 						</Button>
 					</CardFooter>
 				</Card>
