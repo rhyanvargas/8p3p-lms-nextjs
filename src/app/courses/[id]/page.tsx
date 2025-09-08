@@ -1,13 +1,15 @@
 interface CoursePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default function CoursePage({ params }: CoursePageProps) {
+export default async function CoursePage({ params }: CoursePageProps) {
+  const { id } = await params;
+  
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Course: {params.id}</h1>
+      <h1 className="text-3xl font-bold mb-6">Course: {id}</h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <div className="bg-black aspect-video rounded-lg mb-6 flex items-center justify-center">
