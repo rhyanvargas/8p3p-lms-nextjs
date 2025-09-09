@@ -88,7 +88,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const description = `${{ steps.generate.outputs.description }}`;
+            const description = process.env.PR_DESCRIPTION;
             
             await github.rest.pulls.update({
               owner: context.repo.owner,
@@ -96,3 +96,5 @@ jobs:
               pull_number: context.issue.number,
               body: description
             });
+        env:
+          PR_DESCRIPTION: ${{ steps.generate.outputs.description }}
