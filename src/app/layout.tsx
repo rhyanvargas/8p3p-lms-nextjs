@@ -22,7 +22,7 @@ export default function RootLayout({
 				<AuthProvider>
 					<SessionHandler />
 					<EmailVerificationHandler />
-					<Navbar />
+
 					{children}
 				</AuthProvider>
 			</body>
