@@ -3,6 +3,7 @@ import "./globals.css";
 import { Navbar } from "@/components/ui/navbar";
 import AuthProvider from "@/components/auth/AuthProvider";
 import SessionHandler from "@/components/auth/SessionHandler";
+import EmailVerificationHandler from "@/components/auth/EmailVerificationHandler";
 
 export const metadata: Metadata = {
 	title: "8P3P LMS",
@@ -20,6 +21,7 @@ export default function RootLayout({
 			<body className="min-h-screen bg-primary">
 				<AuthProvider>
 					<SessionHandler />
+					<EmailVerificationHandler />
 					<Navbar />
 					{children}
 				</AuthProvider>

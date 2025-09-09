@@ -24,7 +24,7 @@ export const auth = defineAuth({
 					profilePicture: "picture",
 				},
 			},
-			// Callback and logout URLs must be inside externalProviders
+			// Environment-based callback and logout URLs
 			callbackUrls: [
 				"http://localhost:3000/dashboard",
 				"https://main.dk50b1ut1cu9u.amplifyapp.com/dashboard",
@@ -67,6 +67,8 @@ export const auth = defineAuth({
 		"custom:role": {
 			dataType: "String",
 			mutable: true,
+			minLen: 2,
+			maxLen: 50,
 		},
 	},
 
@@ -79,6 +81,4 @@ export const auth = defineAuth({
 
 	// Account Recovery Configuration
 	accountRecovery: "EMAIL_ONLY",
-
-
 });
