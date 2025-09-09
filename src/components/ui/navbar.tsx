@@ -62,7 +62,7 @@ export function Navbar() {
 		try {
 			await signOut();
 		} catch (error) {
-			console.error('Error signing out:', error);
+			console.error("Error signing out:", error);
 		}
 	};
 
@@ -91,8 +91,8 @@ export function Navbar() {
 								"text-sm font-medium transition-colors hover:text-accent/80",
 								pathname === item.href
 									? "text-white font-semibold"
-									: authStatus === "authenticated" 
-										? "text-white/60 hover:text-white/80" 
+									: authStatus === "authenticated"
+										? "text-white/60 hover:text-white/80"
 										: "text-white"
 							)}
 						>
@@ -127,7 +127,7 @@ export function Navbar() {
 						<>
 							{/* Login button */}
 							<Button
-								variant="ghost"
+								variant="default"
 								asChild
 								className="hidden md:flex items-center space-x-1"
 							>
