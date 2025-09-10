@@ -75,7 +75,7 @@ export function CourseSidebar({ className, ...props }: CourseSidebarProps) {
 
 	return (
 		<Sidebar
-			collapsible="icon"
+			collapsible="offcanvas"
 			className={cn("overflow-hidden", className)}
 			{...props}
 		>
@@ -89,19 +89,6 @@ export function CourseSidebar({ className, ...props }: CourseSidebarProps) {
 							{course.level}
 						</p>
 					</div>
-					{/* Toggle button with conditional icon */}
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={toggleSidebar}
-						className="ml-2 shrink-0"
-					>
-						{isCollapsed ? (
-							<Menu className="h-4 w-4" />
-						) : (
-							<ArrowLeft className="h-4 w-4" />
-						)}
-					</Button>
 				</div>
 			</SidebarHeader>
 
