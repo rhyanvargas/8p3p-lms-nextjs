@@ -21,6 +21,10 @@
 	--brand-green-hex: #4caf50;
 	--brand-red: oklch(64.27% 0.215 28.81); /* #f44336 */
 	--brand-red-hex: #f44336;
+	--brand-white: oklch(100% 0 0);
+	--brand-white-hex: #ffffff;
+	--brand-black: oklch(0% 0 0);
+	--brand-black-hex: #000000;
 
 	/* Typography (from 8p3p) */
 
@@ -32,21 +36,21 @@
 	/* === Core shadcn tokens (light) === */
 	--radius: 0.375rem;
 
-	--background: white;
+	--background: var(--brand-white);
 	--foreground: var(--brand-blue);
 
-	--card: oklch(100% 0 0);
+	--card: var(--brand-white);
 	--card-foreground: var(--brand-blue);
 
-	--popover: oklch(100% 0 0);
+	--popover: var(--brand-white);
 	--popover-foreground: var(--brand-blue);
 
-	/* Primary colors - using brand blue as primary and gold as accent */
+	/* Primary colors - brand blue as primary and gold as accent */
 	--primary: var(--brand-blue);
-	--primary-foreground: oklch(100% 0 0); /* white text on blue */
+	--primary-foreground: var(--brand-white); /* white text on blue */
 
-	--secondary: oklch(98.16% 0.0017 247.839);
-	--secondary-foreground: oklch(55.1% 0.0234 264.3637);
+	--secondary: var(--brand-light-blue);
+	--secondary-foreground: var(--brand-blue);
 
 	--muted: oklch(96.7% 0.0029 264.5419);
 	--muted-foreground: var(--brand-gray); /* #9ca3af */
@@ -69,14 +73,14 @@
 	--chart-5: oklch(98.16% 0.0017 247.839);
 
 	/* Sidebar palette */
-	--sidebar: var(--brand-light-blue);
-	--sidebar-foreground: var(--brand-blue);
-	--sidebar-primary: var(--brand-gold);
-	--sidebar-primary-foreground: var(--brand-blue);
-	--sidebar-accent: var(--brand-blue);
-	--sidebar-accent-foreground: oklch(100% 0 0);
-	--sidebar-border: oklch(96.7% 0.0029 264.5419);
-	--sidebar-ring: var(--brand-gold);
+	--sidebar: var(--brand-white);
+	--sidebar-foreground: var(--brand-black);
+	--sidebar-primary: var(--primary);
+	--sidebar-primary-foreground: var(--primary-foreground);
+	--sidebar-accent: var(--accent);
+	--sidebar-accent-foreground: var(--accent-foreground);
+	--sidebar-border: var(--brand-black);
+	--sidebar-ring: var(--primary/90);
 
 	/* Shadows & misc preserved */
 	--shadow-color: #000000;
@@ -107,18 +111,19 @@
 .dark {
 	/* Dark mode using brand blue as background and gold as accent */
 	--background: var(--brand-blue);
-	--foreground: oklch(100% 0 0);
+	--foreground: var(--brand-white);
 
 	--card: var(--brand-blue);
-	--card-foreground: oklch(100% 0 0);
+	--card-foreground: var(--brand-white);
 
 	--popover: var(--brand-blue);
-	--popover-foreground: oklch(100% 0 0);
+	--popover-foreground: var(--brand-white);
 
-	--primary: var(--brand-gold);
-	--primary-foreground: var(--brand-blue);
+	/* Keep primary consistent with light mode - brand blue as primary, go */
+	--primary: var(--brand-blue);
+	--primary-foreground: var(--brand-white);
 
-	--secondary: oklch(28.08% 0.0507 260.1968);
+	--secondary: oklch(20.46% 0 0); /* Dark secondary */
 	--secondary-foreground: oklch(98.16% 0.0017 247.839);
 
 	--muted: oklch(28.08% 0.0507 260.1968);
@@ -128,7 +133,7 @@
 	--accent-foreground: var(--brand-blue);
 
 	--destructive: var(--brand-red);
-	--destructive-foreground: oklch(100% 0 0);
+	--destructive-foreground: var(--brand-white);
 
 	--border: oklch(55.1% 0.0234 264.3637);
 	--input: oklch(55.1% 0.0234 264.3637);
@@ -140,13 +145,13 @@
 	--chart-4: oklch(71.37% 0.0192 261.3246);
 	--chart-5: var(--brand-blue);
 
-	/* Sidebar in dark */
+	/* Sidebar in dark - maintain consistent color roles */
 	--sidebar: oklch(20.46% 0 0);
 	--sidebar-foreground: oklch(98.16% 0.0017 247.839);
-	--sidebar-primary: var(--brand-gold);
-	--sidebar-primary-foreground: var(--brand-blue);
-	--sidebar-accent: var(--brand-gold);
-	--sidebar-accent-foreground: var(--brand-blue);
+	--sidebar-primary: var(--primary);
+	--sidebar-primary-foreground: var(--primary-foreground);
+	--sidebar-accent: var(--accent);
+	--sidebar-accent-foreground: var(--accent-foreground);
 	--sidebar-border: oklch(55.1% 0.0234 264.3637);
 	--sidebar-ring: var(--brand-gold);
 
