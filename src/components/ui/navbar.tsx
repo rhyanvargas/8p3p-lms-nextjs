@@ -68,7 +68,7 @@ export function Navbar() {
 
 	return (
 		<header className="w-full backdrop-blur-md bg-primary/50 border-b border-white/10 sticky top-0 z-50">
-			<div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6 lg:px-8">
+			<div className="container flex h-[var(--header-height)] items-center justify-between mx-auto px-4 md:px-6 lg:px-8">
 				{/* Logo */}
 				<div className="flex items-center">
 					<Link href="/" className="flex items-center space-x-2">
