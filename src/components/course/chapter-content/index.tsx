@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { VideoPlayer } from "@/components/course/chapter-content/video-player";
 import { InteractiveScript } from "@/components/course/chapter-content/interactive-script";
 import { ChapterQuiz } from "@/components/course/chapter-content/chapter-quiz";
-import { AskQuestion } from "@/components/course/chapter-content/ask-question";
 import { Course, Section, Chapter } from "@/lib/mock-data";
 import { 
   generateCourseSlug, 
@@ -26,7 +25,7 @@ interface ChapterContentProps {
 
 export function ChapterContent({ course, section, chapter }: ChapterContentProps) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'content' | 'quiz'>('content');
+  const [activeTab, setActiveTab] = useState<'transcript' | 'quiz'>('transcript');
   
   // Generate slugs for navigation
   const courseSlug = generateCourseSlug(course.id, course.title);
@@ -54,17 +53,22 @@ export function ChapterContent({ course, section, chapter }: ChapterContentProps
         <p className="text-muted-foreground">{chapter.learningObjective}</p>
       </div>
       
+      {/* Video Player */}
+      <div className="mb-8">
+        <VideoPlayer />
+      </div>
+      
       {/* Tab Navigation */}
       <div className="flex border-b mb-6">
         <button
           className={`px-4 py-2 font-medium ${
-            activeTab === 'content' 
+            activeTab === 'transcript' 
               ? 'border-b-2 border-primary text-primary' 
               : 'text-muted-foreground'
           }`}
-          onClick={() => setActiveTab('content')}
+          onClick={() => setActiveTab('transcript')}
         >
-          Content
+          Transcript
         </button>
         <button
           className={`px-4 py-2 font-medium ${
@@ -78,19 +82,10 @@ export function ChapterContent({ course, section, chapter }: ChapterContentProps
         </button>
       </div>
       
-      {/* Content Area */}
+      {/* Tab Content */}
       <div className="mb-8">
-        {activeTab === 'content' ? (
-          <div className="space-y-8">
-            {/* Video Player */}
-            <VideoPlayer />
-            
-            {/* Interactive Script */}
-            <InteractiveScript script={chapter.videoScript || "No transcript available for this chapter."} />
-            
-            {/* Ask Question Button */}
-            <AskQuestion chapterTitle={chapter.title} />
-          </div>
+        {activeTab === 'transcript' ? (
+          <InteractiveScript script={chapter.videoScript || "No transcript available for this chapter."} />
         ) : (
           chapter.quiz ? (
             <ChapterQuiz 
@@ -108,47 +103,7 @@ export function ChapterContent({ course, section, chapter }: ChapterContentProps
         )}
       </div>
       
-      {/* Navigation Controls */}
-      <div className="flex justify-between items-center border-t pt-6">
-        <div>
-          {prevChapter && (
-            <Button
-              variant="outline"
-              className="flex items-center gap-2"
-              onClick={() => {
-                const prevSection = course.sections.find(s => 
-                  s.chapters.some(c => c.id === prevChapter.id)
-                );
-                if (prevSection) {
-                  navigateToChapter(prevSection.id, prevChapter.id, prevChapter.title);
-                }
-              }}
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Previous
-            </Button>
-          )}
-        </div>
-        
-        <div>
-          {nextChapter && (
-            <Button
-              className="flex items-center gap-2"
-              onClick={() => {
-                const nextSection = course.sections.find(s => 
-                  s.chapters.some(c => c.id === nextChapter.id)
-                );
-                if (nextSection) {
-                  navigateToChapter(nextSection.id, nextChapter.id, nextChapter.title);
-                }
-              }}
-            >
-              Next
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </div>
+
     </div>
   );
 }
