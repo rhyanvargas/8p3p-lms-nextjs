@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { generateCourseSlug } from "@/lib/course-utils";
 import {
 	Card,
 	CardContent,
@@ -39,10 +40,18 @@ export function CourseCard({
 	
 	// Handle continue button click
 	const handleContinue = () => {
-		router.push(`/courses/${id}`);
+		// Generate a slug that includes both ID and title for SEO
+		const slug = generateCourseSlug(id, title);
+		router.push(`/courses/${slug}`);
 	};
 	return (
-		<Card className="overflow-hidden pt-0 cursor-pointer" onClick={() => router.push(`/courses/${id}`)}>
+		<Card 
+		className="overflow-hidden pt-0 cursor-pointer" 
+		onClick={() => {
+			const slug = generateCourseSlug(id, title);
+			router.push(`/courses/${slug}`);
+		}}
+	>
 			<div className="relative h-48 w-full">
 				<Image
 					src={imageUrl}
