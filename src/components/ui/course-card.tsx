@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
 	Card,
 	CardContent,
@@ -32,8 +34,15 @@ export function CourseCard({
 	totalChapters,
 	completedChapters,
 }: CourseCardProps) {
+	// Initialize router for programmatic navigation
+	const router = useRouter();
+	
+	// Handle continue button click
+	const handleContinue = () => {
+		router.push(`/courses/${id}`);
+	};
 	return (
-		<Card className="overflow-hidden pt-0">
+		<Card className="overflow-hidden pt-0 cursor-pointer" onClick={() => router.push(`/courses/${id}`)}>
 			<div className="relative h-48 w-full">
 				<Image
 					src={imageUrl}
@@ -60,7 +69,12 @@ export function CourseCard({
 				<div className="text-sm text-muted-foreground">
 					{completedChapters}/{totalChapters} chapters • {duration}
 				</div>
-				<Button variant="accent">Continue</Button>
+				<Button variant="accent" onClick={(e) => {
+					e.stopPropagation(); // Prevent card click event from triggering
+					handleContinue();
+				}}>
+					Continue
+				</Button>
 			</CardFooter>
 		</Card>
 	);
