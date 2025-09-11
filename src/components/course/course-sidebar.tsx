@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, BookOpen } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -68,6 +68,18 @@ export function CourseSidebar({
 	const [openModules, setOpenModules] = useState<string[]>([
 		course.sections[0]?.id || "",
 	]);
+
+	// Auto-expand section containing active chapter
+	useEffect(() => {
+		const activeSection = course.sections.find(section => 
+			section.chapters.some(chapter => 
+				pathname.includes(generateChapterSlug(chapter.id, chapter.title))
+			)
+		);
+		if (activeSection && !openModules.includes(activeSection.id)) {
+			setOpenModules(prev => [...prev, activeSection.id]);
+		}
+	}, [pathname, course.sections, openModules]);
 
 	const toggleModule = (moduleId: string) => {
 		setOpenModules((prev) =>
