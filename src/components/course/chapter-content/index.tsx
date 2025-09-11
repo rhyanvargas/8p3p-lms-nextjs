@@ -26,6 +26,7 @@ interface ChapterContentProps {
 export function ChapterContent({ course, section, chapter }: ChapterContentProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'transcript' | 'quiz'>('transcript');
+  const [videoCompleted, setVideoCompleted] = useState(false);
   
   // Generate slugs for navigation
   const courseSlug = generateCourseSlug(course.id, course.title);
@@ -41,6 +42,17 @@ export function ChapterContent({ course, section, chapter }: ChapterContentProps
       course.sections.find(s => s.id === sectionId)?.title || "");
     const chapterSlug = generateChapterSlug(chapterId, chapterTitle);
     router.push(`/courses/${courseSlug}/${targetSectionSlug}/chapters/${chapterSlug}`);
+  };
+  
+  const handleNextChapter = () => {
+    if (nextChapter) {
+      const nextSection = course.sections.find(s => 
+        s.chapters.some(c => c.id === nextChapter.id)
+      );
+      if (nextSection) {
+        navigateToChapter(nextSection.id, nextChapter.id, nextChapter.title);
+      }
+    }
   };
   
 
@@ -93,7 +105,10 @@ export function ChapterContent({ course, section, chapter }: ChapterContentProps
                 ...chapter.quiz,
                 description: chapter.quiz.description || "Test your knowledge from this chapter",
                 passingScore: chapter.quiz.passingScore || 70
-              }} 
+              }}
+              onNextChapter={nextChapter ? handleNextChapter : undefined}
+              chapterTitle={chapter.title}
+              chapterId={chapter.id}
             />
           ) : (
             <div className="p-8 text-center">

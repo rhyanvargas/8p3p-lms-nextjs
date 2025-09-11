@@ -27,6 +27,9 @@ export interface Chapter {
 	videoScript: string;
 	quiz: Quiz;
 	completed?: boolean;
+	videoCompleted?: boolean;
+	quizPassed?: boolean;
+	questionAskedCount?: number;
 }
 
 export interface Section {
@@ -43,6 +46,7 @@ export interface Course {
 	// Progress tracking
 	progress: number; // 0-100
 	completedChapters: string[]; // Array of completed chapter IDs
+	lastViewedChapter?: string; // For resume functionality
 	// Dashboard fields
 	imageUrl?: string;
 	duration?: string;

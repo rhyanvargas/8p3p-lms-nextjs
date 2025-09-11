@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, XCircle, ArrowRight } from "lucide-react";
+import { AskQuestion } from "@/components/course/chapter-content/ask-question";
 
 interface QuizQuestion {
   id: string;
@@ -24,9 +25,12 @@ interface Quiz {
 
 interface ChapterQuizProps {
   quiz: Quiz;
+  onNextChapter?: () => void;
+  chapterTitle?: string;
+  chapterId?: string;
 }
 
-export function ChapterQuiz({ quiz }: ChapterQuizProps) {
+export function ChapterQuiz({ quiz, onNextChapter, chapterTitle, chapterId }: ChapterQuizProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<number[]>(Array(quiz.questions.length).fill(-1));
   const [submitted, setSubmitted] = useState(false);
@@ -126,8 +130,23 @@ export function ChapterQuiz({ quiz }: ChapterQuizProps) {
             })}
           </div>
         </CardContent>
-        <CardFooter>
-          <Button onClick={handleRetry} className="w-full">Retry Quiz</Button>
+        <CardFooter className="flex gap-2">
+          {passed ? (
+            <>
+              {onNextChapter && (
+                <Button onClick={onNextChapter} className="flex-1 flex items-center gap-2">
+                  Next Chapter
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              )}
+              <AskQuestion chapterTitle={chapterTitle || "Chapter"} chapterId={chapterId} />
+            </>
+          ) : (
+            <>
+              <Button onClick={handleRetry} className="flex-1">Retry Quiz</Button>
+              <AskQuestion chapterTitle={chapterTitle || "Chapter"} chapterId={chapterId} />
+            </>
+          )}
         </CardFooter>
       </Card>
     );
