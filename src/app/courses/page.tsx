@@ -17,8 +17,9 @@ export default function CoursesPage() {
             description={course.description}
             progress={course.progress || 0}
             imageUrl={course.imageUrl || "/emdr-xr-training.png"}
-            moduleCount={course.sections?.length || 0}
-            completedModules={course.completedChapters?.length || 0}
+            totalChapters={course.sections?.reduce((total, section) => total + section.chapters.length, 0) || 0}
+            completedChapters={course.completedChapters?.length || 0}
+            duration={course.duration}
           />
         ))}
         
@@ -32,7 +33,7 @@ export default function CoursesPage() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              We're developing additional specialized EMDR training courses to expand your professional development journey.
+              We&apos;re developing additional specialized EMDR training courses to expand your professional development journey.
             </p>
           </CardContent>
         </Card>
