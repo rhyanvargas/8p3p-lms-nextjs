@@ -28,7 +28,7 @@ export default function CourseLayout({ children, params }: CourseLayoutProps) {
 
 			<SidebarProvider>
 				{course && <CourseSidebar course={course} className="" />}
-				<SidebarInset className="flex flex-col h-screen">
+				<SidebarInset className="flex flex-col min-h-screen">
 					<header className="sticky top-[var(--header-height)] z-50 flex h-[var(--header-height)] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-[3rem] backdrop-blur-lg bg-background/80 border-b">
 						<div className="flex items-center gap-2 px-4 w-full">
 							<SidebarTrigger className="-ml-1" />
@@ -39,7 +39,7 @@ export default function CourseLayout({ children, params }: CourseLayoutProps) {
 							{course && <LayoutBreadcrumbs course={course} />}
 						</div>
 					</header>
-					<main className="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-y-auto">
+					<main className="flex flex-1 flex-col gap-4 p-4 pt-0">
 						{children}
 					</main>
 				</SidebarInset>

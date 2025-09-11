@@ -75,14 +75,13 @@ export function CourseSidebar({
 		const activeSection = course.sections.find((section) =>
 			section.chapters.some(
 				(chapter) =>
-					pathname.includes(generateChapterSlug(chapter.id, chapter.title)) ||
-					chapter.id === activeChapterId
+					pathname.includes(generateChapterSlug(chapter.id, chapter.title))
 			)
 		);
-		if (activeSection && !openModules.includes(activeSection.id)) {
-			setOpenModules((prev) => [...prev, activeSection.id]);
+		if (activeSection) {
+			setOpenModules([activeSection.id]);
 		}
-	}, [pathname, course.sections, openModules]);
+	}, [pathname, course.sections]);
 
 	const toggleModule = (moduleId: string) => {
 		setOpenModules((prev) =>
@@ -169,18 +168,21 @@ export function CourseSidebar({
 														<SidebarMenuSubItem key={chapter.id}>
 															<Link href={chapterUrl}>
 																<SidebarMenuSubButton
+																	asChild
 																	isActive={isActive}
-																	className="w-full justify-between px-2 py-1.5 h-auto text-left rounded-md"
+																	className="w-full justify-between px-2 py-2 h-auto text-left rounded-md"
 																>
-																	<div className="flex-1 min-w-0">
-																		<p className="text-sm truncate">
-																			{chapter.title}
-																		</p>
-																	</div>
-																	<ChapterProgress
-																		progress={getChapterProgress(chapter.id)}
-																		size="sm"
-																	/>
+																	<span className="flex w-full justify-between items-center">
+																		<div className="flex-1 min-w-0">
+																			<p className="text-sm truncate">
+																				{chapter.title}
+																			</p>
+																		</div>
+																		<ChapterProgress
+																			progress={getChapterProgress(chapter.id)}
+																			size="sm"
+																		/>
+																	</span>
 																</SidebarMenuSubButton>
 															</Link>
 														</SidebarMenuSubItem>
