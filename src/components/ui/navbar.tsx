@@ -64,7 +64,7 @@ const authNavButtons: NavItem[] = [
 	{
 		title: "Dashboard",
 		href: "/dashboard",
-		variant: "ghost",
+		variant: "default",
 	},
 	{
 		title: "Logout",
@@ -76,7 +76,7 @@ const authNavButtons: NavItem[] = [
 
 // Mobile-only authenticated navigation
 const mobileAuthNavButtons: NavItem[] = [
-	...authNavButtons.filter(item => item.title !== "Logout"),
+	...authNavButtons.filter((item) => item.title !== "Logout"),
 	{
 		title: "Courses",
 		href: "/courses",
@@ -142,7 +142,7 @@ export function Navbar() {
 				<div className="flex items-center space-x-2">
 					{authStatus === "authenticated" ? (
 						<>
-							{authNavButtons.map((item) => (
+							{authNavButtons.map((item) =>
 								item.title === "Logout" ? (
 									<Button
 										key={item.href}
@@ -154,10 +154,10 @@ export function Navbar() {
 										{item.title}
 									</Button>
 								) : (
-									<Button 
-										key={item.href} 
-										variant={item.variant} 
-										asChild 
+									<Button
+										key={item.href}
+										variant={item.variant}
+										asChild
 										className="hidden md:flex items-center"
 									>
 										<Link href={item.href}>
@@ -166,15 +166,15 @@ export function Navbar() {
 										</Link>
 									</Button>
 								)
-							))}
+							)}
 						</>
 					) : (
 						<>
 							{publicNavButtons.map((item) => (
-								<Button 
-									key={item.href} 
-									variant={item.variant} 
-									asChild 
+								<Button
+									key={item.href}
+									variant={item.variant}
+									asChild
 									className="hidden md:flex items-center"
 								>
 									<Link href={item.href}>
@@ -219,40 +219,46 @@ export function Navbar() {
 									<div className="flex flex-col px-2 py-2 gap-2">
 										{authStatus === "authenticated" ? (
 											<>
-												{mobileAuthNavButtons.map((item) => (
+												{mobileAuthNavButtons.map((item) =>
 													item.title === "Logout" ? (
-														<Button 
+														<Button
 															key={item.href}
 															variant={item.variant}
 															onClick={handleSignOut}
 														>
-															{item.icon && <item.icon className="h-4 w-4 mr-1" />}
+															{item.icon && (
+																<item.icon className="h-4 w-4 mr-1" />
+															)}
 															{item.title}
 														</Button>
 													) : (
-														<Button 
+														<Button
 															key={item.href}
 															variant={item.variant || "default"}
 															asChild
 														>
 															<Link href={item.href}>
-																{item.icon && <item.icon className="h-4 w-4 mr-1" />}
+																{item.icon && (
+																	<item.icon className="h-4 w-4 mr-1" />
+																)}
 																{item.title}
 															</Link>
 														</Button>
 													)
-												))}
+												)}
 											</>
 										) : (
 											<>
 												{publicNavButtons.map((item) => (
-													<Button 
+													<Button
 														key={item.href}
 														variant={item.variant || "default"}
 														asChild
 													>
 														<Link href={item.href}>
-															{item.icon && <item.icon className="h-4 w-4 mr-1" />}
+															{item.icon && (
+																<item.icon className="h-4 w-4 mr-1" />
+															)}
 															{item.title}
 														</Link>
 													</Button>
