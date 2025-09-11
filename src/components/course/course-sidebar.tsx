@@ -39,6 +39,7 @@ import {
 
 interface CourseSidebarProps extends React.ComponentProps<typeof Sidebar> {
 	course: Course;
+	activeChapterId?: string;
 }
 
 export function CourseSidebar({
@@ -71,13 +72,15 @@ export function CourseSidebar({
 
 	// Auto-expand section containing active chapter
 	useEffect(() => {
-		const activeSection = course.sections.find(section => 
-			section.chapters.some(chapter => 
-				pathname.includes(generateChapterSlug(chapter.id, chapter.title))
+		const activeSection = course.sections.find((section) =>
+			section.chapters.some(
+				(chapter) =>
+					pathname.includes(generateChapterSlug(chapter.id, chapter.title)) ||
+					chapter.id === activeChapterId
 			)
 		);
 		if (activeSection && !openModules.includes(activeSection.id)) {
-			setOpenModules(prev => [...prev, activeSection.id]);
+			setOpenModules((prev) => [...prev, activeSection.id]);
 		}
 	}, [pathname, course.sections, openModules]);
 
@@ -151,11 +154,17 @@ export function CourseSidebar({
 										<CollapsibleContent>
 											<SidebarMenuSub className="space-y-0.5 ml-3 mt-1 border-l border-sidebar-primary pl-3">
 												{section.chapters.map((chapter) => {
-													const sectionSlug = generateSectionSlug(section.id, section.title);
-													const chapterSlug = generateChapterSlug(chapter.id, chapter.title);
+													const sectionSlug = generateSectionSlug(
+														section.id,
+														section.title
+													);
+													const chapterSlug = generateChapterSlug(
+														chapter.id,
+														chapter.title
+													);
 													const chapterUrl = `/courses/${courseSlug}/${sectionSlug}/chapters/${chapterSlug}`;
 													const isActive = pathname.includes(chapterSlug);
-													
+
 													return (
 														<SidebarMenuSubItem key={chapter.id}>
 															<Link href={chapterUrl}>
