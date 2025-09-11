@@ -1,5 +1,78 @@
+// Type definitions for simplified course structure
+export interface TranscriptItem {
+	id: number;
+	time: string;
+	text: string;
+}
+
+export interface QuizQuestion {
+	id: string;
+	question: string;
+	options: string[];
+	correctAnswer: number; // Index of correct answer (0-3)
+}
+
+export interface Quiz {
+	id: string;
+	title: string;
+	questions: QuizQuestion[];
+}
+
+export interface Chapter {
+	id: string;
+	title: string;
+	learningObjective: string;
+	videoScript: string;
+	quiz: Quiz;
+	completed?: boolean;
+}
+
+export interface Section {
+	id: string;
+	title: string;
+	chapters: Chapter[];
+}
+
+export interface Course {
+	id: string;
+	title: string;
+	description: string;
+	sections: Section[];
+	// Progress tracking
+	progress: number; // 0-100
+	completedChapters: string[]; // Array of completed chapter IDs
+	// Dashboard fields
+	imageUrl?: string;
+	duration?: string;
+}
+
+// Additional interfaces for existing features
+export interface QuizResult {
+	id: string;
+	quiz: string;
+	score: number;
+	status: "pass" | "fail";
+	date: string;
+}
+
+export interface CommunityUser {
+	id: string;
+	name: string;
+	avatar: string;
+	role: string;
+}
+
+export interface CommunityPost {
+	id: string;
+	user: CommunityUser;
+	content: string;
+	likes: number;
+	comments: number;
+	timeAgo: string;
+}
+
 // Course transcript data
-export const courseTranscript = [
+export const courseTranscript: TranscriptItem[] = [
 	{
 		id: 1,
 		time: "00:15",
@@ -24,147 +97,323 @@ export const courseTranscript = [
 
 // Course data
 
-export const mockCourses = {
-	course: {
-		id: "course_emdr_001",
-		title: "EMDR Therapist Training",
-		description:
-			"A structured training program designed to certify therapists in Eye Movement Desensitization and Reprocessing (EMDR). Includes theory, protocols, enriched scenarios, biometric insights, and supervised practice.",
-		duration_hours: 40,
-		level: "Professional Certification",
-		modules: [
-			{
-				id: "module_1",
-				title: "Foundations of EMDR",
-				description:
-					"Introduction to EMDR principles, history, and therapeutic rationale.",
-				chapters: [
-					{
-						id: "chapter_1_1",
-						title: "Introduction to Trauma and EMDR",
-						lessons: [
-							{
-								id: "lesson_1_1_1",
-								title: "History of EMDR",
-								content_type: "video",
-								duration_min: 15,
-							},
-							{
-								id: "lesson_1_1_2",
-								title: "Understanding Trauma",
-								content_type: "reading",
-								duration_min: 20,
-							},
-						],
-						assessments: [
-							{
-								id: "quiz_1_1",
-								title: "Trauma Fundamentals Quiz",
-								type: "multiple_choice",
-								questions: 5,
-							},
-						],
-					},
-				],
-			},
-			{
-				id: "module_2",
-				title: "EMDR Protocols & Therapeutic Process",
-				description:
-					"Step-by-step overview of the standard EMDR 8-Phase Protocol.",
-				chapters: [
-					{
-						id: "chapter_2_1",
-						title: "Phase 1: History Taking",
-						lessons: [
-							{
-								id: "lesson_2_1_1",
-								title: "Client Assessment & Case Formulation",
-								content_type: "interactive_case",
-								duration_min: 25,
-							},
-						],
-					},
-					{
-						id: "chapter_2_2",
-						title: "Phase 2: Preparation",
-						lessons: [
-							{
-								id: "lesson_2_2_1",
-								title: "Developing Client Safety & Resources",
-								content_type: "exercise",
-								duration_min: 20,
-							},
-						],
-					},
-				],
-			},
-			{
-				id: "module_3",
-				title: "Applied Scenarios & Simulation",
-				description:
-					"Practice enriched patient scenarios with branching dialogues and biometric feedback.",
-				chapters: [
-					{
-						id: "chapter_3_1",
-						title: "Enriched Patient Scenario: PTSD Veteran",
-						lessons: [
-							{
-								id: "lesson_3_1_1",
-								title: "Simulated Patient Interaction",
-								content_type: "simulation",
-								duration_min: 30,
-								resources: ["enriched-patient-scenarios-6yunw8sb.md"],
-							},
-						],
-					},
-					{
-						id: "chapter_3_2",
-						title: "Biometric Data Insights",
-						lessons: [
-							{
-								id: "lesson_3_2_1",
-								title: "EEG & Heart Rate Monitoring During Session",
-								content_type: "data_visualization",
-								duration_min: 15,
-								resources: ["EEAP: Biometric Data Dataset.pdf"],
-							},
-						],
-					},
-				],
-			},
-			{
-				id: "module_4",
-				title: "Ethics, Compliance & Certification",
-				description:
-					"Legal, ethical, and certification requirements for EMDR practice.",
-				chapters: [
-					{
-						id: "chapter_4_1",
-						title: "HIPAA & Patient Confidentiality",
-						lessons: [
-							{
-								id: "lesson_4_1_1",
-								title: "Regulatory Compliance for Therapists",
-								content_type: "reading",
-								duration_min: 25,
-							},
-						],
-					},
-					{
-						id: "chapter_4_2",
-						title: "Final Certification Exam",
-						assessments: [
-							{
-								id: "exam_final",
-								title: "EMDR Certification Assessment",
-								type: "practical_exam",
-								duration_min: 90,
-							},
-						],
-					},
-				],
-			},
-		],
+
+// Quiz results data
+export const quizResults: QuizResult[] = [
+	{
+		id: "1",
+		quiz: "EMDR Phase 1 Assessment",
+		score: 92,
+		status: "pass",
+		date: "2023-09-16",
 	},
-};
+	{
+		id: "2",
+		quiz: "Trauma Processing Techniques",
+		score: 88,
+		status: "pass",
+		date: "2023-09-10",
+	},
+	{
+		id: "3",
+		quiz: "Client Safety Protocols",
+		score: 95,
+		status: "pass",
+		date: "2023-09-05",
+	},
+	{
+		id: "4",
+		quiz: "Advanced Bilateral Stimulation",
+		score: 68,
+		status: "fail",
+		date: "2023-08-28",
+	},
+];
+
+// Community posts data
+export const communityPosts: CommunityPost[] = [
+	{
+		id: "1",
+		user: {
+			id: "101",
+			name: "David Kim",
+			avatar: "",
+			role: "Student",
+		},
+		content:
+			"I found the practice session really helpful today. The breakout rooms were a great way to practice the protocol with peers.",
+		likes: 8,
+		comments: 2,
+		timeAgo: "3 hours ago",
+	},
+	{
+		id: "2",
+		user: {
+			id: "102",
+			name: "Lisa Wang",
+			avatar: "",
+			role: "Student",
+		},
+		content:
+			"Has anyone found good resources for explaining EMDR to clients? I'd appreciate any recommendations!",
+		likes: 15,
+		comments: 7,
+		timeAgo: "1 day ago",
+	},
+	{
+		id: "3",
+		user: {
+			id: "103",
+			name: "Michael Chen",
+			avatar: "",
+			role: "Practitioner",
+		},
+		content:
+			"Just completed the advanced bilateral stimulation workshop. The VR demonstrations were incredibly insightful for understanding how to adapt techniques for telehealth. Would highly recommend to anyone interested in remote EMDR practice.",
+		likes: 23,
+		comments: 5,
+		timeAgo: "2 days ago",
+	},
+];
+
+// Simplified course data following Course > Sections > Chapters structure
+export const courses: Course[] = [
+	{
+		id: "1",
+		title: "EMDR Therapy Fundamentals",
+		description: "Learn the foundational principles of EMDR therapy through interactive lessons and practical exercises.",
+		progress: 65,
+		completedChapters: ["ch_1_1", "ch_1_2", "ch_2_1"], // Track completed chapters by ID
+		imageUrl: "/emdr-xr-training.png",
+		duration: "4 hours",
+		sections: [
+			{
+				id: "section_1",
+				title: "EMDR Foundations",
+				chapters: [
+					{
+						id: "ch_1_1",
+						title: "History of EMDR",
+						learningObjective: "Understand the origins and development of EMDR therapy by Dr. Francine Shapiro.",
+						videoScript: "Welcome to EMDR Therapy Fundamentals. In this module, we'll explore the history and development of EMDR. EMDR was developed by Dr. Francine Shapiro in the late 1980s when she noticed that certain eye movements...",
+						completed: true,
+						quiz: {
+							id: "quiz_1_1",
+							title: "EMDR History Quiz",
+							questions: [
+								{
+									id: "q1",
+									question: "Who developed EMDR therapy?",
+									options: ["Dr. Francine Shapiro", "Dr. Judith Beck", "Dr. Aaron Beck", "Dr. Albert Ellis"],
+									correctAnswer: 0
+								},
+								{
+									id: "q2",
+									question: "In which decade was EMDR developed?",
+									options: ["1970s", "1980s", "1990s", "2000s"],
+									correctAnswer: 1
+								},
+								{
+									id: "q3",
+									question: "What does EMDR stand for?",
+									options: ["Eye Movement Desensitization and Reprocessing", "Emotional Memory Desensitization and Recovery", "Eye Movement Disorder and Recovery", "Emotional Movement Desensitization and Reprocessing"],
+									correctAnswer: 0
+								},
+								{
+									id: "q4",
+									question: "EMDR is primarily used to treat:",
+									options: ["Depression only", "Anxiety disorders only", "PTSD and trauma-related conditions", "Personality disorders only"],
+									correctAnswer: 2
+								}
+							]
+						}
+					},
+					{
+						id: "ch_1_2",
+						title: "Understanding Trauma",
+						learningObjective: "Identify different types of trauma and their impact on memory processing.",
+						videoScript: "The adaptive information processing model suggests that traumatic memories become stuck. Research has consistently shown EMDR's effectiveness in treating PTSD and other trauma-related conditions.",
+						completed: true,
+						quiz: {
+							id: "quiz_1_2",
+							title: "Trauma Understanding Quiz",
+							questions: [
+								{
+									id: "q1",
+									question: "What happens to traumatic memories according to AIP model?",
+									options: ["They are forgotten", "They become stuck", "They are enhanced", "They are deleted"],
+									correctAnswer: 1
+								},
+								{
+									id: "q2",
+									question: "EMDR is most effective for treating:",
+									options: ["All mental health conditions", "PTSD and trauma conditions", "Only childhood trauma", "Only recent trauma"],
+									correctAnswer: 1
+								},
+								{
+									id: "q3",
+									question: "What does AIP stand for?",
+									options: ["Adaptive Information Processing", "Advanced Information Processing", "Automatic Information Processing", "Active Information Processing"],
+									correctAnswer: 0
+								},
+								{
+									id: "q4",
+									question: "Trauma can affect:",
+									options: ["Memory only", "Emotions only", "Memory, emotions, and body sensations", "Behavior only"],
+									correctAnswer: 2
+								}
+							]
+						}
+					}
+				]
+			},
+			{
+				id: "section_2",
+				title: "EMDR Protocol",
+				chapters: [
+					{
+						id: "ch_2_1",
+						title: "8-Phase Protocol Overview",
+						learningObjective: "Master the 8-phase EMDR protocol structure and implementation.",
+						videoScript: "The EMDR protocol consists of 8 distinct phases, each serving a specific purpose in trauma processing. Phase 1 involves history taking and treatment planning...",
+						completed: true,
+						quiz: {
+							id: "quiz_2_1",
+							title: "EMDR Protocol Quiz",
+							questions: [
+								{
+									id: "q1",
+									question: "How many phases are in the EMDR protocol?",
+									options: ["6", "7", "8", "9"],
+									correctAnswer: 2
+								},
+								{
+									id: "q2",
+									question: "What is Phase 1 of EMDR?",
+									options: ["Preparation", "History taking", "Assessment", "Installation"],
+									correctAnswer: 1
+								},
+								{
+									id: "q3",
+									question: "The EMDR protocol is:",
+									options: ["Flexible and adaptable", "Rigid and unchangeable", "Only for adults", "Only for children"],
+									correctAnswer: 0
+								},
+								{
+									id: "q4",
+									question: "Each phase of EMDR serves:",
+									options: ["The same purpose", "A specific purpose", "No particular purpose", "Only assessment purposes"],
+									correctAnswer: 1
+								}
+							]
+						}
+					},
+					{
+						id: "ch_2_2",
+						title: "Client Preparation",
+						learningObjective: "Learn techniques for preparing clients for EMDR processing.",
+						videoScript: "Client preparation is crucial for successful EMDR treatment. This phase involves building rapport, explaining the process, and teaching self-regulation techniques...",
+						completed: false,
+						quiz: {
+							id: "quiz_2_2",
+							title: "Client Preparation Quiz",
+							questions: [
+								{
+									id: "q1",
+									question: "Why is client preparation important?",
+									options: ["It's not important", "Builds rapport and safety", "Saves time", "Reduces cost"],
+									correctAnswer: 1
+								},
+								{
+									id: "q2",
+									question: "Self-regulation techniques help clients:",
+									options: ["Avoid therapy", "Manage distress", "Skip sessions", "End treatment early"],
+									correctAnswer: 1
+								},
+								{
+									id: "q3",
+									question: "Building rapport involves:",
+									options: ["Being distant", "Creating trust and safety", "Rushing the process", "Avoiding eye contact"],
+									correctAnswer: 1
+								},
+								{
+									id: "q4",
+									question: "Explaining the EMDR process helps:",
+									options: ["Confuse the client", "Reduce anxiety and increase cooperation", "Waste time", "Create fear"],
+									correctAnswer: 1
+								}
+							]
+						}
+					}
+				]
+			}
+		]
+	},
+	{
+		id: "2",
+		title: "Advanced EMDR Techniques",
+		description: "Master advanced EMDR protocols and interventions for complex cases.",
+		progress: 30,
+		completedChapters: ["ch_3_1"],
+		imageUrl: "/emdr-xr-training.png",
+		duration: "6 hours",
+		sections: [
+			{
+				id: "section_3",
+				title: "Complex Trauma Cases",
+				chapters: [
+					{
+						id: "ch_3_1",
+						title: "Dissociative Disorders",
+						learningObjective: "Understand EMDR modifications for clients with dissociative disorders.",
+						videoScript: "Working with dissociative disorders requires careful modification of standard EMDR protocols. Safety and stabilization are paramount...",
+						completed: true,
+						quiz: {
+							id: "quiz_3_1",
+							title: "Dissociative Disorders Quiz",
+							questions: [
+								{
+									id: "q1",
+									question: "When working with dissociative disorders, what is most important?",
+									options: ["Speed of treatment", "Safety and stabilization", "Cost effectiveness", "Session frequency"],
+									correctAnswer: 1
+								},
+								{
+									id: "q2",
+									question: "EMDR protocols for dissociative disorders require:",
+									options: ["No modifications", "Careful modifications", "Complete avoidance", "Faster processing"],
+									correctAnswer: 1
+								},
+								{
+									id: "q3",
+									question: "Dissociation is a:",
+									options: ["Sign of weakness", "Protective mechanism", "Rare occurrence", "Treatment goal"],
+									correctAnswer: 1
+								},
+								{
+									id: "q4",
+									question: "Before processing trauma in dissociative clients:",
+									options: ["Jump right in", "Establish safety and resources", "Use standard protocol", "Avoid preparation"],
+									correctAnswer: 1
+								}
+							]
+						}
+					}
+				]
+			}
+		]
+	}
+];
+
+// For backward compatibility
+export const mockCourses = courses;
+
+// For dashboard compatibility - import course utils when needed
+export const dashboardCourses = courses.map(course => ({
+	id: course.id,
+	title: course.title,
+	description: course.description,
+	progress: course.progress,
+	imageUrl: course.imageUrl,
+	duration: course.duration,
+}));
