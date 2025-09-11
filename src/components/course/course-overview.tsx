@@ -116,7 +116,7 @@ export function CourseOverview({ course }: CourseOverviewProps) {
             </CardHeader>
             <CardContent className="p-0">
               <ul className="divide-y">
-                {section.chapters.map((chapter, chapterIndex) => {
+                {section.chapters.map((chapter, _chapterIndex) => {
                   const isCompleted = course.completedChapters.includes(chapter.id);
                   const chapterUrl = getChapterUrl(section.id, chapter.id, chapter.title);
                   

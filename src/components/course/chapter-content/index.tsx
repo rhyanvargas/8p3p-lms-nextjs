@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 import { VideoPlayer } from "@/components/course/chapter-content/video-player";
 import { InteractiveScript } from "@/components/course/chapter-content/interactive-script";
@@ -26,15 +24,14 @@ interface ChapterContentProps {
 export function ChapterContent({ course, section, chapter }: ChapterContentProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'transcript' | 'quiz'>('transcript');
-  const [videoCompleted, setVideoCompleted] = useState(false);
+
   
   // Generate slugs for navigation
   const courseSlug = generateCourseSlug(course.id, course.title);
 
   
-  // Get next and previous chapters for navigation
+  // Get next chapter for navigation
   const nextChapter = getNextChapter(course.id, section.id, chapter.id);
-  const prevChapter = getPreviousChapter(course.id, section.id, chapter.id);
   
   // Navigation functions
   const navigateToChapter = (sectionId: string, chapterId: string, chapterTitle: string) => {

@@ -44,7 +44,7 @@ interface CourseSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function CourseSidebar({
 	course,
-	activeChapterId,
+	activeChapterId: _activeChapterId,
 	className,
 	...props
 }: CourseSidebarProps) {

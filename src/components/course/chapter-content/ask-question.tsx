@@ -39,7 +39,7 @@ export function AskQuestion({ chapterTitle, chapterId }: AskQuestionProps) {
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Ask a Question about "{chapterTitle}"</DialogTitle>
+					<DialogTitle>Ask a Question about &ldquo;{chapterTitle}&rdquo;</DialogTitle>
 					<DialogDescription>
 						Get help with this chapter content from our AI assistant.
 					</DialogDescription>
