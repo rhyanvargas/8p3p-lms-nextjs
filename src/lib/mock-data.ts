@@ -9,13 +9,15 @@ export interface QuizQuestion {
 	id: string;
 	question: string;
 	options: string[];
-	correctAnswer: number; // Index of correct answer (0-3)
+	correctOption: number; // Index of correct answer (0-3)
 }
 
 export interface Quiz {
 	id: string;
 	title: string;
+	description: string; // Added for component compatibility
 	questions: QuizQuestion[];
+	passingScore: number; // Added for component compatibility
 }
 
 export interface Chapter {
@@ -200,30 +202,32 @@ export const courses: Course[] = [
 						quiz: {
 							id: "quiz_1_1",
 							title: "EMDR History Quiz",
+							description: "Test your knowledge about the history and development of EMDR therapy",
+							passingScore: 70,
 							questions: [
 								{
 									id: "q1",
 									question: "Who developed EMDR therapy?",
 									options: ["Dr. Francine Shapiro", "Dr. Judith Beck", "Dr. Aaron Beck", "Dr. Albert Ellis"],
-									correctAnswer: 0
+									correctOption: 0
 								},
 								{
 									id: "q2",
 									question: "In which decade was EMDR developed?",
 									options: ["1970s", "1980s", "1990s", "2000s"],
-									correctAnswer: 1
+									correctOption: 1
 								},
 								{
 									id: "q3",
 									question: "What does EMDR stand for?",
 									options: ["Eye Movement Desensitization and Reprocessing", "Emotional Memory Desensitization and Recovery", "Eye Movement Disorder and Recovery", "Emotional Movement Desensitization and Reprocessing"],
-									correctAnswer: 0
+									correctOption: 0
 								},
 								{
 									id: "q4",
 									question: "EMDR is primarily used to treat:",
 									options: ["Depression only", "Anxiety disorders only", "PTSD and trauma-related conditions", "Personality disorders only"],
-									correctAnswer: 2
+									correctOption: 2
 								}
 							]
 						}
@@ -237,30 +241,32 @@ export const courses: Course[] = [
 						quiz: {
 							id: "quiz_1_2",
 							title: "Trauma Understanding Quiz",
+							description: "Test your understanding of trauma types and memory processing",
+							passingScore: 70,
 							questions: [
 								{
 									id: "q1",
 									question: "What happens to traumatic memories according to AIP model?",
 									options: ["They are forgotten", "They become stuck", "They are enhanced", "They are deleted"],
-									correctAnswer: 1
+									correctOption: 1
 								},
 								{
 									id: "q2",
 									question: "EMDR is most effective for treating:",
 									options: ["All mental health conditions", "PTSD and trauma conditions", "Only childhood trauma", "Only recent trauma"],
-									correctAnswer: 1
+									correctOption: 1
 								},
 								{
 									id: "q3",
 									question: "What does AIP stand for?",
 									options: ["Adaptive Information Processing", "Advanced Information Processing", "Automatic Information Processing", "Active Information Processing"],
-									correctAnswer: 0
+									correctOption: 0
 								},
 								{
 									id: "q4",
 									question: "Trauma can affect:",
 									options: ["Memory only", "Emotions only", "Memory, emotions, and body sensations", "Behavior only"],
-									correctAnswer: 2
+									correctOption: 2
 								}
 							]
 						}
@@ -280,30 +286,32 @@ export const courses: Course[] = [
 						quiz: {
 							id: "quiz_2_1",
 							title: "EMDR Protocol Quiz",
+							description: "Test your knowledge of the 8-phase EMDR protocol",
+							passingScore: 75,
 							questions: [
 								{
 									id: "q1",
 									question: "How many phases are in the EMDR protocol?",
 									options: ["6", "7", "8", "9"],
-									correctAnswer: 2
+									correctOption: 2
 								},
 								{
 									id: "q2",
 									question: "What is Phase 1 of EMDR?",
 									options: ["Preparation", "History taking", "Assessment", "Installation"],
-									correctAnswer: 1
+									correctOption: 1
 								},
 								{
 									id: "q3",
 									question: "The EMDR protocol is:",
 									options: ["Flexible and adaptable", "Rigid and unchangeable", "Only for adults", "Only for children"],
-									correctAnswer: 0
+									correctOption: 0
 								},
 								{
 									id: "q4",
 									question: "Each phase of EMDR serves:",
 									options: ["The same purpose", "A specific purpose", "No particular purpose", "Only assessment purposes"],
-									correctAnswer: 1
+									correctOption: 1
 								}
 							]
 						}
@@ -317,30 +325,32 @@ export const courses: Course[] = [
 						quiz: {
 							id: "quiz_2_2",
 							title: "Client Preparation Quiz",
+							description: "Test your understanding of client preparation techniques",
+							passingScore: 70,
 							questions: [
 								{
 									id: "q1",
 									question: "Why is client preparation important?",
 									options: ["It's not important", "Builds rapport and safety", "Saves time", "Reduces cost"],
-									correctAnswer: 1
+									correctOption: 1
 								},
 								{
 									id: "q2",
 									question: "Self-regulation techniques help clients:",
 									options: ["Avoid therapy", "Manage distress", "Skip sessions", "End treatment early"],
-									correctAnswer: 1
+									correctOption: 1
 								},
 								{
 									id: "q3",
 									question: "Building rapport involves:",
 									options: ["Being distant", "Creating trust and safety", "Rushing the process", "Avoiding eye contact"],
-									correctAnswer: 1
+									correctOption: 1
 								},
 								{
 									id: "q4",
 									question: "Explaining the EMDR process helps:",
 									options: ["Confuse the client", "Reduce anxiety and increase cooperation", "Waste time", "Create fear"],
-									correctAnswer: 1
+									correctOption: 1
 								}
 							]
 						}
@@ -371,30 +381,32 @@ export const courses: Course[] = [
 						quiz: {
 							id: "quiz_3_1",
 							title: "Dissociative Disorders Quiz",
+							description: "Test your knowledge of EMDR modifications for dissociative disorders",
+							passingScore: 80,
 							questions: [
 								{
 									id: "q1",
 									question: "When working with dissociative disorders, what is most important?",
 									options: ["Speed of treatment", "Safety and stabilization", "Cost effectiveness", "Session frequency"],
-									correctAnswer: 1
+									correctOption: 1
 								},
 								{
 									id: "q2",
 									question: "EMDR protocols for dissociative disorders require:",
 									options: ["No modifications", "Careful modifications", "Complete avoidance", "Faster processing"],
-									correctAnswer: 1
+									correctOption: 1
 								},
 								{
 									id: "q3",
 									question: "Dissociation is a:",
 									options: ["Sign of weakness", "Protective mechanism", "Rare occurrence", "Treatment goal"],
-									correctAnswer: 1
+									correctOption: 1
 								},
 								{
 									id: "q4",
 									question: "Before processing trauma in dissociative clients:",
 									options: ["Jump right in", "Establish safety and resources", "Use standard protocol", "Avoid preparation"],
-									correctAnswer: 1
+									correctOption: 1
 								}
 							]
 						}

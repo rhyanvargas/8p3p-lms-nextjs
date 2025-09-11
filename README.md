@@ -24,14 +24,18 @@
 - **Course Catalog**: Browse and enroll in EMDR training courses
 - **Progress Tracking**: Real-time completion tracking and analytics
 - **Interactive Dashboard**: Personalized learning dashboard with widgets
-- **Quiz System**: Assessment tools with detailed results tracking
+- **Quiz System**: Assessment tools with detailed results tracking and pass/fail feedback
 - **Community Features**: Social learning with posts and interactions
+- **SEO-Friendly URLs**: Human-readable slugs with reliable ID references
+- **Course Navigation**: Hierarchical structure with sections and chapters
 
 ### 🎨 **Modern UI/UX**
 - **Responsive Design**: Mobile-first approach with adaptive layouts
 - **Dark/Light Themes**: Automatic theme switching support
 - **Accessibility**: WCAG compliant components and navigation
 - **Loading States**: Smooth transitions and professional loading indicators
+- **Interactive Video Player**: Custom video controls with progress tracking
+- **Breadcrumb Navigation**: Clear hierarchical navigation paths
 
 ## 🛠️ Tech Stack
 
@@ -40,7 +44,7 @@
 | **Framework** | Next.js 15 (App Router) |
 | **Language** | TypeScript 5.9 |
 | **Authentication** | AWS Amplify Gen2 + Cognito |
-| **Styling** | TailwindCSS + shadcn/ui |
+| **Styling** | TailwindCSS + shadcn/ui + Radix UI |
 | **Forms** | React Hook Form + Zod |
 | **State Management** | React Context + useState |
 | **Deployment** | AWS Amplify Hosting |
@@ -51,6 +55,7 @@
 - Node.js 18+ and npm
 - AWS Account (for authentication)
 - Git
+- Radix UI components (@radix-ui/react-slider, @radix-ui/react-radio-group)
 
 ### 1. Clone & Install
 ```bash
@@ -182,6 +187,10 @@ npm run test:e2e
 │   │   │   └── login/         # Login page
 │   │   ├── 📁 dashboard/      # Protected dashboard
 │   │   ├── 📁 courses/        # Protected courses
+│   │   │   └── 📁 [id]/       # Course detail pages
+│   │   │       └── 📁 [sectionId]/  # Section pages
+│   │   │           └── 📁 chapters/  # Chapter content
+│   │   │               └── 📁 [chapterId]/  # Individual chapters
 │   │   ├── 📁 api/            # API routes
 │   │   │   └── user/          # Protected user endpoint
 │   │   └── layout.tsx         # Root layout with auth provider
@@ -192,11 +201,26 @@ npm run test:e2e
 │   │   │   ├── AuthRedirect.tsx      # Login page redirect logic
 │   │   │   ├── SessionHandler.tsx    # Session timeout handler
 │   │   │   └── SignIn.tsx            # Amplify authenticator
+│   │   ├── 📁 course/         # Course components
+│   │   │   ├── course-sidebar.tsx    # Course navigation sidebar
+│   │   │   ├── course-overview.tsx   # Course overview page
+│   │   │   ├── breadcrumb-nav.tsx    # Breadcrumb navigation
+│   │   │   └── 📁 chapter-content/   # Chapter components
+│   │   │       ├── index.tsx         # Main chapter wrapper
+│   │   │       ├── video-player.tsx  # Video player component
+│   │   │       ├── interactive-script.tsx # Transcript component
+│   │   │       ├── chapter-quiz.tsx  # Quiz component
+│   │   │       └── ask-question.tsx  # Question form component
 │   │   └── 📁 ui/             # shadcn/ui components
 │   ├── 📁 lib/                # Utility functions
 │   │   ├── auth-server.ts     # Server-side auth utilities
+│   │   ├── course-utils.ts    # Course utility functions
+│   │   ├── mock-data.ts       # Mock data for development
 │   │   └── utils.ts           # General utilities
 │   └── amplify_outputs.json   # Amplify configuration
+├── 📁 context/              # Documentation and context
+│   ├── course-page-structure.md  # Course page structure guide
+│   └── url-slugs-guide.md    # URL slug implementation guide
 ├── middleware.ts              # Server-side route protection
 ├── amplify_outputs.json       # Root Amplify config
 └── package.json
