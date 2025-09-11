@@ -1,13 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { CourseCard } from "@/components/ui/course-card";
 import { QuizResultsTable } from "@/components/ui/quiz-results-table";
 import { CommunityFeed } from "@/components/ui/community-feed";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { WidgetCard } from "@/components/ui/widget-card";
-import { signOut } from "aws-amplify/auth";
-import { Button } from "@/components/ui/button";
 
 // Import mock data from centralized location
 import { courses, quizResults, communityPosts } from "@/lib/mock-data";
