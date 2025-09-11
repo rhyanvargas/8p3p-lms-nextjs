@@ -14,7 +14,7 @@ export async function getAuthenticatedUser() {
 			operation: (contextSpec) => getCurrentUser(contextSpec),
 		});
 		return currentUser;
-	} catch (error) {
+	} catch {
 		return null;
 	}
 }
@@ -26,7 +26,7 @@ export async function isAuthenticated(): Promise<boolean> {
 			operation: (contextSpec) => fetchAuthSession(contextSpec),
 		});
 		return !!session.tokens?.accessToken;
-	} catch (error) {
+	} catch {
 		return false;
 	}
 }
