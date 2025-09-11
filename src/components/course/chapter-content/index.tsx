@@ -11,8 +11,7 @@ import {
   generateCourseSlug, 
   generateSectionSlug, 
   generateChapterSlug,
-  getNextChapter,
-  getPreviousChapter
+  getNextChapter
 } from "@/lib/course-utils";
 
 interface ChapterContentProps {
