@@ -10,6 +10,8 @@ import { ChapterProgress } from "@/components/course/chapter-progress";
 import { Course } from "@/lib/mock-data";
 import {
 	generateCourseSlug,
+	generateSectionSlug,
+	generateChapterSlug,
 	isChapterCompletedObj,
 	calculateCourseProgress,
 } from "@/lib/course-utils";
@@ -37,7 +39,6 @@ import {
 
 interface CourseSidebarProps extends React.ComponentProps<typeof Sidebar> {
 	course: Course;
-	activeChapterId?: string;
 }
 
 export function CourseSidebar({
@@ -63,11 +64,10 @@ export function CourseSidebar({
 		return isChapterCompletedObj(course, chapterId) ? 100 : 0;
 	};
 
-	// Track open sections and active chapter
+	// Track open sections
 	const [openModules, setOpenModules] = useState<string[]>([
 		course.sections[0]?.id || "",
 	]);
-	const [activeChapter, setActiveChapter] = useState(activeChapterId || "");
 
 	const toggleModule = (moduleId: string) => {
 		setOpenModules((prev) =>
@@ -138,33 +138,33 @@ export function CourseSidebar({
 										</CollapsibleTrigger>
 										<CollapsibleContent>
 											<SidebarMenuSub className="space-y-0.5 ml-3 mt-1 border-l border-sidebar-primary pl-3">
-												{section.chapters.map((chapter) => (
-													<SidebarMenuSubItem key={chapter.id}>
-														<SidebarMenuSubButton
-															isActive={activeChapter === chapter.id}
-															onClick={() => setActiveChapter(chapter.id)}
-															className={cn(
-																"w-full justify-between px-2 py-1.5 h-auto text-left rounded-md ", // Changed to justify-between
-																activeChapter === chapter.id
-																	? "bg-primary text-primary-foreground"
-																	: ""
-															)}
-														>
-															{/* Chapter title on the left */}
-															<div className="flex-1 min-w-0">
-																<p className="text-sm truncate">
-																	{chapter.title}
-																</p>
-															</div>
-
-															{/* Chapter progress indicator on the right */}
-															<ChapterProgress
-																progress={getChapterProgress(chapter.id)}
-																size="sm"
-															/>
-														</SidebarMenuSubButton>
-													</SidebarMenuSubItem>
-												))}
+												{section.chapters.map((chapter) => {
+													const sectionSlug = generateSectionSlug(section.id, section.title);
+													const chapterSlug = generateChapterSlug(chapter.id, chapter.title);
+													const chapterUrl = `/courses/${courseSlug}/${sectionSlug}/chapters/${chapterSlug}`;
+													const isActive = pathname.includes(chapterSlug);
+													
+													return (
+														<SidebarMenuSubItem key={chapter.id}>
+															<Link href={chapterUrl}>
+																<SidebarMenuSubButton
+																	isActive={isActive}
+																	className="w-full justify-between px-2 py-1.5 h-auto text-left rounded-md"
+																>
+																	<div className="flex-1 min-w-0">
+																		<p className="text-sm truncate">
+																			{chapter.title}
+																		</p>
+																	</div>
+																	<ChapterProgress
+																		progress={getChapterProgress(chapter.id)}
+																		size="sm"
+																	/>
+																</SidebarMenuSubButton>
+															</Link>
+														</SidebarMenuSubItem>
+													);
+												})}
 											</SidebarMenuSub>
 										</CollapsibleContent>
 									</SidebarMenuItem>
