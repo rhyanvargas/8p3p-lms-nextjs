@@ -2,17 +2,23 @@
 
 import * as React from "react";
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Menu, ArrowLeft } from "lucide-react";
+import { ChevronDown, ChevronUp, BookOpen } from "lucide-react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ChapterProgress } from "@/components/course/chapter-progress";
-import { courses } from "@/lib/mock-data";
+import { Course } from "@/lib/mock-data";
+import {
+	generateCourseSlug,
+	isChapterCompletedObj,
+	calculateCourseProgress,
+} from "@/lib/course-utils";
 import {
 	Sidebar,
 	SidebarContent,
 	SidebarFooter,
 	SidebarGroup,
 	SidebarGroupContent,
-	SidebarGroupLabel,
 	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
@@ -28,37 +34,40 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Button } from "@/components/ui/button";
-
-// Mock progress data - in a real app, this would come from user progress tracking
-const chapterProgress = {
-	ch_1_1: 100,
-	ch_1_2: 100,
-	ch_2_1: 100,
-	ch_2_2: 0,
-	ch_3_1: 100,
-};
-
-// Helper function to get chapter progress
-const getChapterProgress = (chapterId: string) => {
-	return chapterProgress[chapterId as keyof typeof chapterProgress] || 0;
-};
 
 interface CourseSidebarProps extends React.ComponentProps<typeof Sidebar> {
-	// Add any additional props here
+	course: Course;
+	activeChapterId?: string;
 }
 
-export function CourseSidebar({ className, ...props }: CourseSidebarProps) {
+export function CourseSidebar({
+	course,
+	activeChapterId,
+	className,
+	...props
+}: CourseSidebarProps) {
 	// Access sidebar state to determine if collapsed
-	const { state, toggleSidebar } = useSidebar();
-	const isCollapsed = state === "collapsed";
+	useSidebar(); // Access sidebar context
 
-	// Use the course data from mock-data.ts
-	const course = courses[0]; // Get first course
+	// Get current path to determine active items
+	const pathname = usePathname();
+
+	// Generate course slug for links
+	const courseSlug = generateCourseSlug(course.id, course.title);
+
+	// Check if we're on the overview page
+	const isOverviewActive = pathname === `/courses/${courseSlug}`;
+
+	// Helper function to get chapter progress using the utility function
+	const getChapterProgress = (chapterId: string) => {
+		return isChapterCompletedObj(course, chapterId) ? 100 : 0;
+	};
 
 	// Track open sections and active chapter
-	const [openModules, setOpenModules] = useState<string[]>(["section_1"]);
-	const [activeChapter, setActiveChapter] = useState("ch_1_1");
+	const [openModules, setOpenModules] = useState<string[]>([
+		course.sections[0]?.id || "",
+	]);
+	const [activeChapter, setActiveChapter] = useState(activeChapterId || "");
 
 	const toggleModule = (moduleId: string) => {
 		setOpenModules((prev) =>
@@ -91,6 +100,25 @@ export function CourseSidebar({ className, ...props }: CourseSidebarProps) {
 				<SidebarGroup>
 					<SidebarGroupContent>
 						<SidebarMenu className="space-y-1">
+							{/* Overview Link */}
+							<SidebarMenuItem>
+								<Link href={`/courses/${courseSlug}`} passHref>
+									<SidebarMenuButton
+										className={cn(
+											"w-full px-4 py-2.5 h-auto text-left font-medium flex items-center gap-2",
+											isOverviewActive
+												? "bg-primary text-primary-foreground"
+												: ""
+										)}
+									>
+										<BookOpen className="h-4 w-4" />
+										<span>Course Overview</span>
+									</SidebarMenuButton>
+								</Link>
+							</SidebarMenuItem>
+
+							{/* Divider */}
+							<div className="h-px bg-border my-2" />
 							{course.sections.map((section) => (
 								<Collapsible
 									key={section.id}
@@ -116,7 +144,7 @@ export function CourseSidebar({ className, ...props }: CourseSidebarProps) {
 															isActive={activeChapter === chapter.id}
 															onClick={() => setActiveChapter(chapter.id)}
 															className={cn(
-																"w-full justify-between px-2 py-1.5 h-auto text-left rounded-md hover:bg-primary/10", // Changed to justify-between
+																"w-full justify-between px-2 py-1.5 h-auto text-left rounded-md ", // Changed to justify-between
 																activeChapter === chapter.id
 																	? "bg-primary text-primary-foreground"
 																	: ""
@@ -148,7 +176,7 @@ export function CourseSidebar({ className, ...props }: CourseSidebarProps) {
 			</SidebarContent>
 			<SidebarFooter className="p-4 border-t border-border">
 				<div className="text-xs text-muted-foreground">
-					<p>Course progress: 25%</p>
+					<p>Course progress: {calculateCourseProgress(course)}%</p>
 				</div>
 			</SidebarFooter>
 			<SidebarRail />

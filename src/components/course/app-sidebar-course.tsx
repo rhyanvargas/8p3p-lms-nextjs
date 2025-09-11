@@ -12,13 +12,11 @@ import {
 } from "lucide-react";
 
 import { NavMain } from "@/components/course/nav-main";
-import { NavProjects } from "@/components/course/nav-projects";
 import { NavUser } from "@/components/course/nav-user";
 import {
 	Sidebar,
 	SidebarContent,
 	SidebarFooter,
-	SidebarHeader,
 	SidebarRail,
 } from "@/components/ui/sidebar";
 

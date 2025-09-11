@@ -61,7 +61,7 @@ export function ChapterProgress({
 					cx={circleSize / 2}
 					cy={circleSize / 2}
 					r={radius}
-					className={progress === 0 ? "stroke-muted/80" : "stroke-muted/50"}
+					className={progress === 0 ? "stroke-accent/30" : "stroke-accent/50"}
 					strokeWidth={strokeWidth}
 				/>
 
@@ -71,7 +71,7 @@ export function ChapterProgress({
 						cx={circleSize / 2}
 						cy={circleSize / 2}
 						r={radius}
-						className="stroke-primary"
+						className="stroke-accent"
 						strokeWidth={strokeWidth}
 						strokeDasharray={circumference}
 						strokeDashoffset={strokeDashoffset}
@@ -86,7 +86,7 @@ export function ChapterProgress({
 						cx={circleSize / 2}
 						cy={circleSize / 2}
 						r={radius}
-						className="fill-primary stroke-none"
+						className="fill-accent stroke-brand-light-blue"
 					/>
 				)}
 			</svg>
