@@ -1,8 +1,5 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { generateCourseSlug } from "@/lib/course-utils";
 import {
 	Card,
@@ -35,23 +32,12 @@ export function CourseCard({
 	totalChapters,
 	completedChapters,
 }: CourseCardProps) {
-	// Initialize router for programmatic navigation
-	const router = useRouter();
+	// Generate slug for navigation
+	const slug = generateCourseSlug(id, title);
 	
-	// Handle continue button click
-	const handleContinue = () => {
-		// Generate a slug that includes both ID and title for SEO
-		const slug = generateCourseSlug(id, title);
-		router.push(`/courses/${slug}`);
-	};
 	return (
-		<Card 
-		className="overflow-hidden pt-0 cursor-pointer" 
-		onClick={() => {
-			const slug = generateCourseSlug(id, title);
-			router.push(`/courses/${slug}`);
-		}}
-	>
+		<Link href={`/courses/${slug}`}>
+			<Card className="overflow-hidden pt-0 cursor-pointer hover:shadow-lg transition-shadow">
 			<div className="relative h-48 w-full">
 				<Image
 					src={imageUrl}
@@ -74,17 +60,15 @@ export function CourseCard({
 				</div>
 				<Progress value={progress} className="h-2" />
 			</CardContent>
-			<CardFooter className="flex justify-between">
-				<div className="text-sm text-muted-foreground">
-					{completedChapters}/{totalChapters} chapters • {duration}
-				</div>
-				<Button variant="accent" onClick={(e) => {
-					e.stopPropagation(); // Prevent card click event from triggering
-					handleContinue();
-				}}>
-					Continue
-				</Button>
-			</CardFooter>
-		</Card>
+				<CardFooter className="flex justify-between">
+					<div className="text-sm text-muted-foreground">
+						{completedChapters}/{totalChapters} chapters • {duration}
+					</div>
+					<Button variant="accent">
+						Continue
+					</Button>
+				</CardFooter>
+			</Card>
+		</Link>
 	);
 }
