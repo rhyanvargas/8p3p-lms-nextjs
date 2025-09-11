@@ -16,9 +16,10 @@ export interface CourseCardProps {
 	title: string;
 	description: string;
 	progress: number;
-	imageUrl: string;
-	moduleCount: number;
-	completedModules?: number;
+	imageUrl?: string;
+	duration?: string;
+	totalChapters: number;
+	completedChapters: number;
 }
 
 export function CourseCard({
@@ -26,9 +27,10 @@ export function CourseCard({
 	title,
 	description,
 	progress,
-	imageUrl,
-	moduleCount,
-	completedModules = 0,
+	imageUrl = "/emdr-xr-training.png",
+	duration,
+	totalChapters,
+	completedChapters,
 }: CourseCardProps) {
 	return (
 		<Card className="overflow-hidden pt-0">
@@ -56,7 +58,7 @@ export function CourseCard({
 			</CardContent>
 			<CardFooter className="flex justify-between">
 				<div className="text-sm text-muted-foreground">
-					{completedModules}/{moduleCount} modules
+					{completedChapters}/{totalChapters} chapters • {duration}
 				</div>
 				<Button variant="accent">Continue</Button>
 			</CardFooter>

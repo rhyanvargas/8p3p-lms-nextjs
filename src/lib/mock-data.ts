@@ -405,15 +405,4 @@ export const courses: Course[] = [
 	}
 ];
 
-// For backward compatibility
-export const mockCourses = courses;
 
-// For dashboard compatibility - import course utils when needed
-export const dashboardCourses = courses.map(course => ({
-	id: course.id,
-	title: course.title,
-	description: course.description,
-	progress: course.progress,
-	imageUrl: course.imageUrl,
-	duration: course.duration,
-}));

@@ -9,103 +9,9 @@ import { WidgetCard } from "@/components/ui/widget-card";
 import { signOut } from "aws-amplify/auth";
 import { Button } from "@/components/ui/button";
 
-// Sample data
-const courses = [
-	{
-		id: "1",
-		title: "EMDR Therapy Fundamentals",
-		description: "Learn the core principles and techniques of EMDR therapy.",
-		progress: 65,
-		imageUrl: "/emdr-xr-training.png",
-		moduleCount: 8,
-		completedModules: 5,
-	},
-	{
-		id: "2",
-		title: "Advanced EMDR Protocols",
-		description: "Master specialized EMDR protocols for complex trauma cases.",
-		progress: 30,
-		imageUrl: "/emdr-xr-training.png",
-		moduleCount: 10,
-		completedModules: 3,
-	},
-];
-
-const quizResults = [
-	{
-		id: "1",
-		quiz: "EMDR Phase 1 Assessment",
-		score: 92,
-		status: "pass" as "pass",
-		date: "2023-09-16",
-	},
-	{
-		id: "2",
-		quiz: "Trauma Processing Techniques",
-		score: 88,
-		status: "pass" as "pass",
-		date: "2023-09-10",
-	},
-	{
-		id: "3",
-		quiz: "Client Safety Protocols",
-		score: 95,
-		status: "pass" as "pass",
-		date: "2023-09-05",
-	},
-	{
-		id: "4",
-		quiz: "Advanced Bilateral Stimulation",
-		score: 68,
-		status: "fail" as "fail",
-		date: "2023-08-28",
-	},
-];
-
-const communityPosts = [
-	{
-		id: "1",
-		user: {
-			id: "101",
-			name: "David Kim",
-			avatar: "",
-			role: "Student",
-		},
-		content:
-			"I found the practice session really helpful today. The breakout rooms were a great way to practice the protocol with peers.",
-		likes: 8,
-		comments: 2,
-		timeAgo: "3 hours ago",
-	},
-	{
-		id: "2",
-		user: {
-			id: "102",
-			name: "Lisa Wang",
-			avatar: "",
-			role: "Student",
-		},
-		content:
-			"Has anyone found good resources for explaining EMDR to clients? I'd appreciate any recommendations!",
-		likes: 15,
-		comments: 7,
-		timeAgo: "1 day ago",
-	},
-	{
-		id: "3",
-		user: {
-			id: "103",
-			name: "Michael Chen",
-			avatar: "",
-			role: "Practitioner",
-		},
-		content:
-			"Just completed the advanced bilateral stimulation workshop. The VR demonstrations were incredibly insightful for understanding how to adapt techniques for telehealth. Would highly recommend to anyone interested in remote EMDR practice.",
-		likes: 23,
-		comments: 5,
-		timeAgo: "2 days ago",
-	},
-];
+// Import mock data from centralized location
+import { courses, quizResults, communityPosts } from "@/lib/mock-data";
+import { getTotalChapters, getCompletedChapters } from "@/lib/course-utils";
 
 export default function Page() {
 	return (
@@ -138,7 +44,17 @@ export default function Page() {
 				<h2 className="text-xl font-semibold mb-4">Your Courses</h2>
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 					{courses.map((course) => (
-						<CourseCard key={course.id} {...course} />
+						<CourseCard 
+							key={course.id}
+							id={course.id}
+							title={course.title}
+							description={course.description}
+							progress={course.progress}
+							imageUrl={course.imageUrl}
+							duration={course.duration}
+							totalChapters={getTotalChapters(course.id)}
+							completedChapters={getCompletedChapters(course.id)}
+						/>
 					))}
 				</div>
 			</section>

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Menu, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ChapterProgress } from "@/components/course/chapter-progress";
-import { mockCourses } from "@/lib/mock-data";
+import { courses } from "@/lib/mock-data";
 import {
 	Sidebar,
 	SidebarContent,
@@ -32,16 +32,11 @@ import { Button } from "@/components/ui/button";
 
 // Mock progress data - in a real app, this would come from user progress tracking
 const chapterProgress = {
-	chapter_1_1: 100,
-	chapter_1_2: 100,
-	chapter_1_3: 65,
-	chapter_2_1: 40,
-	chapter_2_2: 0,
-	chapter_2_3: 0,
-	chapter_3_1: 0,
-	chapter_3_2: 0,
-	chapter_4_1: 0,
-	chapter_4_2: 0,
+	ch_1_1: 100,
+	ch_1_2: 100,
+	ch_2_1: 100,
+	ch_2_2: 0,
+	ch_3_1: 100,
 };
 
 // Helper function to get chapter progress
@@ -59,11 +54,11 @@ export function CourseSidebar({ className, ...props }: CourseSidebarProps) {
 	const isCollapsed = state === "collapsed";
 
 	// Use the course data from mock-data.ts
-	const course = mockCourses.course;
+	const course = courses[0]; // Get first course
 
-	// Track open modules and active chapter
-	const [openModules, setOpenModules] = useState<string[]>(["module_1"]);
-	const [activeChapter, setActiveChapter] = useState("chapter_1_1");
+	// Track open sections and active chapter
+	const [openModules, setOpenModules] = useState<string[]>(["section_1"]);
+	const [activeChapter, setActiveChapter] = useState("ch_1_1");
 
 	const toggleModule = (moduleId: string) => {
 		setOpenModules((prev) =>
@@ -82,31 +77,31 @@ export function CourseSidebar({ className, ...props }: CourseSidebarProps) {
 			<SidebarHeader className="p-4 border-b border-border bg-muted/30">
 				<div className="flex items-center justify-between">
 					<div className="flex-1">
-						<h2 className="font-semibold text-lg text-foreground truncate">
+						<h2 className="font-semibold text-lg text-foreground wrap-break-word">
 							{course.title}
 						</h2>
 						<p className="text-sm text-muted-foreground truncate">
-							{course.level}
+							{course.duration}
 						</p>
 					</div>
 				</div>
 			</SidebarHeader>
 
-			<SidebarContent className="py-2 group-data-[collapsible=icon]:hidden">
+			<SidebarContent className="py-2 group-data-[collapsible=icon]:hidden ">
 				<SidebarGroup>
 					<SidebarGroupContent>
 						<SidebarMenu className="space-y-1">
-							{course.modules.map((module) => (
+							{course.sections.map((section) => (
 								<Collapsible
-									key={module.id}
-									open={openModules.includes(module.id)}
-									onOpenChange={() => toggleModule(module.id)}
+									key={section.id}
+									open={openModules.includes(section.id)}
+									onOpenChange={() => toggleModule(section.id)}
 								>
 									<SidebarMenuItem className="rounded-md group/chapter-item">
 										<CollapsibleTrigger asChild>
 											<SidebarMenuButton className="w-full justify-between px-4 py-2.5 h-auto text-left font-medium">
-												<span>{module.title}</span>
-												{openModules.includes(module.id) ? (
+												<span>{section.title}</span>
+												{openModules.includes(section.id) ? (
 													<ChevronUp className="h-4 w-4 opacity-70" />
 												) : (
 													<ChevronDown className="h-4 w-4 opacity-70" />
@@ -115,14 +110,16 @@ export function CourseSidebar({ className, ...props }: CourseSidebarProps) {
 										</CollapsibleTrigger>
 										<CollapsibleContent>
 											<SidebarMenuSub className="space-y-0.5 ml-3 mt-1 border-l border-sidebar-primary pl-3">
-												{module.chapters.map((chapter) => (
+												{section.chapters.map((chapter) => (
 													<SidebarMenuSubItem key={chapter.id}>
 														<SidebarMenuSubButton
 															isActive={activeChapter === chapter.id}
 															onClick={() => setActiveChapter(chapter.id)}
 															className={cn(
 																"w-full justify-between px-2 py-1.5 h-auto text-left rounded-md hover:bg-primary/10", // Changed to justify-between
-																activeChapter === chapter.id ? "bg-primary" : ""
+																activeChapter === chapter.id
+																	? "bg-primary text-primary-foreground"
+																	: ""
 															)}
 														>
 															{/* Chapter title on the left */}

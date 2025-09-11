@@ -25,7 +25,7 @@ export default function CourseLayout({
 			<Navbar />
 
 			<SidebarProvider>
-				<CourseSidebar />
+				<CourseSidebar className="" />
 				<SidebarInset>
 					<header className="sticky top-0 z-10 flex h-[var(--header-height)] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-[3rem] backdrop-blur-lg">
 						<div className="flex items-center gap-2 px-4">
