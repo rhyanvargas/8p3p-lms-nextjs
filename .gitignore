@@ -48,3 +48,4 @@ amplifyconfiguration*
 # amazonq
 .amazonq
 .amazonq/*
+logs/*
