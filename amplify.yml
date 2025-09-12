@@ -1,25 +1,17 @@
 version: 1
-backend:
-  phases:
-    build:
-      commands:
-        - npm ci --cache .npm --prefer-offline
 frontend:
   phases:
     preBuild:
       commands:
-        - nvm use 20
         - npm ci --cache .npm --prefer-offline
-        - npm run pre-commit
     build:
       commands:
         - npm run build
   artifacts:
     baseDirectory: .next
     files:
-      - '**/*'
+      - "**/*"
   cache:
     paths:
       - .next/cache/**/*
       - .npm/**/*
-      - node_modules/**/*
