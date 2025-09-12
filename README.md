@@ -21,19 +21,28 @@
 - **MFA Support**: Optional SMS-based multi-factor authentication
 - **Smart Redirects**: Preserves intended destination after login
 
-### 📚 **Learning Management**
+### 📚 **Enhanced Learning Management**
 
 - **Course Catalog**: Browse and enroll in EMDR training courses
-- **Progress Tracking**: Real-time completion tracking and analytics
+- **Smart Course Navigation**: Auto-expanding sidebar with active chapter detection
+- **Progress Tracking**: Real-time completion tracking with visual indicators
 - **Interactive Dashboard**: Personalized learning dashboard with widgets
-- **Quiz System**: Assessment tools with detailed results tracking and pass/fail feedback
+- **Enhanced Quiz System**: 
+  - Pass/fail feedback with conditional navigation
+  - "Next Chapter" button on quiz success
+  - "Retry Quiz" + "Ask Question" on failure
+  - Question interaction tracking per chapter
+- **AI-Powered Help**: Modal-based question system (Tavus AI ready)
 - **Community Features**: Social learning with posts and interactions
 - **SEO-Friendly URLs**: Human-readable slugs with reliable ID references
-- **Course Navigation**: Hierarchical structure with sections and chapters
+- **Hierarchical Structure**: Organized sections and chapters with auto-collapse
 
 ### 🎨 **Modern UI/UX**
 
 - **Responsive Design**: Mobile-first approach with adaptive layouts
+- **Consistent Progress Indicators**: Reusable ChapterProgress component
+- **Smart Sidebar**: Only active section expanded, others auto-collapsed
+- **Modal System**: Accessible dialogs with proper ARIA support
 - **Dark/Light Themes**: Automatic theme switching support
 - **Accessibility**: WCAG compliant components and navigation
 - **Loading States**: Smooth transitions and professional loading indicators
@@ -281,6 +290,32 @@ npm run build
 npm start
 ```
 
+## 🛠️ Development Workflow
+
+### Pre-commit Validation
+
+Run local checks before pushing to prevent CI/CD failures:
+
+```bash
+# Run all validation checks locally
+npm run pre-commit
+
+# Individual checks
+npm run lint
+npm run type-check
+npm run build
+```
+
+### CI/CD Pipeline
+
+Automated validation on every PR and push:
+
+- **ESLint**: Code quality and style checking
+- **TypeScript**: Type safety validation
+- **Build**: Production build verification
+- **Caching**: Optimized with Node.js 20 and enhanced caching
+- **Security**: Minimal permissions and concurrency control
+
 ## 🔧 Configuration
 
 ### Environment Variables
@@ -302,20 +337,94 @@ Edit `amplify/auth/resource.ts` to customize:
 - OAuth providers
 - Callback URLs
 
+### Data Models
+
+Enhanced tracking capabilities:
+
+```typescript
+// Chapter completion tracking
+interface Chapter {
+  videoCompleted?: boolean;
+  quizPassed?: boolean;
+  questionAskedCount?: number;
+}
+
+// Course progress tracking
+interface Course {
+  lastViewedChapter?: string;
+  completedChapters: string[];
+}
+```
+
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Run quality checks (`npm run lint && npm run type-check`)
+3. **Run pre-commit checks** (`npm run pre-commit`)
 4. Commit changes (`git commit -m 'Add amazing feature'`)
 5. Push to branch (`git push origin feature/amazing-feature`)
 6. Open Pull Request
 
 ### Code Quality Standards
 
-- Follow Next.js 15+ best practices
-- Use server components by default, client components only when needed
-- Ensure all linting and type checking passes before submitting PRs
+- **Next.js 15+ Compliance**: Server components first, client only when needed
+- **Data Schema Compliance**: Update mock-data models for new state/properties
+- **Dependency Compliance**: Verify required packages before implementation
+- **Pre-commit Validation**: All checks must pass locally before pushing
+- **ESLint Rules**: Strict enforcement with no unused variables/imports
+
+### Development Rules
+
+- **Server Components**: Default choice for better performance
+- **Client Components**: Only for interactivity (useState, event handlers, browser APIs)
+- **Link Navigation**: Use Next.js Link instead of useRouter when possible
+- **Route Parameters**: 
+  - **Server Components**: Use `await params` directly
+  - **Client Components**: Use `useParams` hook from `@/hooks/use-params`
+  - **NEVER**: Use React.use() directly - always use established patterns
+- **Component Reuse**: Leverage existing components (ChapterProgress, etc.)
+- **TypeScript Compliance**: Layout props must use Promise-only params type for Next.js 15+
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### Build Errors
+```bash
+# Fix TypeScript errors
+npm run type-check
+
+# Fix linting issues
+npm run lint:fix
+
+# Clean build
+rm -rf .next && npm run build
+```
+
+#### TypeScript Layout Constraint Errors
+```bash
+# Common issue: Layout params type incompatible with Next.js 15+
+# Solution: Use Promise<{ id: string }> instead of union types
+# Client components: Use useParams hook from @/hooks/use-params
+# Server components: Use await params directly
+```
+
+#### Missing Dependencies
+```bash
+# Install shadcn/ui components
+npx shadcn@latest add dialog
+npx shadcn@latest add progress
+
+# Verify package.json dependencies
+npm ci
+```
+
+#### Authentication Issues
+```bash
+# Restart Amplify sandbox
+npx ampx sandbox --delete
+npx ampx sandbox
+```
 
 ## 📝 License
 

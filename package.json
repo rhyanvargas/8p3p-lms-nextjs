@@ -6,9 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "type-check": "tsc --noEmit"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "lint:strict": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",
+    "type-check": "tsc --noEmit",
+    "validate": "npm run lint:strict && npm run type-check",
+    "pre-commit": "./scripts/pre-commit.sh"
   },
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.6.8",
