@@ -25,24 +25,7 @@ interface NavItem {
 	variant?: "default" | "ghost" | "outline";
 }
 
-const navItems: NavItem[] = [
-	{
-		title: "Solutions",
-		href: "/solutions",
-	},
-	{
-		title: "Platform",
-		href: "/platform",
-	},
-	{
-		title: "Resources",
-		href: "/resources",
-	},
-	{
-		title: "Pricing",
-		href: "/pricing",
-	},
-];
+const navItems: NavItem[] = [];
 
 // Unauthenticated navigation buttons
 const publicNavButtons: NavItem[] = [
@@ -54,7 +37,7 @@ const publicNavButtons: NavItem[] = [
 	},
 	{
 		title: "Schedule a Demo",
-		href: "/demo",
+		href: "#",
 		variant: "outline",
 	},
 ];
