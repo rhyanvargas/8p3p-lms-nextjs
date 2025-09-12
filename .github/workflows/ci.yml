@@ -44,6 +44,15 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
         
+      - name: Create mock Amplify config for CI
+        run: |
+          echo '{
+            "aws_project_region": "us-east-1",
+            "aws_cognito_region": "us-east-1",
+            "aws_user_pools_id": "mock-pool",
+            "aws_user_pools_web_client_id": "mock-client"
+          }' > amplify_outputs.json
+        
       - name: Run pre-commit validation
         run: npm run pre-commit
         env:
