@@ -1,40 +1,30 @@
+import { getCourseBySlug } from "@/lib/course-utils";
+import { CourseOverview } from "@/components/course/course-overview";
+import { Button } from "@/components/ui/button";
+
 interface CoursePageProps {
-  params: Promise<{
-    id: string;
-  }>;
+	params: Promise<{
+		id: string;
+	}>;
 }
 
 export default async function CoursePage({ params }: CoursePageProps) {
-  const { id } = await params;
-  
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Course: {id}</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
-          <div className="bg-black aspect-video rounded-lg mb-6 flex items-center justify-center">
-            <p className="text-white">Video Player Placeholder</p>
-          </div>
-          <h2 className="text-2xl font-semibold mb-4">Course Content</h2>
-          <p className="text-gray-600">
-            This is where the course content and description would be displayed.
-          </p>
-        </div>
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold">Course Modules</h3>
-          <div className="space-y-2">
-            <div className="border rounded p-3">
-              <p className="font-medium">Module 1: Introduction</p>
-            </div>
-            <div className="border rounded p-3">
-              <p className="font-medium">Module 2: Fundamentals</p>
-            </div>
-            <div className="border rounded p-3">
-              <p className="font-medium">Module 3: Practice</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+	// Await params in server component
+	const { id } = await params;
+	
+	// Find the course by slug (which contains the ID)
+	const course = getCourseBySlug(id);
+	
+	// If course not found, show error message
+	if (!course) {
+		return (
+			<div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
+				<h1 className="text-2xl font-bold mb-4">Course Not Found</h1>
+				<p className="text-muted-foreground mb-6">The course you&apos;re looking for doesn&apos;t exist or has been removed.</p>
+				<Button onClick={() => window.history.back()}>Go Back</Button>
+			</div>
+		);
+	}
+
+	return <CourseOverview course={course} />;
 }

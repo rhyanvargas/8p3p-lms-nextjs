@@ -21,6 +21,8 @@ import {
 interface NavItem {
 	title: string;
 	href: string;
+	icon?: React.ComponentType<{ className?: string }>;
+	variant?: "default" | "ghost" | "outline";
 }
 
 const navItems: NavItem[] = [
@@ -42,14 +44,49 @@ const navItems: NavItem[] = [
 	},
 ];
 
-const navButtons: NavItem[] = [
+// Unauthenticated navigation buttons
+const publicNavButtons: NavItem[] = [
 	{
 		title: "Login",
 		href: "/login",
+		icon: UserIcon,
+		variant: "default",
 	},
 	{
 		title: "Schedule a Demo",
 		href: "/demo",
+		variant: "outline",
+	},
+];
+
+// Authenticated navigation buttons
+const authNavButtons: NavItem[] = [
+	{
+		title: "Dashboard",
+		href: "/dashboard",
+		variant: "default",
+	},
+	{
+		title: "Logout",
+		href: "/logout", // Not actually used for navigation, just for consistency
+		icon: LogOut,
+		variant: "outline",
+	},
+];
+
+// Mobile-only authenticated navigation
+const mobileAuthNavButtons: NavItem[] = [
+	...authNavButtons.filter((item) => item.title !== "Logout"),
+	{
+		title: "Courses",
+		href: "/courses",
+		variant: "default",
+	},
+	{
+		title: "Logout",
+		href: "/logout",
+		icon: LogOut,
+		variant: "outline",
 	},
 ];
 
@@ -62,13 +99,13 @@ export function Navbar() {
 		try {
 			await signOut();
 		} catch (error) {
-			console.error('Error signing out:', error);
+			console.error("Error signing out:", error);
 		}
 	};
 
 	return (
 		<header className="w-full backdrop-blur-md bg-primary/50 border-b border-white/10 sticky top-0 z-50">
-			<div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6 lg:px-8">
+			<div className="container flex h-[var(--header-height)] items-center justify-between mx-auto px-4 md:px-6 lg:px-8">
 				{/* Logo */}
 				<div className="flex items-center">
 					<Link href="/" className="flex items-center space-x-2">
@@ -91,8 +128,8 @@ export function Navbar() {
 								"text-sm font-medium transition-colors hover:text-accent/80",
 								pathname === item.href
 									? "text-white font-semibold"
-									: authStatus === "authenticated" 
-										? "text-white/60 hover:text-white/80" 
+									: authStatus === "authenticated"
+										? "text-white/60 hover:text-white/80"
 										: "text-white"
 							)}
 						>
@@ -105,41 +142,47 @@ export function Navbar() {
 				<div className="flex items-center space-x-2">
 					{authStatus === "authenticated" ? (
 						<>
-							{/* Dashboard link */}
-							<Button variant="ghost" asChild className="hidden md:flex">
-								<Link href="/dashboard">Dashboard</Link>
-							</Button>
-							{/* Courses link */}
-							<Button variant="ghost" asChild className="hidden md:flex">
-								<Link href="/courses">Courses</Link>
-							</Button>
-							{/* Logout button */}
-							<Button
-								variant="outline"
-								onClick={handleSignOut}
-								className="hidden md:flex items-center space-x-1"
-							>
-								<LogOut className="h-4 w-4 mr-1" />
-								Logout
-							</Button>
+							{authNavButtons.map((item) =>
+								item.title === "Logout" ? (
+									<Button
+										key={item.href}
+										variant={item.variant}
+										onClick={handleSignOut}
+										className="hidden md:flex items-center space-x-1"
+									>
+										{item.icon && <item.icon className="h-4 w-4 mr-1" />}
+										{item.title}
+									</Button>
+								) : (
+									<Button
+										key={item.href}
+										variant={item.variant}
+										asChild
+										className="hidden md:flex items-center"
+									>
+										<Link href={item.href}>
+											{item.icon && <item.icon className="h-4 w-4 mr-1" />}
+											{item.title}
+										</Link>
+									</Button>
+								)
+							)}
 						</>
 					) : (
 						<>
-							{/* Login button */}
-							<Button
-								variant="ghost"
-								asChild
-								className="hidden md:flex items-center space-x-1"
-							>
-								<Link href="/login">
-									<UserIcon className="h-4 w-4 mr-1" />
-									Login
-								</Link>
-							</Button>
-							{/* Demo button */}
-							<Button variant="outline" asChild className="hidden md:flex">
-								<Link href="/demo">Schedule a Demo</Link>
-							</Button>
+							{publicNavButtons.map((item) => (
+								<Button
+									key={item.href}
+									variant={item.variant}
+									asChild
+									className="hidden md:flex items-center"
+								>
+									<Link href={item.href}>
+										{item.icon && <item.icon className="h-4 w-4 mr-1" />}
+										{item.title}
+									</Link>
+								</Button>
+							))}
 						</>
 					)}
 
@@ -176,25 +219,50 @@ export function Navbar() {
 									<div className="flex flex-col px-2 py-2 gap-2">
 										{authStatus === "authenticated" ? (
 											<>
-												<Button asChild>
-													<Link href="/dashboard">Dashboard</Link>
-												</Button>
-												<Button asChild>
-													<Link href="/courses">Courses</Link>
-												</Button>
-												<Button variant="outline" onClick={handleSignOut}>
-													<LogOut className="h-4 w-4 mr-1" />
-													Logout
-												</Button>
+												{mobileAuthNavButtons.map((item) =>
+													item.title === "Logout" ? (
+														<Button
+															key={item.href}
+															variant={item.variant}
+															onClick={handleSignOut}
+														>
+															{item.icon && (
+																<item.icon className="h-4 w-4 mr-1" />
+															)}
+															{item.title}
+														</Button>
+													) : (
+														<Button
+															key={item.href}
+															variant={item.variant || "default"}
+															asChild
+														>
+															<Link href={item.href}>
+																{item.icon && (
+																	<item.icon className="h-4 w-4 mr-1" />
+																)}
+																{item.title}
+															</Link>
+														</Button>
+													)
+												)}
 											</>
 										) : (
 											<>
-												<Button asChild>
-													<Link href="/login">Login</Link>
-												</Button>
-												<Button asChild>
-													<Link href="/demo">Schedule a Demo</Link>
-												</Button>
+												{publicNavButtons.map((item) => (
+													<Button
+														key={item.href}
+														variant={item.variant || "default"}
+														asChild
+													>
+														<Link href={item.href}>
+															{item.icon && (
+																<item.icon className="h-4 w-4 mr-1" />
+															)}
+															{item.title}
+														</Link>
+													</Button>
+												))}
 											</>
 										)}
 									</div>

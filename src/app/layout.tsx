@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Navbar } from "@/components/ui/navbar";
+
 import AuthProvider from "@/components/auth/AuthProvider";
 import SessionHandler from "@/components/auth/SessionHandler";
 import EmailVerificationHandler from "@/components/auth/EmailVerificationHandler";
@@ -22,7 +22,7 @@ export default function RootLayout({
 				<AuthProvider>
 					<SessionHandler />
 					<EmailVerificationHandler />
-					<Navbar />
+
 					{children}
 				</AuthProvider>
 			</body>

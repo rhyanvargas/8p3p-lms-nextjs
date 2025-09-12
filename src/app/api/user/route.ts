@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUser, requireAuth } from "@/lib/auth-server";
+import { requireAuth } from "@/lib/auth-server";
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
 	try {
 		// Server-side auth check
 		const user = await requireAuth();
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 				username: user.username,
 			},
 		});
-	} catch (error) {
+	} catch {
 		return NextResponse.json(
 			{ success: false, error: "Authentication required" },
 			{ status: 401 }

@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
 				try {
 					const session = await fetchAuthSession(contextSpec);
 					return !!session.tokens?.accessToken;
-				} catch (error) {
+				} catch {
 					return false;
 				}
 			},
@@ -46,7 +46,7 @@ export async function middleware(request: NextRequest) {
 		}
 
 		return response;
-	} catch (error) {
+	} catch {
 		// If auth check fails, allow public routes but block protected ones
 		const isProtectedRoute = protectedRoutes.some((route) =>
 			request.nextUrl.pathname.startsWith(route)

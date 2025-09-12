@@ -1,6 +1,6 @@
-"use client";
-
 import Image from "next/image";
+import Link from "next/link";
+import { generateCourseSlug } from "@/lib/course-utils";
 import {
 	Card,
 	CardContent,
@@ -16,9 +16,10 @@ export interface CourseCardProps {
 	title: string;
 	description: string;
 	progress: number;
-	imageUrl: string;
-	moduleCount: number;
-	completedModules?: number;
+	imageUrl?: string;
+	duration?: string;
+	totalChapters: number;
+	completedChapters: number;
 }
 
 export function CourseCard({
@@ -26,12 +27,17 @@ export function CourseCard({
 	title,
 	description,
 	progress,
-	imageUrl,
-	moduleCount,
-	completedModules = 0,
+	imageUrl = "/emdr-xr-training.png",
+	duration,
+	totalChapters,
+	completedChapters,
 }: CourseCardProps) {
+	// Generate slug for navigation
+	const slug = generateCourseSlug(id, title);
+	
 	return (
-		<Card className="overflow-hidden pt-0">
+		<Link href={`/courses/${slug}`}>
+			<Card className="overflow-hidden pt-0 cursor-pointer hover:shadow-lg transition-shadow">
 			<div className="relative h-48 w-full">
 				<Image
 					src={imageUrl}
@@ -54,12 +60,15 @@ export function CourseCard({
 				</div>
 				<Progress value={progress} className="h-2" />
 			</CardContent>
-			<CardFooter className="flex justify-between">
-				<div className="text-sm text-muted-foreground">
-					{completedModules}/{moduleCount} modules
-				</div>
-				<Button variant="accent">Continue</Button>
-			</CardFooter>
-		</Card>
+				<CardFooter className="flex justify-between">
+					<div className="text-sm text-muted-foreground">
+						{completedChapters}/{totalChapters} chapters • {duration}
+					</div>
+					<Button variant="accent">
+						Continue
+					</Button>
+				</CardFooter>
+			</Card>
+		</Link>
 	);
 }
