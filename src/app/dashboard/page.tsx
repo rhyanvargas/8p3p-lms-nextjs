@@ -12,8 +12,18 @@ import { WidgetCard } from "@/components/ui/widget-card";
 import { courses, quizResults, communityPosts } from "@/lib/mock-data";
 import { getTotalChapters, getCompletedChapters } from "@/lib/course-utils";
 
+interface UserWithAttributes {
+	username: string;
+	userId: string;
+	attributes?: {
+		given_name?: string;
+		email?: string;
+		picture?: string;
+	};
+}
+
 export default function Page() {
-	const [user, setUser] = useState<any>(null);
+	const [user, setUser] = useState<UserWithAttributes | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {

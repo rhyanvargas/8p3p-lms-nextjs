@@ -44,14 +44,8 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
         
-      - name: Run ESLint
-        run: npm run lint
-        
-      - name: Run TypeScript check
-        run: npm run type-check
-        
-      - name: Build application
-        run: npm run build
+      - name: Run pre-commit validation
+        run: npm run pre-commit
         env:
           NODE_ENV: production
           
