@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
 import { CourseCard } from "@/components/ui/course-card";
 import { QuizResultsTable } from "@/components/ui/quiz-results-table";
 import { CommunityFeed } from "@/components/ui/community-feed";
@@ -11,26 +13,61 @@ import { courses, quizResults, communityPosts } from "@/lib/mock-data";
 import { getTotalChapters, getCompletedChapters } from "@/lib/course-utils";
 
 export default function Page() {
+	const [user, setUser] = useState<any>(null);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		const fetchUser = async () => {
+			try {
+				const currentUser = await getCurrentUser();
+				const userAttributes = await fetchUserAttributes();
+				console.log("User object:", currentUser);
+				console.log("User attributes:", userAttributes);
+				setUser({ ...currentUser, attributes: userAttributes });
+			} catch (error) {
+				console.log("User not authenticated:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchUser();
+	}, []);
+
+	const displayName =
+		user?.attributes?.given_name ||
+		user?.attributes?.email ||
+		user?.username ||
+		"User";
+	const initials = displayName
+		.split(" ")
+		.map((n: string) => n[0])
+		.join("")
+		.toUpperCase();
+	const profilePicture = user?.attributes?.picture;
+
 	return (
 		<div className="container mx-auto py-8 px-4">
 			{/* Header Section */}
 			<div className="flex justify-between items-center mb-8">
 				<div>
-					<h1 className="text-2xl font-bold">Welcome back, Sarah Johnson</h1>
+					<h1 className="text-2xl font-bold">
+						{loading ? "Welcome back..." : `Welcome back, ${displayName}`}
+					</h1>
 					<p className="text-muted-foreground">
 						Continue your EMDR training journey where you left off.
 					</p>
 				</div>
 				<div className="flex items-center gap-3">
-					<Avatar className="h-12 w-12 border-2 border-primary">
-						<AvatarImage
-							src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1887&q=80"
-							alt="Sarah Johnson"
-						/>
-						<AvatarFallback>SJ</AvatarFallback>
+					<Avatar className="h-12 w-12 border-1 border-accent">
+						{profilePicture && (
+							<AvatarImage src={profilePicture} alt={displayName} />
+						)}
+						<AvatarFallback>{loading ? "..." : initials}</AvatarFallback>
 					</Avatar>
 					<div>
-						<p className="font-medium">Sarah Johnson</p>
+						<p className="font-medium">
+							{loading ? "Loading..." : displayName}
+						</p>
 						<p className="text-sm text-muted-foreground">Student</p>
 					</div>
 				</div>
@@ -41,7 +78,7 @@ export default function Page() {
 				<h2 className="text-xl font-semibold mb-4">Your Courses</h2>
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 					{courses.map((course) => (
-						<CourseCard 
+						<CourseCard
 							key={course.id}
 							id={course.id}
 							title={course.title}
