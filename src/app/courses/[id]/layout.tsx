@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { useParams } from "@/hooks/use-params";
 import { CourseSidebar } from "@/components/course/course-sidebar";
 import { LayoutBreadcrumbs } from "@/components/course/layout-breadcrumbs";
 import { Navbar } from "@/components/ui/navbar";
@@ -14,13 +14,11 @@ import { getCourseBySlug } from "@/lib/course-utils";
 
 interface CourseLayoutProps {
 	children: React.ReactNode;
-	params: Promise<{ id: string }> | { id: string };
+	params: Promise<{ id: string }>;
 }
 
 export default function CourseLayout({ children, params }: CourseLayoutProps) {
-	// Unwrap params using React.use() to handle Promise
-	const resolvedParams = params instanceof Promise ? use(params) : params;
-	const { id } = resolvedParams;
+	const { id } = useParams(params);
 	const course = getCourseBySlug(id);
 	return (
 		<>
