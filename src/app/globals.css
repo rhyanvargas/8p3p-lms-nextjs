@@ -210,7 +210,7 @@
 	}
 }
 
-@theme {
+@theme inline {
 	/* Layout */
 	--header-height: var(--header-height);
 
