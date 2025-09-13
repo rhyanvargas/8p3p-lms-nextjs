@@ -68,7 +68,7 @@ export default function Page() {
 					</p>
 				</div>
 				<div className="flex items-center gap-3">
-					<Avatar className="h-12 w-12 border-1 border-accent">
+					<Avatar className="h-12 w-12 border border-accent">
 						{profilePicture && (
 							<AvatarImage src={profilePicture} alt={displayName} />
 						)}

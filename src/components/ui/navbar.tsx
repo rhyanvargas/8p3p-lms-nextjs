@@ -88,12 +88,12 @@ export function Navbar() {
 
 	return (
 		<header className="w-full backdrop-blur-md bg-primary/50 border-b border-white/10 sticky top-0 z-50">
-			<div className="container flex h-[var(--header-height)] items-center justify-between mx-auto px-4 md:px-6 lg:px-8">
+			<div className="container flex h-(--header-height) items-center justify-between mx-auto px-4 md:px-6 lg:px-8">
 				{/* Logo */}
 				<div className="flex items-center">
 					<Link href="/" className="flex items-center space-x-2">
-						<div className="h-8 w-8 rounded-full bg-[var(--brand-gold-hex)] flex items-center justify-center">
-							<span className="font-bold text-[var(--brand-blue-hex)]">8P</span>
+						<div className="h-8 w-8 rounded-full bg-(--brand-gold-hex) flex items-center justify-center">
+							<span className="font-bold text-(--brand-blue-hex)">8P</span>
 						</div>
 						<span className="font-semibold hidden sm:inline-block text-white">
 							8P3P Training
