@@ -46,7 +46,7 @@ export default function Home() {
 				<div className="lg:p-8">
 					<Card className="mx-auto w-full sm:w-[450px] border-0 shadow-none bg-transparent">
 						<CardHeader className="space-y-4 text-center pb-0 text-white">
-							<h1 className="text-4xl font-bold tracking-tight text-white">
+							<h1 className="text-4xl font-bold tracking-tight">
 								Clinician Portal Training Platform
 							</h1>
 							<p className="text-xl text-muted-foreground">

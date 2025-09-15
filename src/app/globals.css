@@ -180,6 +180,9 @@
 		ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
 		"Helvetica Neue", Arial, "Noto Sans", sans-serif;
 
+	/* Layout */
+	--header-height: 4rem;
+
 	/* Core theme colors for shadcn/ui compatibility - Light mode */
 	--color-background: oklch(100% 0 0);
 	--color-foreground: oklch(28.08% 0.051 260.2);
