@@ -65,14 +65,14 @@
 	--chart-5: oklch(98.16% 0.0017 247.839);
 
 	/* Sidebar palette */
-	--sidebar: var(--brand-white);
-	--sidebar-foreground: var(--brand-black);
-	--sidebar-primary: var(--primary);
-	--sidebar-primary-foreground: var(--primary-foreground);
-	--sidebar-accent: var(--accent);
-	--sidebar-accent-foreground: var(--accent-foreground);
-	--sidebar-border: var(--brand-black);
-	--sidebar-ring: var(--primary/90);
+	--sidebar: var(--color-sidebar);
+	--sidebar-foreground: var(--color-sidebar-foreground);
+	--sidebar-primary: var(--color-sidebar-primary);
+	--sidebar-primary-foreground: var(--color-sidebar-primary-foreground);
+	--sidebar-accent: var(--color-sidebar-accent);
+	--sidebar-accent-foreground: var(--color-sidebar-accent-foreground);
+	--sidebar-border: var(--color-sidebar-border);
+	--sidebar-ring: var(--color-sidebar-ring);
 
 	/* Spacing and layout */
 	--spacing: 0.25rem;
@@ -130,14 +130,14 @@
 	--chart-5: var(--brand-blue);
 
 	/* Sidebar in dark - maintain consistent color roles */
-	--sidebar: oklch(20.46% 0 0);
-	--sidebar-foreground: oklch(98.16% 0.0017 247.839);
-	--sidebar-primary: var(--primary);
-	--sidebar-primary-foreground: var(--primary-foreground);
-	--sidebar-accent: var(--accent);
-	--sidebar-accent-foreground: var(--accent-foreground);
-	--sidebar-border: oklch(55.1% 0.0234 264.3637);
-	--sidebar-ring: var(--brand-gold);
+	--sidebar: var(--color-sidebar-dark);
+	--sidebar-foreground: var(--color-sidebar-foreground-dark);
+	--sidebar-primary: var(--color-sidebar-primary-dark);
+	--sidebar-primary-foreground: var(--color-sidebar-primary-foreground-dark);
+	--sidebar-accent: var(--color-sidebar-accent-dark);
+	--sidebar-accent-foreground: var(--color-sidebar-accent-foreground-dark);
+	--sidebar-border: var(--color-sidebar-border-dark);
+	--sidebar-ring: var(--color-sidebar-ring-dark);
 
 	/* Typography */
 	--font-sans:
@@ -182,6 +182,26 @@
 
 	/* Layout */
 	--header-height: 4rem;
+
+	/* Sidebar colors for Tailwind v4 compatibility */
+	--color-sidebar: oklch(100% 0 0);
+	--color-sidebar-foreground: oklch(0% 0 0);
+	--color-sidebar-primary: oklch(28.08% 0.051 260.2);
+	--color-sidebar-primary-foreground: oklch(100% 0 0);
+	--color-sidebar-accent: oklch(76.65% 0.139 91.06);
+	--color-sidebar-accent-foreground: oklch(28.08% 0.051 260.2);
+	--color-sidebar-border: oklch(0% 0 0);
+	--color-sidebar-ring: oklch(28.08% 0.051 260.2);
+
+	/* Sidebar colors for dark mode */
+	--color-sidebar-dark: oklch(20.46% 0 0);
+	--color-sidebar-foreground-dark: oklch(98.16% 0.0017 247.839);
+	--color-sidebar-primary-dark: oklch(28.08% 0.051 260.2);
+	--color-sidebar-primary-foreground-dark: oklch(100% 0 0);
+	--color-sidebar-accent-dark: oklch(76.65% 0.139 91.06);
+	--color-sidebar-accent-foreground-dark: oklch(28.08% 0.051 260.2);
+	--color-sidebar-border-dark: oklch(55.1% 0.0234 264.3637);
+	--color-sidebar-ring-dark: oklch(76.65% 0.139 91.06);
 
 	/* Core theme colors for shadcn/ui compatibility - Light mode */
 	--color-background: oklch(100% 0 0);
