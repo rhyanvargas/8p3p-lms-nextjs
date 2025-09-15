@@ -43,7 +43,7 @@
 - **Consistent Progress Indicators**: Reusable ChapterProgress component
 - **Smart Sidebar**: Only active section expanded, others auto-collapsed
 - **Modal System**: Accessible dialogs with proper ARIA support
-- **Dark/Light Themes**: Automatic theme switching support
+- **Dark/Light Themes**: CSS-first theming with next-themes integration
 - **Accessibility**: WCAG compliant components and navigation
 - **Loading States**: Smooth transitions and professional loading indicators
 - **Interactive Video Player**: Custom video controls with progress tracking
@@ -56,7 +56,7 @@
 | **Framework**        | Next.js 15 (App Router)            |
 | **Language**         | TypeScript 5.9                     |
 | **Authentication**   | AWS Amplify Gen2 + Cognito         |
-| **Styling**          | TailwindCSS + shadcn/ui + Radix UI |
+| **Styling**          | TailwindCSS v4 + shadcn/ui + next-themes |
 | **Forms**            | React Hook Form + Zod              |
 | **State Management** | React Context + useState           |
 | **Code Quality**     | ESLint + TypeScript strict mode    |
@@ -399,6 +399,20 @@ npm run lint:fix
 
 # Clean build
 rm -rf .next && npm run build
+```
+
+#### Tailwind CSS v4 Production Build Issues
+```bash
+# CSS variable recognition errors in production
+# Root cause: Custom CSS variables not integrated with Tailwind v4 theme system
+# Solution: Define colors in @theme directive using --color-* namespace
+
+# Check for CSS variable issues
+grep -r "var(--" src/ --include="*.css"
+
+# Verify Tailwind v4 theme configuration
+# Ensure colors are defined in @theme { --color-* } format
+# Reference: docs/design-system-rules.md#tailwind-v4-production-build-issues
 ```
 
 #### TypeScript Layout Constraint Errors
