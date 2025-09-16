@@ -27,7 +27,7 @@
 - **Smart Course Navigation**: Auto-expanding sidebar with active chapter detection
 - **Progress Tracking**: Real-time completion tracking with visual indicators
 - **Interactive Dashboard**: Personalized learning dashboard with widgets
-- **Enhanced Quiz System**: 
+- **Enhanced Quiz System**:
   - Pass/fail feedback with conditional navigation
   - "Next Chapter" button on quiz success
   - "Retry Quiz" + "Ask Question" on failure
@@ -51,16 +51,16 @@
 
 ## 🛠️ Tech Stack
 
-| Category             | Technology                         |
-| -------------------- | ---------------------------------- |
-| **Framework**        | Next.js 15 (App Router)            |
-| **Language**         | TypeScript 5.9                     |
-| **Authentication**   | AWS Amplify Gen2 + Cognito         |
+| Category             | Technology                               |
+| -------------------- | ---------------------------------------- |
+| **Framework**        | Next.js 15 (App Router)                  |
+| **Language**         | TypeScript 5.9                           |
+| **Authentication**   | AWS Amplify Gen2 + Cognito               |
 | **Styling**          | TailwindCSS v4 + shadcn/ui + next-themes |
-| **Forms**            | React Hook Form + Zod              |
-| **State Management** | React Context + useState           |
-| **Code Quality**     | ESLint + TypeScript strict mode    |
-| **Deployment**       | AWS Amplify Hosting                |
+| **Forms**            | React Hook Form + Zod                    |
+| **State Management** | React Context + useState                 |
+| **Code Quality**     | ESLint + TypeScript strict mode          |
+| **Deployment**       | AWS Amplify Hosting                      |
 
 ## 🏃‍♂️ Quick Start
 
@@ -334,31 +334,34 @@ The theme system uses **Tailwind CSS v4** with a dual-layer approach for maximum
 #### 🎨 **Adding New Colors**
 
 1. **Define in `@theme` directive** (required for Tailwind v4):
+
 ```css
 /* src/app/globals.css */
 @theme {
-  /* Add your new color with both light and dark variants */
-  --color-success: oklch(67.31% 0.162 144.21);
-  --color-success-dark: oklch(55% 0.15 144);
-  --color-success-foreground: oklch(100% 0 0);
-  --color-success-foreground-dark: oklch(0% 0 0);
+	/* Add your new color with both light and dark variants */
+	--color-success: oklch(67.31% 0.162 144.21);
+	--color-success-dark: oklch(55% 0.15 144);
+	--color-success-foreground: oklch(100% 0 0);
+	--color-success-foreground-dark: oklch(0% 0 0);
 }
 ```
 
 2. **Reference in CSS custom properties** (for runtime theme switching):
+
 ```css
 :root {
-  --success: var(--color-success);
-  --success-foreground: var(--color-success-foreground);
+	--success: var(--color-success);
+	--success-foreground: var(--color-success-foreground);
 }
 
 .dark {
-  --success: var(--color-success-dark);
-  --success-foreground: var(--color-success-foreground-dark);
+	--success: var(--color-success-dark);
+	--success-foreground: var(--color-success-foreground-dark);
 }
 ```
 
 3. **Use in components**:
+
 ```tsx
 // As Tailwind utility
 <div className="bg-success text-success-foreground">Success message</div>
@@ -373,15 +376,16 @@ Brand colors are pre-defined and available as both utilities and CSS variables:
 
 ```css
 /* Available brand colors */
---color-brand-blue: oklch(28.08% 0.051 260.2);    /* Primary brand */
---color-brand-gold: oklch(76.65% 0.139 91.06);    /* Accent/CTA */
---color-brand-gray: oklch(71.37% 0.019 261.32);   /* Neutral */
+--color-brand-blue: oklch(28.08% 0.051 260.2); /* Primary brand */
+--color-brand-gold: oklch(76.65% 0.139 91.06); /* Accent/CTA */
+--color-brand-gray: oklch(71.37% 0.019 261.32); /* Neutral */
 --color-brand-light-blue: oklch(96.53% 0.007 247.9); /* Backgrounds */
---color-brand-green: oklch(67.31% 0.162 144.21);  /* Success */
---color-brand-red: oklch(64.27% 0.215 28.81);     /* Error/Warning */
+--color-brand-green: oklch(67.31% 0.162 144.21); /* Success */
+--color-brand-red: oklch(64.27% 0.215 28.81); /* Error/Warning */
 ```
 
 Usage:
+
 ```tsx
 <button className="bg-brand-gold text-brand-blue">CTA Button</button>
 ```
@@ -397,10 +401,10 @@ To customize shadcn/ui component colors:
 ```css
 /* Override specific component styling */
 @layer components {
-  .custom-button {
-    background-color: var(--color-brand-gold);
-    color: var(--color-brand-blue);
-  }
+	.custom-button {
+		background-color: var(--color-brand-gold);
+		color: var(--color-brand-blue);
+	}
 }
 ```
 
@@ -411,12 +415,12 @@ To customize shadcn/ui component colors:
 ```css
 /* ✅ CORRECT - Will work in production */
 @theme {
-  --color-custom: oklch(50% 0.1 180);
+	--color-custom: oklch(50% 0.1 180);
 }
 
 /* ❌ INCORRECT - Will be stripped in production */
 :root {
-  --custom-color: #somecolor;
+	--custom-color: #somecolor;
 }
 ```
 
@@ -430,6 +434,96 @@ Edit `amplify/auth/resource.ts` to customize:
 - OAuth providers
 - Callback URLs
 
+### External Identity Providers Setup
+
+#### Google OAuth 2.0 Configuration
+
+**Required**: Configure Google OAuth 2.0 Console with Cognito user pool domains when deploying to new environments:
+
+1. **Visit Google Cloud Console**: [console.cloud.google.com](https://console.cloud.google.com)
+2. **Navigate to**: APIs & Services → Credentials → OAuth 2.0 Client IDs
+3. **Select your OAuth client** and click the **Edit** button
+
+#### **Step 1: Configure Authorized JavaScript Origins**
+
+Add your **Cognito user pool domains** (not your app URLs):
+
+```bash
+# From amplify_outputs.json - check your actual domains
+https://7f89fb19ecc0d43d2171.auth.us-east-1.amazoncognito.com #local dev
+https://dbd977f73f8d27a86a6a.auth.us-east-1.amazoncognito.com #main branch
+https://5d16aba95a3469d55967.auth.us-east-1.amazoncognito.com #dev branch
+```
+
+#### **Step 2: Configure Authorized Redirect URIs**
+
+Add your **Cognito user pool domains** with `/oauth2/idpresponse` endpoint:
+
+```bash
+# From amplify_outputs.json - check your actual domains
+https://7f89fb19ecc0d43d2171.auth.us-east-1.amazoncognito.com/oauth2/idpresponse #local dev
+https://dbd977f73f8d27a86a6a.auth.us-east-1.amazoncognito.com/oauth2/idpresponse #main branch
+https://5d16aba95a3469d55967.auth.us-east-1.amazoncognito.com/oauth2/idpresponse #dev branch
+```
+
+#### **Step 3: Find Your Cognito Domains**
+
+**Method 1: From amplify_outputs.json (Local Development)**
+```bash
+# Check your amplify_outputs.json file
+cat amplify_outputs.json | grep "domain"
+```
+
+**Method 2: From AWS Amplify Console (Deployed Branches)**
+
+For each deployed branch, follow these steps to find the Cognito User Pool domain:
+
+1. **Navigate to Branch Deployments**:
+   ```
+   # Replace with your actual app ID and branch name
+   https://us-east-1.console.aws.amazon.com/amplify/apps/dk50b1ut1cu9u/branches/main/deployments
+   https://us-east-1.console.aws.amazon.com/amplify/apps/dk50b1ut1cu9u/branches/dev/deployments
+   ```
+
+2. **Access Backend Resources**:
+   - Scroll down to find the **"Deployed backend Resources"** tab
+   - Click on the tab to expand the resources table
+
+3. **Locate User Pool**:
+   - In the search bar, type: `UserPool`
+   - Find and click on **"AWS::Cognito::UserPool"** in the **"Type"** column
+
+4. **Find Domain Settings**:
+   - A new browser window opens to AWS Cognito Console
+   - In the left sidebar, click **"Domain"** under the **"Branding"** section
+   - Copy the **"Cognito Domain"** from the main content area
+
+**Example Cognito domains by branch**:
+```bash
+# Local Development (from amplify_outputs.json)
+https://7f89fb19ecc0d43d2171.auth.us-east-1.amazoncognito.com
+
+# Main Branch (from AWS Console)
+https://dbd977f73f8d27a86a6a.auth.us-east-1.amazoncognito.com
+
+# Dev Branch (from AWS Console)  
+https://5d16aba95a3469d55967.auth.us-east-1.amazoncognito.com
+```
+
+#### **Step 4: Configure Secrets**
+
+In AWS Amplify Console → Secrets:
+```
+# Replace with your actual app ID
+https://us-east-1.console.aws.amazon.com/amplify/apps/dk50b1ut1cu9u/secrets
+```
+
+Add the following secrets:
+- `GOOGLE_CLIENT_ID`: Your Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET`: Your Google OAuth client secret
+
+**Reference**: [AWS Amplify External Identity Providers Guide](https://docs.amplify.aws/nextjs/build-a-backend/auth/concepts/external-identity-providers/)
+
 ### Data Models
 
 Enhanced tracking capabilities:
@@ -437,15 +531,15 @@ Enhanced tracking capabilities:
 ```typescript
 // Chapter completion tracking
 interface Chapter {
-  videoCompleted?: boolean;
-  quizPassed?: boolean;
-  questionAskedCount?: number;
+	videoCompleted?: boolean;
+	quizPassed?: boolean;
+	questionAskedCount?: number;
 }
 
 // Course progress tracking
 interface Course {
-  lastViewedChapter?: string;
-  completedChapters: string[];
+	lastViewedChapter?: string;
+	completedChapters: string[];
 }
 ```
 
@@ -471,7 +565,7 @@ interface Course {
 - **Server Components**: Default choice for better performance
 - **Client Components**: Only for interactivity (useState, event handlers, browser APIs)
 - **Link Navigation**: Use Next.js Link instead of useRouter when possible
-- **Route Parameters**: 
+- **Route Parameters**:
   - **Server Components**: Use `await params` directly
   - **Client Components**: Use `useParams` hook from `@/hooks/use-params`
   - **NEVER**: Use React.use() directly - always use established patterns
@@ -483,6 +577,7 @@ interface Course {
 ### Common Issues
 
 #### Build Errors
+
 ```bash
 # Fix TypeScript errors
 npm run type-check
@@ -495,6 +590,7 @@ rm -rf .next && npm run build
 ```
 
 #### Tailwind CSS v4 Production Build Issues
+
 ```bash
 # CSS variable recognition errors in production
 # Root cause: Custom CSS variables not integrated with Tailwind v4 theme system
@@ -509,6 +605,7 @@ grep -r "var(--" src/ --include="*.css"
 ```
 
 #### TypeScript Layout Constraint Errors
+
 ```bash
 # Common issue: Layout params type incompatible with Next.js 15+
 # Solution: Use Promise<{ id: string }> instead of union types
@@ -517,6 +614,7 @@ grep -r "var(--" src/ --include="*.css"
 ```
 
 #### Missing Dependencies
+
 ```bash
 # Install shadcn/ui components
 npx shadcn@latest add dialog
@@ -527,6 +625,7 @@ npm ci
 ```
 
 #### Authentication Issues
+
 ```bash
 # Restart Amplify sandbox
 npx ampx sandbox --delete
