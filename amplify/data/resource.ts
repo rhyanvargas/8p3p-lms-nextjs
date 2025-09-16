@@ -9,7 +9,7 @@ and "delete" any "Todo" records.
 const schema = a.schema({
 	// TODO: Add data models here when ready
 	// Placeholder model to prevent TypeScript errors
-	_placeholder: a
+	Placeholder: a
 		.model({
 			id: a.id(),
 		})
