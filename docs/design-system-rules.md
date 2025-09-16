@@ -204,6 +204,31 @@ Use Tailwind utilities for custom styling beyond shadcn/ui:
 <Button className="bg-[#1a2942]">
 ```
 
+### 4. CSS Variable Syntax in Arbitrary Values
+
+**Tailwind provides shorthand syntax for CSS variables in arbitrary values:**
+
+```tsx
+// ✅ Shorthand syntax (recommended)
+<div className="fill-(--my-brand-color)">
+<div className="bg-(--sidebar-accent)">
+<div className="text-(--primary-foreground)">
+
+// ✅ Full syntax (also valid)
+<div className="fill-[var(--my-brand-color)]">
+<div className="bg-[var(--sidebar-accent)]">
+<div className="text-[var(--primary-foreground)]">
+
+// ✅ Use with modifiers
+<div className="hover:bg-(--accent) lg:text-(--foreground)">
+```
+
+**Key Benefits:**
+- **Shorter syntax**: `fill-(--my-color)` vs `fill-[var(--my-color)]`
+- **Automatic var() wrapping**: Tailwind adds the `var()` function automatically
+- **Works with all utilities**: Background, text, border, fill, stroke, etc.
+- **Modifier support**: Compatible with hover, focus, responsive modifiers
+
 ## File Organization
 
 ### Component Structure
