@@ -22,7 +22,7 @@ frontend:
       commands:
         - npm run validate  # Run linting and type-checking first
         - npm run build
-        - echo "Build completed for branch: $AWS_BRANCH"
+        - 'echo "Build completed for branch: $AWS_BRANCH"'
   artifacts:
     baseDirectory: .next
     files:
