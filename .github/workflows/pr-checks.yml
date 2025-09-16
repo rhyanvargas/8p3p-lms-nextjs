@@ -1,0 +1,43 @@
+name: PR Quality Checks
+
+on:
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint checks
+        run: npm run lint:strict
+
+      - name: Run TypeScript check (skip if amplify_outputs.json missing)
+        run: |
+          if [ -f "amplify_outputs.json" ]; then
+            npm run type-check
+          else
+            echo "⚠️ Skipping TypeScript check - amplify_outputs.json not found (normal in CI/CD)"
+          fi
+
+      - name: Upload logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-logs
+          path: |
+            npm-debug.log*
+            yarn-debug.log*
+            yarn-error.log*
