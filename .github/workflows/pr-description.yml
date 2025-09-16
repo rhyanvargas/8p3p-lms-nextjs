@@ -22,13 +22,20 @@ jobs:
         run: |
           # Get changed files and stats
           CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-          TOTAL_FILES=$(echo "$CHANGED_FILES" | wc -l)
+          TOTAL_FILES=$(echo "$CHANGED_FILES" | wc -l | tr -d ' \n')
           
-          # Analyze file types
-          COMPONENTS=$(echo "$CHANGED_FILES" | grep -c "src/components/" || echo "0")
-          PAGES=$(echo "$CHANGED_FILES" | grep -c "src/app/" || echo "0")
-          AUTH=$(echo "$CHANGED_FILES" | grep -c "auth" || echo "0")
-          CONFIG=$(echo "$CHANGED_FILES" | grep -c -E "(amplify/|middleware\.ts|\.yml$|\.json$)" || echo "0")
+          # Analyze file types (ensure clean integer values)
+          COMPONENTS=$(echo "$CHANGED_FILES" | grep -c "src/components/" 2>/dev/null || echo "0")
+          PAGES=$(echo "$CHANGED_FILES" | grep -c "src/app/" 2>/dev/null || echo "0")
+          AUTH=$(echo "$CHANGED_FILES" | grep -c "auth" 2>/dev/null || echo "0")
+          CONFIG=$(echo "$CHANGED_FILES" | grep -c -E "(amplify/|middleware\.ts|\.yml$|\.json$)" 2>/dev/null || echo "0")
+          
+          # Clean variables to ensure they're integers
+          TOTAL_FILES=$(echo "$TOTAL_FILES" | tr -d ' \n')
+          COMPONENTS=$(echo "$COMPONENTS" | tr -d ' \n')
+          PAGES=$(echo "$PAGES" | tr -d ' \n')
+          AUTH=$(echo "$AUTH" | tr -d ' \n')
+          CONFIG=$(echo "$CONFIG" | tr -d ' \n')
           
           # Get commit messages for context
           COMMITS=$(git log --oneline origin/${{ github.base_ref }}...HEAD)
@@ -61,12 +68,12 @@ jobs:
           *Auto-generated PR description*
           DESCRIPTION_EOF
           
-          # Replace placeholders with actual values
-          sed -i "s/TOTAL_FILES_PLACEHOLDER/$TOTAL_FILES/g" pr_description.md
-          sed -i "s/COMPONENTS_PLACEHOLDER/$COMPONENTS/g" pr_description.md
-          sed -i "s/PAGES_PLACEHOLDER/$PAGES/g" pr_description.md
-          sed -i "s/AUTH_PLACEHOLDER/$AUTH/g" pr_description.md
-          sed -i "s/CONFIG_PLACEHOLDER/$CONFIG/g" pr_description.md
+          # Replace placeholders with actual values (escape special characters)
+          sed -i "s|TOTAL_FILES_PLACEHOLDER|$TOTAL_FILES|g" pr_description.md
+          sed -i "s|COMPONENTS_PLACEHOLDER|$COMPONENTS|g" pr_description.md
+          sed -i "s|PAGES_PLACEHOLDER|$PAGES|g" pr_description.md
+          sed -i "s|AUTH_PLACEHOLDER|$AUTH|g" pr_description.md
+          sed -i "s|CONFIG_PLACEHOLDER|$CONFIG|g" pr_description.md
           
           # Set output for next step
           echo "description<<EOF" >> $GITHUB_OUTPUT
