@@ -49,3 +49,7 @@ amplifyconfiguration*
 .amazonq
 .amazonq/*
 logs/*
+
+# windsurf
+.windsurf
+.windsurf/rules
