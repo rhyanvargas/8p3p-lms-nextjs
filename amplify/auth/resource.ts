@@ -28,11 +28,13 @@ export const auth = defineAuth({
 			callbackUrls: [
 				"http://localhost:3000/dashboard",
 				"https://main.dk50b1ut1cu9u.amplifyapp.com/dashboard",
+				"https://dev.dk50b1ut1cu9u.amplifyapp.com/dashboard",
 				"https://8p3p.io/dashboard",
 			],
 			logoutUrls: [
 				"http://localhost:3000/",
 				"https://main.dk50b1ut1cu9u.amplifyapp.com/",
+				"https://dev.dk50b1ut1cu9u.amplifyapp.com/",
 				"https://8p3p.io",
 			],
 		},
