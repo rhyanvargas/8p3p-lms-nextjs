@@ -96,3 +96,36 @@ npm run validate    # Both lint + type check
 - Use pre-commit hooks for quality assurance
 - Follow consistent Node.js version (20+)
 - Cache dependencies for faster builds
+
+## Bug Resolution Protocol
+
+### Mandatory User Confirmation
+- **REQUIRED**: All bug/issue resolutions must be confirmed by the user
+- **PROCESS**: Present solution → User tests → Explicit confirmation required
+- **NEVER**: Mark issues as resolved without user verification
+- **REFERENCE**: See `specs/05-bug-resolution-workflow.md` for complete process
+
+### Resolution Documentation
+- **MUST**: Create resolution ticket descriptions for all fixes
+- **INCLUDE**: Root cause analysis, technical changes, verification steps
+- **FORMAT**: Follow standard template in bug resolution workflow
+- **PURPOSE**: Knowledge sharing and future reference
+
+## Documentation Maintenance
+
+### README.md Update Requirements
+- **MANDATORY**: Update README.md for any changes that affect:
+  - **Workflow changes**: Development process, CI/CD pipeline, build steps
+  - **Architecture changes**: New patterns, component structure, data flow
+  - **Feature additions**: New functionality, components, or capabilities
+  - **Enhancement updates**: Performance improvements, UX changes, optimization
+  - **DevOps changes**: Deployment process, environment setup, infrastructure
+  - **Dependency changes**: New packages, version upgrades, tool changes
+  - **Configuration changes**: Environment variables, build settings, auth setup
+
+### Documentation Standards
+- **IMMEDIATE**: Update README.md in the same PR/commit as the change
+- **COMPREHENSIVE**: Include setup instructions, usage examples, troubleshooting
+- **ACCURATE**: Verify all instructions work in clean environment
+- **CURRENT**: Remove outdated information and broken links
+- **ACCESSIBLE**: Use clear language and step-by-step instructions
