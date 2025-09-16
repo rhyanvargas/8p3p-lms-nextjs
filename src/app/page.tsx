@@ -43,9 +43,9 @@ export default function Home() {
 				</div>
 
 				{/* Right side with content */}
-				<div className="lg:p-8">
+				<div className="h-full flex flex-col items-center justify-center lg:p-8 bg-background">
 					<Card className="mx-auto w-full sm:w-[450px] border-0 shadow-none bg-transparent">
-						<CardHeader className="space-y-4 text-center pb-0 text-white">
+						<CardHeader className="space-y-4 text-center pb-0">
 							<h1 className="text-4xl font-bold tracking-tight">
 								Clinician Portal Training Platform
 							</h1>
