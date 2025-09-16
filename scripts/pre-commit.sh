@@ -13,12 +13,17 @@ echo "✅ ESLint passed"
 echo ""
 
 echo "🔍 Running TypeScript check..."
-npm run type-check
-if [ $? -ne 0 ]; then
-  echo "❌ TypeScript check failed"
-  exit 1
+if [ -f "amplify_outputs.json" ]; then
+  npm run type-check
+  if [ $? -ne 0 ]; then
+    echo "❌ TypeScript check failed"
+    exit 1
+  fi
+  echo "✅ TypeScript check passed"
+else
+  echo "⚠️  Skipping TypeScript check - amplify_outputs.json not found (normal in CI/CD)"
+  echo "   TypeScript check will run after Amplify deployment completes"
 fi
-echo "✅ TypeScript check passed"
 echo ""
 
 echo "🏗️ Building application..."
