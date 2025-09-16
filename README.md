@@ -327,6 +327,99 @@ NEXT_PUBLIC_AWS_COGNITO_REGION=us-east-1
 # ... other Amplify-generated variables
 ```
 
+### Theme System Configuration
+
+The theme system uses **Tailwind CSS v4** with a dual-layer approach for maximum flexibility:
+
+#### 🎨 **Adding New Colors**
+
+1. **Define in `@theme` directive** (required for Tailwind v4):
+```css
+/* src/app/globals.css */
+@theme {
+  /* Add your new color with both light and dark variants */
+  --color-success: oklch(67.31% 0.162 144.21);
+  --color-success-dark: oklch(55% 0.15 144);
+  --color-success-foreground: oklch(100% 0 0);
+  --color-success-foreground-dark: oklch(0% 0 0);
+}
+```
+
+2. **Reference in CSS custom properties** (for runtime theme switching):
+```css
+:root {
+  --success: var(--color-success);
+  --success-foreground: var(--color-success-foreground);
+}
+
+.dark {
+  --success: var(--color-success-dark);
+  --success-foreground: var(--color-success-foreground-dark);
+}
+```
+
+3. **Use in components**:
+```tsx
+// As Tailwind utility
+<div className="bg-success text-success-foreground">Success message</div>
+
+// As CSS variable
+<div style={{ backgroundColor: 'var(--success)' }}>Success message</div>
+```
+
+#### 🌈 **Brand Color System**
+
+Brand colors are pre-defined and available as both utilities and CSS variables:
+
+```css
+/* Available brand colors */
+--color-brand-blue: oklch(28.08% 0.051 260.2);    /* Primary brand */
+--color-brand-gold: oklch(76.65% 0.139 91.06);    /* Accent/CTA */
+--color-brand-gray: oklch(71.37% 0.019 261.32);   /* Neutral */
+--color-brand-light-blue: oklch(96.53% 0.007 247.9); /* Backgrounds */
+--color-brand-green: oklch(67.31% 0.162 144.21);  /* Success */
+--color-brand-red: oklch(64.27% 0.215 28.81);     /* Error/Warning */
+```
+
+Usage:
+```tsx
+<button className="bg-brand-gold text-brand-blue">CTA Button</button>
+```
+
+#### 🔧 **Extending shadcn/ui Components**
+
+To customize shadcn/ui component colors:
+
+1. **Modify the base theme colors** in `@theme` directive
+2. **Components automatically inherit** the new colors
+3. **Override specific components** using CSS custom properties:
+
+```css
+/* Override specific component styling */
+@layer components {
+  .custom-button {
+    background-color: var(--color-brand-gold);
+    color: var(--color-brand-blue);
+  }
+}
+```
+
+#### ⚡ **Production Build Requirements**
+
+**Critical**: All theme colors must be defined in the `@theme` directive for Tailwind v4 production builds:
+
+```css
+/* ✅ CORRECT - Will work in production */
+@theme {
+  --color-custom: oklch(50% 0.1 180);
+}
+
+/* ❌ INCORRECT - Will be stripped in production */
+:root {
+  --custom-color: #somecolor;
+}
+```
+
 ### Authentication Settings
 
 Edit `amplify/auth/resource.ts` to customize:
