@@ -41,6 +41,212 @@
 - Use camelCase for variables and functions
 - Use PascalCase for components and types
 
+## Clean Code & Developer Experience (DX)
+
+### Comment Standards for Better DX
+- **MUST**: Add comprehensive comments for better developer experience
+- **MUST**: Document complex business logic and "why" decisions
+- **MUST**: Include JSDoc headers for all public functions and components
+- **MUST**: Explain edge cases and error handling approaches
+
+### Function Documentation Pattern
+```typescript
+/**
+ * Calculates estimated completion time for learning content
+ * 
+ * Uses industry-standard reading speeds (225 WPM) and actual video duration
+ * to provide accurate time estimates for user planning and progress tracking.
+ * 
+ * @param content - Content analysis data (word count, video duration, etc.)
+ * @param userProfile - User's historical learning data for personalization
+ * @returns Time estimate object with breakdown and confidence level
+ * 
+ * @example
+ * const estimate = calculateEstimatedTime(
+ *   { wordCount: 500, videoDuration: 300, complexity: 'medium' },
+ *   { readingSpeed: 250, completionRate: 0.85 }
+ * );
+ * // Returns: { total: 8, reading: 2, video: 5, interaction: 1, confidence: 0.9 }
+ */
+export function calculateEstimatedTime(
+  content: ContentAnalysis,
+  userProfile: UserProfile
+): TimeEstimate {
+  // Use personalized reading speed or fall back to industry average
+  // Research shows 225 WPM is optimal for technical content comprehension
+  const readingSpeed = userProfile.readingSpeed || 225;
+  
+  // Calculate base reading time in minutes
+  const readingTime = content.wordCount / readingSpeed;
+  
+  // Video time is exact - no estimation needed
+  const videoTime = content.videoDuration / 60;
+  
+  // Add interaction buffer based on content complexity
+  // Complex content requires 20-30% additional time for processing
+  const complexityMultiplier = {
+    low: 1.1,    // 10% buffer for simple content
+    medium: 1.2, // 20% buffer for moderate complexity
+    high: 1.3    // 30% buffer for complex concepts
+  };
+  
+  const interactionTime = (readingTime + videoTime) * 
+    (complexityMultiplier[content.complexity] - 1);
+  
+  return {
+    reading: Math.round(readingTime),
+    video: Math.round(videoTime),
+    interaction: Math.round(interactionTime),
+    total: Math.round(readingTime + videoTime + interactionTime),
+    confidence: calculateConfidence(content, userProfile)
+  };
+}
+```
+
+### Component Documentation Pattern
+```typescript
+/**
+ * Reusable timer component for tracking user interactions with time limits
+ * 
+ * Supports multiple variants (countdown, stopwatch, progress) and integrates
+ * with quiz systems, AI interactions, and content consumption tracking.
+ * 
+ * @param duration - Timer duration in seconds
+ * @param onComplete - Callback fired when timer reaches zero or target
+ * @param onTick - Optional callback fired every second with remaining time
+ * @param variant - Visual and behavioral variant
+ * @param autoStart - Whether to start timer immediately on mount
+ * 
+ * @example
+ * // Quiz timer with 4-minute limit
+ * <Timer 
+ *   duration={240} 
+ *   onComplete={handleQuizSubmit}
+ *   variant="countdown"
+ *   autoStart={true}
+ * />
+ * 
+ * @example
+ * // Content consumption tracking
+ * <Timer 
+ *   duration={0}
+ *   onTick={trackProgress}
+ *   variant="stopwatch"
+ *   autoStart={true}
+ * />
+ */
+export function Timer({ 
+  duration, 
+  onComplete, 
+  onTick,
+  variant = 'countdown',
+  autoStart = false 
+}: TimerProps) {
+  // Track current time state with 1-second precision
+  const [currentTime, setCurrentTime] = useState(
+    variant === 'countdown' ? duration : 0
+  );
+  
+  // Handle timer completion for all variants
+  useEffect(() => {
+    const isComplete = variant === 'countdown' 
+      ? currentTime <= 0 
+      : currentTime >= duration;
+      
+    if (isComplete && onComplete) {
+      // Prevent multiple completion calls
+      onComplete();
+    }
+  }, [currentTime, onComplete, variant, duration]);
+  
+  return (
+    <div className="timer-container" role="timer" aria-live="polite">
+      {/* Accessible time display with proper ARIA labels */}
+      <TimeDisplay 
+        time={currentTime}
+        variant={variant}
+        aria-label={`${variant} timer: ${formatTime(currentTime)}`}
+      />
+    </div>
+  );
+}
+```
+
+### Business Logic Comments
+```typescript
+// BUSINESS RULE: Users must complete video + all sections before quiz unlock
+// This ensures proper learning progression and prevents quiz attempts
+// without consuming the prerequisite content
+const isQuizUnlocked = (chapter: Chapter): boolean => {
+  // Video completion is optional for chapters (some are text-only)
+  const videoComplete = !chapter.videoUrl || chapter.videoCompleted;
+  
+  // All sections must be completed (this is mandatory)
+  const allSectionsComplete = chapter.sections.every(
+    section => section.completed
+  );
+  
+  return videoComplete && allSectionsComplete;
+};
+
+// PERFORMANCE NOTE: This calculation runs on every render
+// Consider memoizing if chapter data is large or changes frequently
+const chapterProgress = useMemo(() => {
+  return calculateChapterProgress(chapter);
+}, [chapter.sections, chapter.videoCompleted, chapter.quizPassed]);
+```
+
+### Error Handling Comments
+```typescript
+try {
+  const userSession = await fetchAuthSession();
+  return userSession.tokens?.accessToken;
+} catch (error) {
+  // EDGE CASE: Session might be expired or invalid
+  // Don't throw here - let components handle unauthenticated state gracefully
+  // This prevents auth errors from breaking the entire app
+  console.warn('Auth session fetch failed:', error);
+  return null;
+}
+```
+
+### TODO Comments with Context
+```typescript
+// TODO: Implement adaptive time limits based on user performance
+// Ticket: LMS-234 | Priority: Medium | Timeline: Sprint 3
+// Context: Users with higher completion rates could get extended time
+// Research: 15% of users request more time on complex assessments
+const getQuizTimeLimit = (quiz: Quiz, user: User): number => {
+  return quiz.defaultTimeLimit; // Currently using static time limits
+};
+```
+
+## Clarifying Questions Protocol
+
+### Requirements Gathering Process
+1. **ALWAYS** ask clarifying questions before implementation
+2. **NEVER** assume requirements without explicit confirmation
+3. **DOCUMENT** all assumptions and decisions in specification files
+4. **VALIDATE** understanding through detailed confirmation
+
+### Question Categories
+- **Technical Architecture**: Data structure, component design, integration approach
+- **User Experience**: Interaction flows, edge cases, error handling
+- **Business Logic**: Rules, validation, constraints, performance requirements
+- **Implementation**: Technology choices, testing strategy, deployment approach
+
+### MoSCoW Prioritization
+- **Must Have**: Critical for MVP functionality
+- **Should Have**: Important but not blocking
+- **Could Have**: Nice-to-have features
+- **Won't Have**: Out of scope for current iteration
+
+### Specification Documentation
+- **Project Specification**: High-level architecture and milestones (see `specs/06-project-specification.md`)
+- **Feature Specifications**: Detailed feature requirements (see `specs/features/`)
+- **Decision Log**: Document all major decisions and rationale
+- **Safe Rollback Points**: Maintain checkpoints for safe rollback
+
 ## File Organization & Architecture
 
 ### Separation of Concerns (SoC)
