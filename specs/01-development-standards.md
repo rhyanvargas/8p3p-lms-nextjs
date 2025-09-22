@@ -20,6 +20,17 @@
 - **MUST**: Follow ESLint rules in `eslint.config.mjs`
 - **MUST**: Use TypeScript strict mode
 - **MUST**: Remove unused imports and variables
+- **MUST**: Pass all quality gates before declaring features complete (see `specs/00-specification-framework.md#quality-gates`)
+
+### Quality Gate Compliance
+Before any feature, component, or phase can be marked as "complete":
+1. **ESLint**: `npm run lint` passes with 0 errors
+2. **TypeScript**: `npm run type-check` passes for production code
+3. **Build**: `npm run build` succeeds without errors
+4. **Functionality**: Core use cases work as specified
+5. **Documentation**: README and code docs updated
+
+**Reference**: See `specs/00-specification-framework.md` for complete quality gate requirements.
 
 ## ESLint & TypeScript Rules
 
