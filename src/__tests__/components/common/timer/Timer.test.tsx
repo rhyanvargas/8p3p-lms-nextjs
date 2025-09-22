@@ -33,7 +33,7 @@ jest.mock("@/lib/utils/time-formatting", () => ({
     return `${timeStr} ${context}`;
   }),
   calculateProgress: jest.fn((elapsed, total) => Math.min(100, Math.max(0, (elapsed / total) * 100))),
-  getTimerColorTheme: jest.fn(() => "default"),
+  getTimerColorTheme: jest.fn(() => "default" as const),
 }));
 
 // Mock UI components
@@ -71,7 +71,7 @@ describe("Timer Component", () => {
     toggle: jest.fn(),
     getFormattedTime: jest.fn(() => "05:00"),
     getTimeWithLabel: jest.fn(() => "5 minutes remaining"),
-    getColorTheme: jest.fn(() => "default"),
+    getColorTheme: jest.fn(() => "default" as const),
   };
 
   beforeEach(() => {
@@ -442,7 +442,7 @@ describe("CompactTimer Component", () => {
       toggle: jest.fn(),
       getFormattedTime: jest.fn(() => "02:00"),
       getTimeWithLabel: jest.fn(() => "2 minutes remaining"),
-      getColorTheme: jest.fn(() => "default"),
+      getColorTheme: jest.fn(() => "default" as const),
     });
   });
 
