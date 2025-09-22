@@ -304,6 +304,17 @@ All components must include:
 
 ## Testing Strategy
 
+### Jest Configuration Reference
+
+**Official Documentation**: [Next.js Testing with Jest](https://nextjs.org/docs/app/guides/testing/jest.md)
+
+Our testing setup follows Next.js official recommendations for:
+- **Jest Configuration**: Using `next/jest` for optimal Next.js integration
+- **React Testing Library**: Component testing best practices
+- **TypeScript Support**: Full type checking in tests
+- **Path Mapping**: Proper `@/` alias resolution in test files
+- **Mock Handling**: Next.js specific mocking patterns
+
 ### Unit Tests (Jest + React Testing Library)
 
 - **Timer accuracy and functionality**: Verify countdown/stopwatch precision

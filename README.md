@@ -48,6 +48,7 @@
 - **Loading States**: Smooth transitions and professional loading indicators
 - **Interactive Video Player**: Custom video controls with progress tracking
 - **Breadcrumb Navigation**: Clear hierarchical navigation paths
+- **Timer Components**: Comprehensive timer system for quizzes, AI interactions, and progress tracking
 
 ## 🛠️ Tech Stack
 
@@ -251,12 +252,22 @@ npm run test:e2e
 │   │   │       ├── interactive-script.tsx # Transcript component
 │   │   │       ├── chapter-quiz.tsx  # Quiz component
 │   │   │       └── ask-question.tsx  # Question form component
+│   │   ├── 📁 common/         # Common reusable components
+│   │   │   └── 📁 timer/      # Timer component system
+│   │   │       ├── Timer.tsx          # Main timer component (Client)
+│   │   │       └── TimerDisplay.tsx   # Timer display (Server)
 │   │   └── 📁 ui/             # shadcn/ui components
+│   ├── 📁 hooks/              # Custom React hooks
+│   │   ├── useTimer.ts        # Timer hook with state management
+│   │   ├── use-mobile.ts      # Mobile detection hook
+│   │   └── use-params.ts      # Next.js 15+ params hook
 │   ├── 📁 lib/                # Utility functions
 │   │   ├── auth-server.ts     # Server-side auth utilities
 │   │   ├── course-utils.ts    # Course utility functions
 │   │   ├── mock-data.ts       # Mock data for development
-│   │   └── utils.ts           # General utilities
+│   │   ├── utils.ts           # General utilities
+│   │   └── 📁 utils/          # Utility modules
+│   │       └── time-formatting.ts # Time formatting and validation
 │   └── amplify_outputs.json   # Amplify configuration
 ├── 📁 context/              # Documentation and context
 │   ├── course-page-structure.md  # Course page structure guide
@@ -529,6 +540,96 @@ Add the following secrets:
 
 **Reference**: [AWS Amplify External Identity Providers Guide](https://docs.amplify.aws/nextjs/build-a-backend/auth/concepts/external-identity-providers/)
 
+### Timer Components System
+
+Comprehensive timer functionality for quizzes, AI interactions, and progress tracking:
+
+#### 🕐 **Core Timer Features**
+
+- **Multiple Variants**: Countdown, stopwatch, and progress timers
+- **Accurate Timing**: High-resolution timestamps with tab visibility handling
+- **Accessibility**: Full WCAG compliance with screen reader support
+- **Keyboard Controls**: Spacebar/Enter to toggle, Ctrl+R to reset, Escape to pause
+- **Visual Indicators**: Color-coded urgency (green → yellow → red)
+- **Context Validation**: Different time limits for quiz, AI, learning, and general contexts
+
+#### 🧩 **Component Architecture**
+
+```typescript
+// Main Timer Component (Client Component)
+<Timer
+  duration={300}                    // 5 minutes
+  variant="countdown"               // countdown | stopwatch | progress
+  context="quiz"                    // quiz | ai | learning | general
+  showControls                      // Play/pause/reset buttons
+  showProgress                      // Progress bar for progress variant
+  onComplete={handleSubmit}         // Callback when timer completes
+  onTick={updateState}             // Callback every second
+/>
+
+// Compact Timer (for navigation/cards)
+<CompactTimer
+  duration={240}                    // 4 minutes
+  variant="countdown"
+  context="ai"
+  autoStart
+/>
+
+// Timer Display Only (Server Component)
+<TimerDisplay
+  time={180}                        // Current time in seconds
+  color="warning"                   // Visual urgency indicator
+  showLabel                         // "3 minutes remaining"
+  size="lg"                         // sm | md | lg
+/>
+```
+
+#### ⚙️ **Timer Hook Usage**
+
+```typescript
+// Custom timer logic with full control
+const timer = useTimer(300, {
+  variant: "countdown",
+  autoStart: true,
+  onComplete: () => submitQuiz(),
+  onTick: (state) => updateProgress(state.progress)
+});
+
+// Timer state and controls
+const {
+  time,                    // Current time (seconds)
+  isRunning,              // Timer running state
+  isPaused,               // Timer paused state
+  isCompleted,            // Timer completed state
+  progress,               // Progress percentage (0-100)
+  start, pause, resume,   // Control functions
+  reset, toggle,          // Control functions
+  getFormattedTime,       // "05:30" format
+  getTimeWithLabel,       // "5 minutes 30 seconds remaining"
+  getColorTheme           // "success" | "warning" | "danger"
+} = timer;
+```
+
+#### 🎯 **Context-Specific Validation**
+
+```typescript
+// Automatic validation based on context
+validateTimerDuration(300, "quiz")     // ✅ Valid (30s - 1hr)
+validateTimerDuration(600, "ai")       // ❌ Too long (1min - 5min)
+validateTimerDuration(30, "learning")  // ❌ Too short (1min - 30min)
+validateTimerDuration(7200, "general") // ✅ Valid (1s - 2hr)
+```
+
+#### 🔧 **Time Formatting Utilities**
+
+```typescript
+formatTime(90)                          // "01:30"
+formatTime(3661, true)                  // "1:01:01"
+formatTimeWithLabel(90, "remaining")    // "1 minute 30 seconds remaining"
+calculateProgress(30, 60)               // 50 (percent)
+getTimerColorTheme(10, 60)             // "danger" (< 25% remaining)
+```
+
 ### Data Models
 
 Enhanced tracking capabilities:
@@ -539,12 +640,25 @@ interface Chapter {
 	videoCompleted?: boolean;
 	quizPassed?: boolean;
 	questionAskedCount?: number;
+	timeSpent?: number;              // Time spent in seconds
+	quizAttempts?: number;           // Number of quiz attempts
 }
 
 // Course progress tracking
 interface Course {
 	lastViewedChapter?: string;
 	completedChapters: string[];
+	totalTimeSpent?: number;         // Total learning time
+	averageQuizScore?: number;       // Average quiz performance
+}
+
+// Timer interaction tracking
+interface TimerSession {
+	context: "quiz" | "ai" | "learning";
+	duration: number;                // Configured duration
+	timeUsed: number;               // Actual time used
+	completed: boolean;             // Whether timer completed naturally
+	pauseCount?: number;            // Number of pauses
 }
 ```
 
