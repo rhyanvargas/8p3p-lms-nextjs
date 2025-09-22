@@ -20,6 +20,17 @@
 - **MUST**: Follow ESLint rules in `eslint.config.mjs`
 - **MUST**: Use TypeScript strict mode
 - **MUST**: Remove unused imports and variables
+- **MUST**: Pass all quality gates before declaring features complete (see `specs/00-specification-framework.md#quality-gates`)
+
+### Quality Gate Compliance
+Before any feature, component, or phase can be marked as "complete":
+1. **ESLint**: `npm run lint` passes with 0 errors
+2. **TypeScript**: `npm run type-check` passes for production code
+3. **Build**: `npm run build` succeeds without errors
+4. **Functionality**: Core use cases work as specified
+5. **Documentation**: README and code docs updated
+
+**Reference**: See `specs/00-specification-framework.md` for complete quality gate requirements.
 
 ## ESLint & TypeScript Rules
 
@@ -286,6 +297,64 @@ const getQuizTimeLimit = (quiz: Quiz, user: User): number => {
 - Use type narrowing instead of type assertions
 - Leverage TypeScript's utility types
 
+## Testing Standards
+
+### Jest Configuration (Next.js Official)
+
+**Reference**: [Next.js Testing with Jest](https://nextjs.org/docs/app/guides/testing/jest.md)
+
+Our testing setup follows Next.js official recommendations:
+
+#### Required Dependencies
+```bash
+npm install --save-dev jest jest-environment-jsdom @testing-library/react @testing-library/jest-dom
+```
+
+#### Jest Configuration (`jest.config.mjs`)
+```javascript
+import nextJest from 'next/jest.js'
+
+const createJestConfig = nextJest({
+  // Provide the path to your Next.js app to load next.config.js and .env files
+  dir: './',
+})
+
+// Add any custom config to be passed to Jest
+const config = {
+  coverageProvider: 'v8',
+  testEnvironment: 'jsdom',
+  // Add more setup options before each test is run
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+}
+
+// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
+export default createJestConfig(config)
+```
+
+#### Jest Setup (`jest.setup.js`)
+```javascript
+import '@testing-library/jest-dom'
+```
+
+### Testing Best Practices
+
+#### Component Testing
+- **MUST**: Use React Testing Library for component tests
+- **MUST**: Test user interactions, not implementation details
+- **MUST**: Include accessibility testing (screen readers, keyboard navigation)
+- **MUST**: Mock external dependencies and API calls
+
+#### Test Structure
+- **MUST**: Follow AAA pattern (Arrange, Act, Assert)
+- **MUST**: Use descriptive test names that explain the expected behavior
+- **MUST**: Group related tests using `describe` blocks
+- **MUST**: Clean up after tests (unmount components, clear mocks)
+
+#### Coverage Requirements
+- **MINIMUM**: 80% coverage for new components and utilities
+- **FOCUS**: Critical business logic and user interactions
+- **EXCLUDE**: Configuration files, mock data, and type definitions
+
 ## Development Workflow
 
 ### Pre-commit Validation
@@ -294,11 +363,13 @@ npm run lint        # ESLint checking
 npm run lint:fix    # Auto-fix issues
 npm run lint:strict # Fail on warnings
 npm run type-check  # TypeScript validation
-npm run validate    # Both lint + type check
+npm run test        # Run Jest tests
+npm run validate    # Lint + type check + tests
 ```
 
 ### Build Process
 - Lint and type check before building
+- Run tests before committing
 - Use pre-commit hooks for quality assurance
 - Follow consistent Node.js version (20+)
 - Cache dependencies for faster builds
