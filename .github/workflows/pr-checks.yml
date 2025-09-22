@@ -24,13 +24,34 @@ jobs:
       - name: Run ESLint checks
         run: npm run lint:strict
 
-      - name: Run TypeScript check (skip if amplify_outputs.json missing)
+      - name: Create mock amplify_outputs.json for CI
         run: |
-          if [ -f "amplify_outputs.json" ]; then
-            npm run type-check
-          else
-            echo "⚠️ Skipping TypeScript check - amplify_outputs.json not found (normal in CI/CD)"
+          if [ ! -f "amplify_outputs.json" ]; then
+            echo "Creating mock amplify_outputs.json for CI build..."
+            cat > amplify_outputs.json << 'EOF'
+          {
+            "auth": {
+              "aws_region": "us-east-1",
+              "user_pool_id": "mock-pool-id",
+              "user_pool_client_id": "mock-client-id",
+              "identity_pool_id": "mock-identity-pool-id"
+            },
+            "data": {
+              "aws_region": "us-east-1",
+              "url": "https://mock-api.amazonaws.com/graphql"
+            }
+          }
+          EOF
           fi
+
+      - name: Run TypeScript check
+        run: npm run type-check
+
+      - name: Run build check (with mock amplify outputs)
+        run: |
+          echo "🏗️ Testing build with mock Amplify configuration..."
+          npm run build
+        continue-on-error: false
 
       - name: Upload logs (on failure)
         if: failure()

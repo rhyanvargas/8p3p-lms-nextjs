@@ -550,12 +550,23 @@ interface Course {
 
 ## 🤝 Contributing
 
+We welcome contributions! Please see our [**Contributing Guide**](CONTRIBUTING.md) for detailed information on:
+
+- 🚀 **Getting Started**: Setup and development workflow
+- 📝 **PR Guidelines**: Stacked PRs, size limits, and review process
+- 🧪 **Testing Standards**: Required tests and validation
+- 📋 **Code Quality**: Standards, comments, and best practices
+- 🔄 **Release Process**: Sprint-based development and deployment
+
+### Quick Start
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/amazing-feature`)
 3. **Run pre-commit checks** (`npm run pre-commit`)
 4. Commit changes (`git commit -m 'Add amazing feature'`)
 5. Push to branch (`git push origin feature/amazing-feature`)
 6. Open Pull Request
+
+**📖 For detailed guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md)**
 
 ### Code Quality Standards
 
