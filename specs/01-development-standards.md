@@ -32,6 +32,15 @@ Before any feature, component, or phase can be marked as "complete":
 
 **Reference**: See `specs/00-specification-framework.md` for complete quality gate requirements.
 
+### Branch Readiness Protocol (MANDATORY)
+Before starting any new feature development:
+1. **Present Branch Readiness Plan**: Show feature spec, branch strategy, and timeline
+2. **Get User Confirmation**: Ask "Ready to create the branch and start {feature_name} development? 🚀"
+3. **Wait for Approval**: Do NOT create branches or start development without explicit user confirmation
+4. **Document Decision**: Record user approval and proceed with branch creation
+
+**Reference**: See `specs/00-specification-framework.md#branch-readiness-protocol` for complete protocol.
+
 ## ESLint & TypeScript Rules
 
 ### Core Principles
