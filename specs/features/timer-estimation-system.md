@@ -30,20 +30,43 @@ Provide accurate time estimation and real-time timing functionality across the l
 
 ## Technical Requirements
 
+### Next.js 15+ Compliance
+- **Server Components First**: Timer display components should be Server Components when possible
+- **Client Components Only**: Use "use client" only for interactive timer functionality
+- **Route Parameters**: Use `await params` in Server Components, `useParams` hook in Client Components
+
 ### Timer Component Specifications
 
 #### Core Timer Component
 
 ```typescript
+/**
+ * Timer component props interface following development standards
+ * 
+ * @interface TimerProps
+ * @description Defines props for reusable timer component with multiple variants
+ */
 interface TimerProps {
-	duration: number; // seconds
+	/** Timer duration in seconds */
+	duration: number;
+	/** Callback fired when timer completes */
 	onComplete?: () => void;
+	/** Callback fired every second with remaining/elapsed time */
 	onTick?: (remaining: number) => void;
+	/** Whether to start timer immediately on mount */
 	autoStart?: boolean;
+	/** Whether to show milliseconds in display */
 	showMilliseconds?: boolean;
+	/** Timer behavior and visual variant */
 	variant?: "countdown" | "stopwatch" | "progress";
+	/** Visual size variant */
 	size?: "sm" | "md" | "lg";
+	/** Color theme for urgency indication */
 	color?: "default" | "warning" | "danger" | "success";
+	/** Accessibility label for screen readers */
+	"aria-label"?: string;
+	/** Additional CSS classes for styling */
+	className?: string;
 }
 ```
 
@@ -58,19 +81,46 @@ interface TimerProps {
 #### Content Analysis Function
 
 ```typescript
+/**
+ * Content analysis data structure for time estimation
+ * 
+ * @interface ContentAnalysis
+ * @description Analyzes content characteristics for accurate time estimation
+ */
 interface ContentAnalysis {
+	/** Total word count for reading time calculation */
 	wordCount: number;
-	videoDuration: number; // seconds
+	/** Video duration in seconds (exact timing) */
+	videoDuration: number;
+	/** Number of interactive elements (forms, quizzes, etc.) */
 	interactiveElements: number;
+	/** Content complexity level affecting processing time */
 	complexity: "low" | "medium" | "high";
+	/** Content type for specialized estimation algorithms */
+	contentType?: "text" | "video" | "interactive" | "mixed";
 }
 
+/**
+ * Time estimation result with breakdown and confidence
+ * 
+ * @interface TimeEstimate
+ * @description Provides detailed time breakdown for user planning
+ */
 interface TimeEstimate {
-	reading: number; // minutes
-	video: number; // minutes
-	interaction: number; // minutes
-	total: number; // minutes
-	confidence: number; // 0-1 scale
+	/** Estimated reading time in minutes */
+	reading: number;
+	/** Video playback time in minutes */
+	video: number;
+	/** Additional interaction/processing time in minutes */
+	interaction: number;
+	/** Total estimated completion time in minutes */
+	total: number;
+	/** Confidence level (0-1 scale) based on data quality */
+	confidence: number;
+	/** Minimum estimated time (optimistic scenario) */
+	minTime?: number;
+	/** Maximum estimated time (pessimistic scenario) */
+	maxTime?: number;
 }
 ```
 
@@ -83,31 +133,47 @@ interface TimeEstimate {
 
 ### Implementation Architecture
 
-#### Component Structure
+#### Component Structure (Following Development Standards)
 
 ```
 src/components/common/
 ├── timer/
-│   ├── Timer.tsx              # Main timer component
-│   ├── CountdownTimer.tsx     # Countdown variant
-│   ├── StopwatchTimer.tsx     # Stopwatch variant
-│   ├── ProgressTimer.tsx      # Progress variant
-│   └── TimerDisplay.tsx       # Display formatting
+│   ├── Timer.tsx              # Main timer component (Client Component)
+│   ├── CountdownTimer.tsx     # Countdown variant (Client Component)
+│   ├── StopwatchTimer.tsx     # Stopwatch variant (Client Component)
+│   ├── ProgressTimer.tsx      # Progress variant (Client Component)
+│   └── TimerDisplay.tsx       # Display formatting (Server Component)
 ├── estimation/
-│   ├── EstimatedTime.tsx      # Time estimate display
-│   ├── TimeEstimator.tsx      # Estimation component
-│   └── CompletionBadge.tsx    # Time completion indicator
+│   ├── EstimatedTime.tsx      # Time estimate display (Server Component)
+│   ├── TimeEstimator.tsx      # Estimation component (Server Component)
+│   └── CompletionBadge.tsx    # Time completion indicator (Server Component)
 ```
 
-#### Utility Functions
+#### Utility Functions (Hot-Swappable Data Layer)
 
 ```
-src/lib/utils/
-├── time-estimation.ts         # Core estimation algorithms
-├── time-formatting.ts         # Time display formatting
-├── content-analysis.ts        # Content parsing and analysis
-└── timer-hooks.ts            # Custom timer hooks
+src/lib/
+├── utils/
+│   ├── time-estimation.ts     # Core estimation algorithms
+│   ├── time-formatting.ts     # Time display formatting
+│   ├── content-analysis.ts    # Content parsing and analysis
+│   └── timer-hooks.ts        # Custom timer hooks (Client-side only)
+├── data/
+│   ├── timer-data.ts         # Timer configuration data
+│   └── estimation-data.ts    # Estimation algorithm data
+└── services/
+    ├── timer-service.ts      # Timer data persistence (hot-swappable)
+    └── analytics-service.ts  # Timer analytics (hot-swappable)
 ```
+
+#### Clean Code & Comments Standards
+
+All components must include:
+- **JSDoc headers** with purpose, parameters, examples
+- **Business logic comments** explaining "why" decisions
+- **Edge case documentation** for error handling
+- **Performance notes** for optimization considerations
+- **Accessibility comments** for screen reader support
 
 ## Detailed Specifications
 
@@ -238,26 +304,38 @@ src/lib/utils/
 
 ## Testing Strategy
 
-### Unit Tests
+### Unit Tests (Jest + React Testing Library)
 
-- Timer accuracy and functionality
-- Estimation algorithm correctness
-- Component rendering and props handling
-- Edge case handling (zero time, negative values)
+- **Timer accuracy and functionality**: Verify countdown/stopwatch precision
+- **Estimation algorithm correctness**: Test calculation accuracy with various inputs
+- **Component rendering and props handling**: Ensure proper prop validation and rendering
+- **Edge case handling**: Zero time, negative values, extremely long durations
+- **Accessibility**: Screen reader compatibility and ARIA attributes
+- **Performance**: Component render times and memory usage
 
 ### Integration Tests
 
-- Timer integration with forms and submissions
-- Estimation integration with content display
-- Cross-component timer synchronization
-- Database integration for timing data
+- **Timer integration with forms**: Auto-submission on timeout
+- **Estimation integration with content display**: Real-time estimate updates
+- **Cross-component timer synchronization**: Multiple timers coordination
+- **Database integration**: Timer data persistence and retrieval
+- **Hot-swappable data layer**: Service layer abstraction testing
 
 ### User Acceptance Tests
 
-- Timer usability during actual learning sessions
-- Estimation accuracy validation with real users
-- Accessibility testing with screen readers
-- Performance testing under various conditions
+- **Timer usability**: Real learning session testing with actual users
+- **Estimation accuracy validation**: Compare estimates vs actual completion times
+- **Accessibility testing**: Screen reader and keyboard navigation testing
+- **Performance testing**: Various devices, network conditions, and browser testing
+- **Cross-browser compatibility**: Chrome, Firefox, Safari, Edge testing
+
+### Pre-commit Validation
+
+All timer components must pass:
+- **ESLint strict checks**: No unused variables, proper TypeScript usage
+- **TypeScript compilation**: Strict mode compliance
+- **Unit test coverage**: Minimum 80% coverage for new code
+- **Build verification**: Components compile without errors
 
 ## Future Enhancements
 
@@ -274,6 +352,66 @@ src/lib/utils/
 - **Context-Aware Timing**: Environment-based timer adjustments
 - **Multi-modal Timing**: Voice and gesture-controlled timers
 - **Integration APIs**: Third-party timer service integrations
+
+## Implementation Strategy
+
+### Stacked PR Approach (Following Release Strategy)
+
+This feature will be implemented using **stacked PRs** to maintain 200-400 LOC per PR:
+
+#### Phase 1: Core Timer Infrastructure
+**Branch**: `feature/timer-01-core`
+**Size**: ~250-300 LOC
+**Files**:
+- `src/components/common/timer/Timer.tsx` (Client Component)
+- `src/components/common/timer/TimerDisplay.tsx` (Server Component)
+- `src/lib/utils/time-formatting.ts`
+- `src/hooks/useTimer.ts`
+- Basic unit tests
+
+#### Phase 2: Timer Variants
+**Branch**: `feature/timer-02-variants` (depends on Phase 1)
+**Size**: ~300-350 LOC
+**Files**:
+- `src/components/common/timer/CountdownTimer.tsx`
+- `src/components/common/timer/StopwatchTimer.tsx`
+- `src/components/common/timer/ProgressTimer.tsx`
+- Variant-specific tests
+
+#### Phase 3: Estimation System
+**Branch**: `feature/timer-03-estimation` (independent)
+**Size**: ~350-400 LOC
+**Files**:
+- `src/lib/utils/time-estimation.ts`
+- `src/lib/utils/content-analysis.ts`
+- `src/components/common/estimation/EstimatedTime.tsx`
+- `src/components/common/estimation/TimeEstimator.tsx`
+- Estimation algorithm tests
+
+#### Phase 4: Integration & Services
+**Branch**: `feature/timer-04-integration` (depends on Phases 1-3)
+**Size**: ~200-250 LOC
+**Files**:
+- `src/lib/services/timer-service.ts` (hot-swappable)
+- `src/lib/services/analytics-service.ts` (hot-swappable)
+- Integration tests
+- Final documentation updates
+
+### PR Dependencies
+```
+Phase 1 (Core) → Phase 2 (Variants)
+Phase 3 (Estimation) → Phase 4 (Integration)
+                    ↗
+Phase 2 (Variants) → Phase 4 (Integration)
+```
+
+### Quality Gates
+Each PR must pass:
+- ✅ ESLint strict validation
+- ✅ TypeScript compilation
+- ✅ Unit tests (80%+ coverage)
+- ✅ Build verification
+- ✅ Code review (1-2 reviewers)
 
 ---
 
