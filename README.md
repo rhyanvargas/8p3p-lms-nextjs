@@ -49,6 +49,7 @@
 - **Interactive Video Player**: Custom video controls with progress tracking
 - **Breadcrumb Navigation**: Clear hierarchical navigation paths
 - **Timer Components**: Comprehensive timer system for quizzes, AI interactions, and progress tracking
+- **Content Estimation System**: AI-powered time estimation for reading and video content with personalized learning recommendations
 
 ## 🛠️ Tech Stack
 
@@ -701,6 +702,207 @@ We welcome contributions! Please see our [**Contributing Guide**](CONTRIBUTING.m
   - **NEVER**: Use React.use() directly - always use established patterns
 - **Component Reuse**: Leverage existing components (ChapterProgress, etc.)
 - **TypeScript Compliance**: Layout props must use Promise-only params type for Next.js 15+
+
+## 📊 Content Estimation System
+
+### Overview
+
+The Content Estimation System provides intelligent time estimation for mixed educational content (text + video) with personalized learning recommendations. Built following our component reusability protocol using existing timer infrastructure and shadcn/ui components.
+
+### Features
+
+#### 🧠 **Smart Content Analysis**
+- **Text Analysis**: Word count, reading speed calculation (150-250 WPM), complexity assessment
+- **Video Analysis**: Duration parsing, type classification (lecture/demo/interactive), engagement factors
+- **Mixed Content**: Combined analysis with interaction time calculation
+- **Complexity Detection**: Simple/Moderate/Complex classification based on technical terms and structure
+
+#### 👤 **Personalization Engine**
+- **User Profiles**: Reading speed tracking, completion rate history, learning pace preferences
+- **Adaptive Estimates**: Personalized time calculations based on user performance
+- **Confidence Scoring**: Reliability assessment for time estimates (0-1 scale)
+- **Profile Updates**: Automatic learning from actual completion times
+
+#### 🎯 **Learning Recommendations**
+- **Session Planning**: Optimal session length and break frequency suggestions
+- **Pace Recommendations**: Fast/Moderate/Slow based on content complexity and user profile
+- **Progress Tracking**: Real-time progress monitoring with remaining time calculations
+
+### Components
+
+#### Core Analysis Engine
+```typescript
+// Text analysis with complexity detection
+import { analyzeTextContent } from '@/lib/content-analysis';
+const analysis = analyzeTextContent(content);
+
+// Video analysis with engagement factors
+import { analyzeVideoContent } from '@/lib/content-analysis';
+const videoAnalysis = analyzeVideoContent(metadata);
+
+// Complete time estimation
+import { calculateTimeEstimate } from '@/lib/content-analysis';
+const estimate = calculateTimeEstimate(mixedContent, userProfile);
+```
+
+#### UI Components
+```typescript
+// Time estimate display (multiple variants)
+import { TimeEstimate } from '@/components/common/content-estimation';
+<TimeEstimate 
+  estimate={estimate} 
+  variant="detailed" 
+  showBreakdown={true} 
+  complexity="moderate" 
+/>
+
+// Content estimator with analysis
+import { ContentEstimator } from '@/components/common/content-estimation';
+<ContentEstimator 
+  content={mixedContent}
+  userProfile={userProfile}
+  onEstimateReady={(estimate) => console.log(estimate)}
+  trackProgress={true}
+/>
+
+// Progress tracking
+import { ProgressIndicator } from '@/components/common/progress';
+<ProgressIndicator 
+  progress={45}
+  estimatedTime={1800}
+  elapsedTime={810}
+  variant="linear"
+/>
+```
+
+#### Custom Hooks
+```typescript
+// Content estimation with caching
+import { useContentEstimation } from '@/hooks/useContentEstimation';
+const { estimate, isLoading, error, analyze } = useContentEstimation({
+  content: mixedContent,
+  userProfile: userProfile,
+  autoAnalyze: true
+});
+
+// Progress tracking
+import { useProgressTracking } from '@/hooks/useContentEstimation';
+const { 
+  elapsedTime, 
+  remainingTime, 
+  progress, 
+  startTracking, 
+  stopTracking 
+} = useProgressTracking(estimatedTime);
+```
+
+### Integration Examples
+
+#### Basic Usage
+```typescript
+import { ContentEstimator } from '@/components/common/content-estimation';
+
+function LessonPage({ lesson }) {
+  const handleEstimateReady = (estimate) => {
+    console.log(`Estimated time: ${estimate.total} seconds`);
+    console.log(`Confidence: ${estimate.confidence * 100}%`);
+  };
+
+  return (
+    <div>
+      <ContentEstimator
+        content={{
+          text: lesson.content,
+          videos: lesson.videos,
+          contentType: "lesson"
+        }}
+        userProfile={user.learningProfile}
+        onEstimateReady={handleEstimateReady}
+        variant="card"
+        showBreakdown={true}
+      />
+    </div>
+  );
+}
+```
+
+#### Advanced Usage with Progress Tracking
+```typescript
+import { useContentEstimation, useProgressTracking } from '@/hooks/useContentEstimation';
+
+function InteractiveLearningSession({ content, userProfile }) {
+  const { estimate, isLoading } = useContentEstimation({
+    content,
+    userProfile,
+    autoAnalyze: true
+  });
+
+  const {
+    progress,
+    elapsedTime,
+    remainingTime,
+    startTracking,
+    stopTracking,
+    updateProgress
+  } = useProgressTracking(estimate?.total || 0);
+
+  const handleStartLearning = () => {
+    startTracking();
+  };
+
+  const handleProgressUpdate = (completionPercentage) => {
+    updateProgress(completionPercentage);
+  };
+
+  return (
+    <div>
+      {estimate && (
+        <ProgressIndicator
+          progress={progress}
+          estimatedTime={estimate.total}
+          elapsedTime={elapsedTime}
+          variant="linear"
+          showTimeRemaining={true}
+        />
+      )}
+    </div>
+  );
+}
+```
+
+### Testing
+
+The system includes comprehensive test coverage:
+- **79 tests** covering all analysis functions, components, and hooks
+- **Unit tests** for text/video analysis engines
+- **Integration tests** for estimation algorithms
+- **Component tests** with React Testing Library
+- **Hook tests** with proper mocking and async handling
+
+```bash
+# Run content estimation tests
+npm test -- --testPathPatterns="content-analysis|content-estimation|useContentEstimation"
+
+# Run all tests
+npm test
+```
+
+### Mock Data
+
+Comprehensive mock data available for development and testing:
+
+```typescript
+import { 
+  mockLessons, 
+  mockUserProfiles, 
+  mockTimeEstimates 
+} from '@/lib/mock-data/content-estimation';
+
+// Use in development
+const estimate = mockTimeEstimates.mediumLesson;
+const userProfile = mockUserProfiles.fastReader;
+const content = mockLessons.comprehensiveChapter;
+```
 
 ## 🐛 Troubleshooting
 
