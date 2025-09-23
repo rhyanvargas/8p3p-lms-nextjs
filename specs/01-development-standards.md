@@ -288,11 +288,46 @@ const getQuizTimeLimit = (quiz: Quiz, user: User): number => {
 
 ## Component Development
 
+### Component Reusability Protocol (MANDATORY)
+**ALWAYS follow this sequence before creating new components:**
+
+1. **Scan Existing Components**: Search `src/components/` for similar functionality
+2. **Evaluate Reusability**: Can existing components be extended or composed?
+3. **Search shadcn/ui**: Use web search on https://ui.shadcn.com/docs/components for relevant base components
+4. **Choose Approach**:
+   - **Reuse**: Extend existing component with additional props
+   - **Compose**: Combine multiple existing components
+   - **New**: Create new component using shadcn/ui as base
+
+### Component Creation Workflow
+```typescript
+// 1. Import existing components first
+import { ExistingComponent } from "@/components/common/existing";
+import { Button } from "@/components/ui/button"; // shadcn/ui
+
+// 2. Compose or extend rather than recreate
+export function NewComponent({ ...props }: NewComponentProps) {
+  return (
+    <ExistingComponent>
+      <Button variant="outline">
+        {/* Additional functionality */}
+      </Button>
+    </ExistingComponent>
+  );
+}
+```
+
+### shadcn/ui Integration
+- **Install Components**: `npx shadcn@latest add {component-name}`
+- **Extend, Don't Modify**: Create wrapper components instead of modifying shadcn/ui directly
+- **Consistent Theming**: Use Tailwind CSS v4 theme system for customization
+
 ### Component Structure
 - Use Server Components by default
 - Only use Client Components when necessary (interactivity, browser APIs)
 - Keep components focused on single responsibility
 - Extract reusable logic into custom hooks
+- **Document Reusability**: Include JSDoc comments about component composition
 
 ### Performance Best Practices
 - Memoize expensive calculations with `useMemo`
