@@ -1,4 +1,4 @@
-name: PR Quality Checks
+name: PR Quality Checks (MVP - No Unit Tests)
 
 on:
   pull_request:

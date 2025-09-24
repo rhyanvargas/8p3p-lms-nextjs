@@ -79,29 +79,81 @@ Course
 ├── id: string
 ├── title: string
 ├── description: string
-├── estimatedDuration: number (minutes)
-├── chapters: Chapter[]
-└── progress: CourseProgress
-
-Chapter
-├── id: string
-├── title: string
-├── description: string
-├── estimatedDuration: number (minutes)
-├── videoUrl?: string (optional)
 ├── sections: Section[]
-├── quiz: Quiz
-├── learningCheck: LearningCheck
-└── progress: ChapterProgress
+├── progress: number (0-100)
+├── completedChapters: string[]
+└── lastViewedChapter?: string
 
 Section
 ├── id: string
 ├── title: string
-├── content: string
-├── videoUrl: string (required)
-├── estimatedDuration: number (minutes)
-└── progress: SectionProgress
+└── chapters: Chapter[]
+
+Chapter
+├── id: string
+├── title: string
+├── learningObjective: string
+├── videoScript: string
+├── estimatedDuration?: number (seconds)
+├── quiz: Quiz
+├── completed?: boolean
+├── videoCompleted?: boolean
+├── quizPassed?: boolean
+└── questionAskedCount?: number
+
+Quiz
+├── id: string
+├── title: string
+├── description: string
+├── questions: QuizQuestion[]
+└── passingScore: number
 ```
+
+### MVP Time Estimation & Progress System
+
+#### Simple Time Estimation Formula
+```typescript
+// Simplified calculation for MVP
+totalTime = videoTime + quizTime + learningCheckTime
+
+Where:
+- videoTime = sum of all video durations (or 8 minutes default)
+- quizTime = (5 minutes * 3 attempts) per quiz
+- learningCheckTime = (2 minutes * 2 attempts) per chapter
+```
+
+#### Simple Progress Calculation
+```typescript
+// Two approaches for MVP:
+// 1. Time-based: progress = (timeSpent / totalTime) * 100
+// 2. Chapter-based: progress = (completedChapters / totalChapters) * 100
+```
+
+#### Timer Component Usage
+- **Quiz Timer**: Countdown timer for quiz attempts
+- **Question Timer**: Individual question time limits
+- **Learning Check Timer**: Time limits for learning activities
+- Uses shadcn countdown hook for reliability
+
+### MVP Testing Strategy
+
+#### Primary Testing Approach: Q&A Testing
+- **Manual Testing**: Focus on user workflows and feature validation
+- **Q&A Sessions**: Regular testing sessions to validate core functionality
+- **Bug Tracking**: Simple issue tracking for quick fixes
+- **User Acceptance**: Validate features meet MVP requirements
+
+#### Post-MVP Testing Enhancement
+- **Unit Tests**: Comprehensive test suite after feature complete
+- **Integration Tests**: Component interaction testing
+- **E2E Tests**: Full user journey validation
+- **Performance Tests**: Load and stress testing
+
+#### Current MVP Focus
+- ✅ **Feature Complete**: Priority over test coverage
+- ✅ **Q&A Validation**: Manual testing of core flows
+- ✅ **Quick Iterations**: Fast feedback and fixes
+- 🔄 **Post-MVP**: Comprehensive automated testing
 
 ### Component Architecture
 ```
