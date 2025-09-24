@@ -30,6 +30,7 @@ export interface Chapter {
 	videoCompleted?: boolean;
 	quizPassed?: boolean;
 	questionAskedCount?: number;
+	estimatedDuration?: number; // Duration in seconds for MVP calculations
 }
 
 export interface Section {

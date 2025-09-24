@@ -25,7 +25,7 @@
 
 - **Course Catalog**: Browse and enroll in EMDR training courses
 - **Smart Course Navigation**: Auto-expanding sidebar with active chapter detection
-- **Progress Tracking**: Real-time completion tracking with visual indicators
+- **Simple Progress Tracking**: Chapter-based completion tracking with visual indicators
 - **Interactive Dashboard**: Personalized learning dashboard with widgets
 - **Enhanced Quiz System**:
   - Pass/fail feedback with conditional navigation
@@ -36,6 +36,19 @@
 - **Community Features**: Social learning with posts and interactions
 - **SEO-Friendly URLs**: Human-readable slugs with reliable ID references
 - **Hierarchical Structure**: Organized sections and chapters with auto-collapse
+
+### ⏱️ **MVP Time Management System**
+
+- **Simple Time Estimation**: Basic formula for course completion times
+  - `totalTime = videoTime + quizTime + learningCheckTime`
+  - Default 8-minute chapters with configurable quiz/learning check times
+- **Progress Calculation**: Two simple approaches
+  - Time-based: `(timeSpent / totalTime) * 100`
+  - Chapter-based: `(completedChapters / totalChapters) * 100`
+- **Reusable Timer Component**: 
+  - Countdown timers for quizzes and learning activities
+  - Multiple variants (compact, default, large)
+  - Built with shadcn countdown hook for reliability
 
 ### 🎨 **Modern UI/UX**
 
