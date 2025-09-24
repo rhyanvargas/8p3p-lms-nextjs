@@ -171,63 +171,49 @@ graph TD
 3. After re-authentication → Return to original page
 4. Logout → Clear session and redirect to `/login`
 
-## 🧪 Testing Authentication
+## 🧪 MVP Testing Strategy
 
-### Manual Testing Scenarios
+### Q&A Testing Approach (MVP Focus)
 
-#### ✅ **Route Protection**
+For rapid MVP development, we prioritize manual Q&A testing over comprehensive unit testing:
 
-```bash
-# Test 1: Protected routes redirect when not authenticated
-curl -I http://localhost:3000/dashboard
-# Expected: 307 redirect to /login
+#### ✅ **Manual Testing Scenarios**
 
-# Test 2: Public routes accessible without auth
-curl -I http://localhost:3000/
-# Expected: 200 OK
-```
+**Route Protection:**
+1. Visit protected routes without login → Should redirect to `/login`
+2. Login and access protected routes → Should work normally
+3. Logout → Should clear session and redirect appropriately
 
-#### ✅ **API Protection**
+**Course Navigation:**
+1. Browse course catalog → All courses should display correctly
+2. Navigate through chapters → Progress should update
+3. Complete quizzes → Should track completion status
 
-```bash
-# Test 3: Protected API returns 401 when not authenticated
-curl http://localhost:3000/api/user
-# Expected: {"success": false, "error": "Authentication required"}
-```
+**Timer Functionality:**
+1. Start quiz timer → Should countdown properly
+2. Timer expiration → Should trigger appropriate actions
+3. Different timer variants → Should display correctly
 
-#### ✅ **Session Persistence**
-
-1. Login → Close browser → Reopen → Should remain logged in
-2. Login → Wait for session timeout → Should redirect to login
-3. Login → Logout → Should redirect to login page
-
-#### ✅ **Google OAuth**
-
-1. Click "Continue with Google" → Google consent screen
-2. Approve permissions → Redirect to dashboard
-3. User profile populated with Google data
-
-#### ✅ **Smart Redirects**
-
-1. Visit `/courses` while logged out → Redirect to `/login`
-2. Complete login → Automatic redirect to `/courses`
-3. Visit `/login` while logged in → Redirect to `/dashboard`
-
-### Automated Testing
+#### ✅ **Code Quality Checks**
 
 ```bash
-# Run linting
-npm run lint
+# Run linting (enforced in CI/CD)
+npm run lint:strict
 
 # Run type checking
 npm run type-check
 
-# Run authentication tests (when implemented)
-npm run test:auth
-
-# Run end-to-end tests
-npm run test:e2e
+# Validate build
+npm run validate
 ```
+
+#### ✅ **Post-MVP Testing Plan**
+
+After feature completion, we'll implement:
+- Comprehensive unit test suite
+- Integration tests for key workflows  
+- End-to-end testing with Playwright
+- Performance and accessibility testing
 
 ## 📁 Project Structure
 
@@ -883,21 +869,20 @@ function InteractiveLearningSession({ content, userProfile }) {
 }
 ```
 
-### Testing
+### Development & Integration
 
-The system includes comprehensive test coverage:
-- **79 tests** covering all analysis functions, components, and hooks
-- **Unit tests** for text/video analysis engines
-- **Integration tests** for estimation algorithms
-- **Component tests** with React Testing Library
-- **Hook tests** with proper mocking and async handling
+The MVP system focuses on simple, reliable functionality:
+- **Basic time calculations** using configurable constants
+- **Reusable timer component** with multiple variants
+- **Simple progress tracking** based on chapter completion
+- **Q&A testing approach** for rapid iteration
 
 ```bash
-# Run content estimation tests
-npm test -- --testPathPatterns="content-analysis|content-estimation|useContentEstimation"
+# Validate code quality
+npm run validate
 
-# Run all tests
-npm test
+# Run development server
+npm run dev
 ```
 
 ### Mock Data

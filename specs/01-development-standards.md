@@ -22,6 +22,38 @@
 - **MUST**: Remove unused imports and variables
 - **MUST**: Pass all quality gates before declaring features complete (see `specs/00-specification-framework.md#quality-gates`)
 
+### Codebase Analysis Protocol (MANDATORY)
+Before making ANY recommendations about files, components, or functionality:
+
+#### 1. Existing Implementation Check
+- **MUST**: Search for existing implementations: `grep_search "functionName|ComponentName"`
+- **MUST**: Check component directories: `find_by_name "*component-name*|*feature-name*"`
+- **MUST**: Read related files completely, not just snippets
+- **MUST**: Verify actual usage patterns: `grep_search "import.*from.*filename"`
+
+#### 2. Duplication Prevention
+- **NEVER**: Suggest creating new files without checking for existing implementations
+- **NEVER**: Assume functionality doesn't exist without comprehensive searching
+- **ALWAYS**: Build upon existing work rather than recreating it
+- **ALWAYS**: Acknowledge existing implementations before suggesting changes
+
+#### 3. Recommendation Protocol
+- **READ FIRST, RECOMMEND SECOND**: Always scan existing codebase thoroughly
+- **VERIFY ASSUMPTIONS**: Never assume something doesn't exist without searching
+- **ASK CLARIFYING QUESTIONS**: "I see you have X, are you looking to enhance it or replace it?"
+- **ACKNOWLEDGE EXISTING WORK**: Recognize what's already implemented well
+
+#### 4. Standard Analysis Commands
+```bash
+# Before any file/component recommendations:
+grep_search "ComponentName|functionName"     # Check existing implementations
+find_by_name "*feature*|*component*"        # Find related files
+grep_search "import.*ComponentName"          # Check usage patterns
+Read existing-file.tsx                       # Read complete implementations
+```
+
+**Violation Consequence**: If this protocol is not followed and results in duplicate work or incorrect assumptions, immediately acknowledge the error, provide corrected analysis, and explain the missed steps.
+
 ### Quality Gate Compliance
 Before any feature, component, or phase can be marked as "complete":
 1. **ESLint**: `npm run lint` passes with 0 errors
