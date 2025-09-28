@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import Video from "next-video";
 
 // Import video files directly for next-video
@@ -11,7 +12,11 @@ import closingVideo from "/videos/Closing-8p3p-Ch1-Section-1-4.mp4";
 interface VideoPlayerProps {
 	videoId?: string;
 	className?: string;
-	transcript?: string;
+	onVideoElementReady?: (videoElement: HTMLVideoElement) => void;
+}
+
+export interface VideoPlayerRef {
+	getVideoElement: () => HTMLVideoElement | null;
 }
 
 // Video mapping - now using section IDs
@@ -22,16 +27,53 @@ const videoMap = {
 	section_1_4: closingVideo,
 };
 
-
-export function VideoPlayer({
+export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({
 	videoId = "section_1_1",
 	className = "",
-	transcript = "",
-}: VideoPlayerProps) {
+	onVideoElementReady,
+}, ref) => {
 	const videoSrc = videoMap[videoId as keyof typeof videoMap] || introVideo;
+	const containerRef = useRef<HTMLDivElement>(null);
+	const videoElementRef = useRef<HTMLVideoElement | null>(null);
+
+	useImperativeHandle(ref, () => ({
+		getVideoElement: () => videoElementRef.current,
+	}));
+
+	useEffect(() => {
+		// Find the video element after Next Video renders
+		const findVideoElement = () => {
+			if (containerRef.current) {
+				const videoElement = containerRef.current.querySelector('video') as HTMLVideoElement;
+				if (videoElement && videoElement !== videoElementRef.current) {
+					videoElementRef.current = videoElement;
+					if (onVideoElementReady) {
+						onVideoElementReady(videoElement);
+					}
+				}
+			}
+		};
+
+		// Try to find video element immediately
+		findVideoElement();
+
+		// Also try after a short delay in case Next Video hasn't rendered yet
+		const timeout = setTimeout(findVideoElement, 100);
+
+		// Set up a MutationObserver to detect when the video element is added
+		const observer = new MutationObserver(findVideoElement);
+		if (containerRef.current) {
+			observer.observe(containerRef.current, { childList: true, subtree: true });
+		}
+
+		return () => {
+			clearTimeout(timeout);
+			observer.disconnect();
+		};
+	}, [onVideoElementReady, videoSrc]);
 
 	return (
-		<div className={`${className}`}>
+		<div className={`${className}`} ref={containerRef}>
 			<Video
 				src={videoSrc}
 				controls
@@ -39,4 +81,6 @@ export function VideoPlayer({
 			/>
 		</div>
 	);
-}
+});
+
+VideoPlayer.displayName = "VideoPlayer";

@@ -1,76 +1,102 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { TranscriptHeader } from "./transcript-header";
+import { TranscriptSegment } from "./transcript-segment";
+import {
+	MediaSync,
+	type TranscriptSegment as ITranscriptSegment,
+} from "./media-sync";
+import { cn } from "@/lib/utils";
 
 interface InteractiveScriptProps {
+	className?: string;
 	script: string;
+	videoElement?: HTMLVideoElement | null;
 }
 
-export function InteractiveScript({ script }: InteractiveScriptProps) {
-	const [copied, setCopied] = useState(false);
-	const [expanded, setExpanded] = useState(false);
+export function InteractiveScript({
+	className,
+	script,
+	videoElement,
+}: InteractiveScriptProps) {
+	const [activeSegmentIndex, setActiveSegmentIndex] = useState(-1);
+	const [segments, setSegments] = useState<ITranscriptSegment[]>([]);
+	const mediaSyncRef = useRef<MediaSync | null>(null);
+	const segmentRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-	// Split script into paragraphs
-	const paragraphs = script.split("\n\n").filter((p) => p.trim().length > 0);
+	// Initialize segments and MediaSync
+	useEffect(() => {
+		const parsedSegments = MediaSync.parseScriptToSegments(script);
+		setSegments(parsedSegments);
+		segmentRefs.current = new Array(parsedSegments.length);
 
-	// Display only first 3 paragraphs if not expanded
-	const displayParagraphs = expanded ? paragraphs : paragraphs.slice(0, 3);
+		// Initialize MediaSync
+		mediaSyncRef.current = new MediaSync(
+			parsedSegments,
+			(index, segment) => {
+				setActiveSegmentIndex(index);
+			},
+			(index) => {
+				// Scroll to segment
+				const segmentElement = segmentRefs.current[index];
+				if (segmentElement) {
+					segmentElement.scrollIntoView({
+						behavior: "smooth",
+						block: "center",
+					});
+				}
+			}
+		);
 
-	// Copy script to clipboard
-	const copyToClipboard = () => {
-		navigator.clipboard.writeText(script);
-		setCopied(true);
-		setTimeout(() => setCopied(false), 2000);
+		return () => {
+			if (mediaSyncRef.current) {
+				mediaSyncRef.current.destroy();
+			}
+		};
+	}, [script]);
+
+	// Connect to video element when available
+	useEffect(() => {
+		if (videoElement && mediaSyncRef.current) {
+			mediaSyncRef.current.init(videoElement);
+		}
+	}, [videoElement]);
+
+	// Handle segment click
+	const handleSegmentClick = (timestamp: string) => {
+		if (mediaSyncRef.current) {
+			mediaSyncRef.current.seekToTimestamp(timestamp);
+		}
 	};
 
 	return (
-		<Card>
-			<CardContent className="p-6">
-				<div className="flex justify-between items-center mb-4">
-					<h3 className="text-lg font-semibold">0:00</h3>
-					<Button
-						variant="ghost"
-						size="sm"
-						className="flex items-center gap-1"
-						onClick={copyToClipboard}
-					>
-						{copied ? (
-							<>
-								<Check className="h-4 w-4" />
-								<span>Copied</span>
-							</>
-						) : (
-							<>
-								<Copy className="h-4 w-4" />
-								<span>Copy</span>
-							</>
-						)}
-					</Button>
-				</div>
+		<Card className="shadow-none border-none rounded-none">
+			<CardContent className="p-0">
+				<TranscriptHeader
+					className={cn("p-2 backdrop-blur-lg bg-muted/50")}
+					title="Transcript"
+					script={script}
+				/>
 
-				<div className="space-y-4 text-muted-foreground">
-					{displayParagraphs.map((paragraph, index) => (
-						<p key={index}>{paragraph}</p>
+				<div className="space-y-2 p-2">
+					{segments.map((segment, index) => (
+						<div
+							key={index}
+							ref={(el) => {
+								segmentRefs.current[index] = el;
+							}}
+						>
+							<TranscriptSegment
+								timestamp={segment.timestamp}
+								text={segment.text}
+								isActive={index === activeSegmentIndex}
+								onClick={handleSegmentClick}
+							/>
+						</div>
 					))}
-
-					{paragraphs.length > 3 && !expanded && (
-						<div className="pt-2">
-							<Button variant="ghost" onClick={() => setExpanded(true)}>
-								Show More
-							</Button>
-						</div>
-					)}
-
-					{expanded && (
-						<div className="pt-2">
-							<Button variant="ghost" onClick={() => setExpanded(false)}>
-								Show Less
-							</Button>
-						</div>
-					)}
 				</div>
 			</CardContent>
 		</Card>

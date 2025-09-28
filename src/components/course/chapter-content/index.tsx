@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { VideoPlayer } from "./video-player";
+import { VideoPlayerWithTranscript } from "./video-player-with-transcript";
 import { InteractiveScript } from "./interactive-script";
 import { ChapterQuiz } from "./chapter-quiz";
 import { Button } from "@/components/ui/button";
@@ -72,31 +72,14 @@ export function ChapterContent({
 				/* 2-Column Layout for Video Sections */
 				<div className="flex gap-2 bg-white border border-gray-200 rounded-lg flex-wrap">
 					{/* Video Player Container - Left Column */}
-					<div className=" p-4 flex-auto w-[600px]">
-						<VideoPlayer
+					<div className="flex-auto w-[600px]">
+						<VideoPlayerWithTranscript
 							videoId={section.id}
-							transcript={section.videoScript}
+							script={
+								section.videoScript ||
+								"No transcript available for this section."
+							}
 						/>
-					</div>
-
-					{/* Transcript Container - Right Column */}
-					<div className="bg-white border-l border-gray-200 flex-auto w-[300px]">
-						{/* Transcript Header */}
-						<div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-							<h3 className="text-sm font-medium text-gray-900">
-								Interactive Transcript
-							</h3>
-						</div>
-
-						{/* Transcript Content */}
-						<div className="p-4 h-[400px] overflow-y-auto">
-							<InteractiveScript
-								script={
-									section.videoScript ||
-									"No transcript available for this section."
-								}
-							/>
-						</div>
 					</div>
 				</div>
 			) : section.sectionType === "quiz" ? (
