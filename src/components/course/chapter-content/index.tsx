@@ -3,118 +3,173 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { VideoPlayer } from "@/components/course/chapter-content/video-player";
-import { InteractiveScript } from "@/components/course/chapter-content/interactive-script";
-import { ChapterQuiz } from "@/components/course/chapter-content/chapter-quiz";
+import { VideoPlayer } from "./video-player";
+import { InteractiveScript } from "./interactive-script";
+import { ChapterQuiz } from "./chapter-quiz";
+import { Button } from "@/components/ui/button";
 import { Course, Section, Chapter } from "@/lib/mock-data";
-import { 
-  generateCourseSlug, 
-  generateSectionSlug, 
-  generateChapterSlug,
-  getNextChapter
+import {
+	generateCourseSlug,
+	generateSectionSlug,
+	generateChapterSlug,
+	getNextChapter,
 } from "@/lib/course-utils";
 
 interface ChapterContentProps {
-  course: Course;
-  section: Section;
-  chapter: Chapter;
+	course: Course;
+	chapter: Chapter;
+	section: Section;
 }
 
-export function ChapterContent({ course, section, chapter }: ChapterContentProps) {
-  const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'transcript' | 'quiz'>('transcript');
+export function ChapterContent({
+	course,
+	chapter,
+	section,
+}: ChapterContentProps) {
+	const router = useRouter();
+	const [activeTab, setActiveTab] = useState<"transcript" | "quiz">();
 
-  
-  // Generate slugs for navigation
-  const courseSlug = generateCourseSlug(course.id, course.title);
+	// Generate slugs for navigation
+	const courseSlug = generateCourseSlug(course.id, course.title);
 
-  
-  // Get next chapter for navigation
-  const nextChapter = getNextChapter(course.id, section.id, chapter.id);
-  
-  // Navigation functions
-  const navigateToChapter = (sectionId: string, chapterId: string, chapterTitle: string) => {
-    const targetSectionSlug = generateSectionSlug(sectionId, 
-      course.sections.find(s => s.id === sectionId)?.title || "");
-    const chapterSlug = generateChapterSlug(chapterId, chapterTitle);
-    router.push(`/courses/${courseSlug}/${targetSectionSlug}/chapters/${chapterSlug}`);
-  };
-  
-  const handleNextChapter = () => {
-    if (nextChapter) {
-      const nextSection = course.sections.find(s => 
-        s.chapters.some(c => c.id === nextChapter.id)
-      );
-      if (nextSection) {
-        navigateToChapter(nextSection.id, nextChapter.id, nextChapter.title);
-      }
-    }
-  };
-  
+	// Get next section for navigation
+	const nextSection = getNextChapter(course.id, chapter.id, section.id);
 
-  
-  return (
-    <div className="container mx-auto px-4 py-6 max-w-5xl">
-      {/* Chapter Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">{chapter.title}</h1>
-        <p className="text-muted-foreground">{chapter.learningObjective}</p>
-      </div>
-      
-      {/* Video Player */}
-      <div className="mb-8">
-        <VideoPlayer />
-      </div>
-      
-      {/* Tab Navigation */}
-      <div className="flex border-b mb-6">
-        <button
-          className={`px-4 py-2 font-medium ${
-            activeTab === 'transcript' 
-              ? 'border-b-2 border-primary text-primary' 
-              : 'text-muted-foreground'
-          }`}
-          onClick={() => setActiveTab('transcript')}
-        >
-          Transcript
-        </button>
-        <button
-          className={`px-4 py-2 font-medium ${
-            activeTab === 'quiz' 
-              ? 'border-b-2 border-primary text-primary' 
-              : 'text-muted-foreground'
-          }`}
-          onClick={() => setActiveTab('quiz')}
-        >
-          Quiz
-        </button>
-      </div>
-      
-      {/* Tab Content */}
-      <div className="mb-8">
-        {activeTab === 'transcript' ? (
-          <InteractiveScript script={chapter.videoScript || "No transcript available for this chapter."} />
-        ) : (
-          chapter.quiz ? (
-            <ChapterQuiz 
-              quiz={{
-                ...chapter.quiz,
-                description: chapter.quiz.description || "Test your knowledge from this chapter",
-                passingScore: chapter.quiz.passingScore || 70
-              }}
-              onNextChapter={nextChapter ? handleNextChapter : undefined}
-              chapterTitle={chapter.title}
-              chapterId={chapter.id}
-            />
-          ) : (
-            <div className="p-8 text-center">
-              <p className="text-muted-foreground">Quiz not available for this chapter.</p>
-            </div>
-          )
-        )}
-      </div>
-      
+	// Navigation functions
+	const navigateToSection = (
+		chapterId: string,
+		sectionId: string,
+		sectionTitle: string
+	) => {
+		const chapterSlug = generateChapterSlug(chapterId, chapter.title);
+		const sectionSlug = generateSectionSlug(sectionId, sectionTitle);
+		router.push(
+			`/courses/${courseSlug}/${chapterSlug}/sections/${sectionSlug}`
+		);
+	};
 
-    </div>
-  );
+	const handleNextSection = () => {
+		if (nextSection) {
+			const nextChapter = course.chapters.find((c) =>
+				c.sections.some((s) => s.id === nextSection.id)
+			);
+			if (nextChapter) {
+				navigateToSection(nextChapter.id, nextSection.id, nextSection.title);
+			}
+		}
+	};
+
+	return (
+		<div className="container mx-auto px-4 py-6 max-w-7xl">
+			{/* Section Header */}
+			<div className="mb-8">
+				<h1 className="text-3xl font-bold mb-2">{section.title}</h1>
+				<p className="text-muted-foreground">{section.learningObjective}</p>
+			</div>
+
+			{/* Content Layout - Different layouts based on section type */}
+			{section.sectionType === "video" ? (
+				/* 2-Column Layout for Video Sections */
+				<div className="flex gap-2 bg-white border border-gray-200 rounded-lg flex-wrap">
+					{/* Video Player Container - Left Column */}
+					<div className=" p-4 flex-auto w-[600px]">
+						<VideoPlayer
+							videoId={section.id}
+							transcript={section.videoScript}
+						/>
+					</div>
+
+					{/* Transcript Container - Right Column */}
+					<div className="bg-white border-l border-gray-200 flex-auto w-[300px]">
+						{/* Transcript Header */}
+						<div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
+							<h3 className="text-sm font-medium text-gray-900">
+								Interactive Transcript
+							</h3>
+						</div>
+
+						{/* Transcript Content */}
+						<div className="p-4 h-[400px] overflow-y-auto">
+							<InteractiveScript
+								script={
+									section.videoScript ||
+									"No transcript available for this section."
+								}
+							/>
+						</div>
+					</div>
+				</div>
+			) : section.sectionType === "quiz" ? (
+				/* Full Width Layout for Quiz Sections */
+				<div className="mb-8">
+					<ChapterQuiz
+						quiz={{
+							id: section.quiz!.id,
+							title: section.quiz!.title,
+							description: section.quiz!.description,
+							questions: section.quiz!.questions,
+							passingScore: section.quiz!.passingScore,
+						}}
+					/>
+				</div>
+			) : (
+				/* Default Layout for Other Section Types (AI Avatar, etc.) */
+				<div className="mb-8">
+					<div className="flex border-b mb-6">
+						<button
+							className={`px-4 py-2 font-medium ${
+								activeTab === "transcript"
+									? "border-b-2 border-primary text-primary"
+									: "text-muted-foreground"
+							}`}
+							onClick={() => setActiveTab("transcript")}
+						>
+							Transcript
+						</button>
+						{section.quiz && (
+							<button
+								className={`px-4 py-2 font-medium ${
+									activeTab === "quiz"
+										? "border-b-2 border-primary text-primary"
+										: "text-muted-foreground"
+								}`}
+								onClick={() => setActiveTab("quiz")}
+							>
+								Quiz
+							</button>
+						)}
+					</div>
+					<div>
+						{activeTab === "transcript" ? (
+							<InteractiveScript
+								script={
+									section.videoScript ||
+									"No transcript available for this section."
+								}
+							/>
+						) : section.quiz ? (
+							<ChapterQuiz
+								quiz={{
+									id: section.quiz.id,
+									title: section.quiz.title,
+									description: section.quiz.description,
+									questions: section.quiz.questions,
+									passingScore: section.quiz.passingScore,
+								}}
+							/>
+						) : (
+							<div>No quiz available for this section.</div>
+						)}
+					</div>
+				</div>
+			)}
+
+			{/* Navigation */}
+			{nextSection && (
+				<Button onClick={handleNextSection} className="mt-4">
+					Next: {nextSection.title}
+				</Button>
+			)}
+		</div>
+	);
 }

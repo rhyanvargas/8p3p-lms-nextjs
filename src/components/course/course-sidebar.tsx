@@ -65,23 +65,23 @@ export function CourseSidebar({
 		return isChapterCompletedObj(course, chapterId) ? 100 : 0;
 	};
 
-	// Track open sections
+	// Track open chapters
 	const [openModules, setOpenModules] = useState<string[]>([
-		course.sections[0]?.id || "",
+		course.chapters[0]?.id || "",
 	]);
 
-	// Auto-expand section containing active chapter
+	// Auto-expand chapter containing active section
 	useEffect(() => {
-		const activeSection = course.sections.find((section) =>
-			section.chapters.some(
-				(chapter) =>
-					pathname.includes(generateChapterSlug(chapter.id, chapter.title))
+		const activeChapter = course.chapters.find((chapter) =>
+			chapter.sections.some(
+				(section) =>
+					pathname.includes(generateSectionSlug(section.id, section.title))
 			)
 		);
-		if (activeSection) {
-			setOpenModules([activeSection.id]);
+		if (activeChapter) {
+			setOpenModules([activeChapter.id]);
 		}
-	}, [pathname, course.sections]);
+	}, [pathname, course.chapters]);
 
 	const toggleModule = (moduleId: string) => {
 		setOpenModules((prev) =>
@@ -133,17 +133,17 @@ export function CourseSidebar({
 
 							{/* Divider */}
 							<div className="h-px bg-border my-2" />
-							{course.sections.map((section) => (
+							{course.chapters.map((chapter) => (
 								<Collapsible
-									key={section.id}
-									open={openModules.includes(section.id)}
-									onOpenChange={() => toggleModule(section.id)}
+									key={chapter.id}
+									open={openModules.includes(chapter.id)}
+									onOpenChange={() => toggleModule(chapter.id)}
 								>
 									<SidebarMenuItem className="rounded-md group/chapter-item">
 										<CollapsibleTrigger asChild>
 											<SidebarMenuButton className="w-full justify-between px-4 py-2.5 h-auto text-left font-medium">
-												<span>{section.title}</span>
-												{openModules.includes(section.id) ? (
+												<span>{chapter.title}</span>
+												{openModules.includes(chapter.id) ? (
 													<ChevronUp className="h-4 w-4 opacity-70" />
 												) : (
 													<ChevronDown className="h-4 w-4 opacity-70" />
@@ -152,21 +152,21 @@ export function CourseSidebar({
 										</CollapsibleTrigger>
 										<CollapsibleContent>
 											<SidebarMenuSub className="space-y-0.5 ml-3 mt-1 border-l border-sidebar-primary pl-3">
-												{section.chapters.map((chapter) => {
-													const sectionSlug = generateSectionSlug(
-														section.id,
-														section.title
-													);
+												{chapter.sections.map((section) => {
 													const chapterSlug = generateChapterSlug(
 														chapter.id,
 														chapter.title
 													);
-													const chapterUrl = `/courses/${courseSlug}/${sectionSlug}/chapters/${chapterSlug}`;
-													const isActive = pathname.includes(chapterSlug);
+													const sectionSlug = generateSectionSlug(
+														section.id,
+														section.title
+													);
+													const sectionUrl = `/courses/${courseSlug}/${chapterSlug}/sections/${sectionSlug}`;
+													const isActive = pathname.includes(sectionSlug);
 
 													return (
-														<SidebarMenuSubItem key={chapter.id}>
-															<Link href={chapterUrl}>
+														<SidebarMenuSubItem key={section.id}>
+															<Link href={sectionUrl}>
 																<SidebarMenuSubButton
 																	asChild
 																	isActive={isActive}
@@ -175,11 +175,11 @@ export function CourseSidebar({
 																	<span className="flex w-full justify-between items-center">
 																		<div className="flex-1 min-w-0">
 																			<p className="text-sm truncate">
-																				{chapter.title}
+																				{section.title}
 																			</p>
 																		</div>
 																		<ChapterProgress
-																			progress={getChapterProgress(chapter.id)}
+																			progress={getChapterProgress(section.id)}
 																			size="sm"
 																		/>
 																	</span>

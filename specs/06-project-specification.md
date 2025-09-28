@@ -11,6 +11,9 @@ The 8P3P Learning Management System is a production-ready platform for EMDR ther
 #### Must Have (MVP)
 - ✅ **User Authentication**: Multi-layer security with Google OAuth
 - ✅ **Course Management**: Hierarchical content structure (Course → Chapters → Sections)
+  - **Course**: Top-level container with metadata and progress tracking
+  - **Chapter**: Logical grouping of related learning content
+  - **Section**: Individual learning objects (video, quiz, AI interaction, etc.)
 - ✅ **Video Learning**: Video content with progress tracking
 - ✅ **Assessment System**: Quizzes with retry logic and randomization
 - 🔄 **AI Learning Assistance**: Tavus AI integration for questions and learning checks
@@ -67,35 +70,40 @@ The 8P3P Learning Management System is a production-ready platform for EMDR ther
 ### Technology Stack
 - **Frontend**: Next.js 15 with App Router, React 19, TypeScript 5.9
 - **Styling**: Tailwind CSS v4, shadcn/ui components
-- **Authentication**: AWS Amplify Gen2 with Cognito
 - **Backend**: AWS Amplify Gen2 with GraphQL API
 - **Database**: DynamoDB (via Amplify) with hot-swappable DAL
 - **AI Integration**: Tavus AI for conversational features
 - **Deployment**: AWS Amplify Hosting with CI/CD
 
-### Data Architecture
-```
+### Data Structure
+
+#### Core Entities
+```typescript
 Course
 ├── id: string
 ├── title: string
 ├── description: string
-├── sections: Section[]
+├── chapters: Chapter[]
 ├── progress: number (0-100)
 ├── completedChapters: string[]
-└── lastViewedChapter?: string
-
-Section
-├── id: string
-├── title: string
-└── chapters: Chapter[]
+├── lastViewedChapter?: string
+├── imageUrl?: string
+└── duration?: string
 
 Chapter
 ├── id: string
 ├── title: string
+└── sections: Section[]
+
+Section
+├── id: string
+├── title: string
 ├── learningObjective: string
 ├── videoScript: string
+├── videoUrl?: string
 ├── estimatedDuration?: number (seconds)
-├── quiz: Quiz
+├── quiz?: Quiz
+├── sectionType?: "video" | "ai_avatar" | "quiz"
 ├── completed?: boolean
 ├── videoCompleted?: boolean
 ├── quizPassed?: boolean

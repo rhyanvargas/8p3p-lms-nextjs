@@ -17,7 +17,7 @@ export default function CoursesPage() {
             description={course.description}
             progress={course.progress || 0}
             imageUrl={course.imageUrl || "/emdr-xr-training.png"}
-            totalChapters={course.sections?.reduce((total, section) => total + section.chapters.length, 0) || 0}
+            totalChapters={course.chapters?.reduce((total, chapter) => total + chapter.sections.length, 0) || 0}
             completedChapters={course.completedChapters?.length || 0}
             duration={course.duration}
           />

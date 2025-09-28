@@ -21,28 +21,28 @@ interface CourseOverviewProps {
 export function CourseOverview({ course }: CourseOverviewProps) {
   const courseSlug = generateCourseSlug(course.id, course.title);
   
-  // Get the last viewed chapter for the "Resume" button
-  const lastViewedChapter = getLastViewedChapter(course.id);
-  const lastViewedSection = course.sections.find(section => 
-    section.chapters.some(chapter => chapter.id === lastViewedChapter?.id)
+  // Get the last viewed section for the "Resume" button
+  const lastViewedSection = getLastViewedChapter(course.id);
+  const lastViewedChapter = course.chapters.find(chapter => 
+    chapter.sections.some(section => section.id === lastViewedSection?.id)
   );
   
-  // Generate chapter URL helper
-  const getChapterUrl = (sectionId: string, chapterId: string, chapterTitle: string) => {
-    const sectionSlug = generateSectionSlug(sectionId, 
-      course.sections.find(s => s.id === sectionId)?.title || "");
-    const chapterSlug = generateChapterSlug(chapterId, chapterTitle);
-    return `/courses/${courseSlug}/${sectionSlug}/chapters/${chapterSlug}`;
+  // Generate section URL helper
+  const getSectionUrl = (chapterId: string, sectionId: string, sectionTitle: string) => {
+    const chapterSlug = generateChapterSlug(chapterId, 
+      course.chapters.find(c => c.id === chapterId)?.title || "");
+    const sectionSlug = generateSectionSlug(sectionId, sectionTitle);
+    return `/courses/${courseSlug}/${chapterSlug}/sections/${sectionSlug}`;
   };
   
   // Get resume URL
   const getResumeUrl = () => {
     if (lastViewedChapter && lastViewedSection) {
-      return getChapterUrl(lastViewedSection.id, lastViewedChapter.id, lastViewedChapter.title);
-    } else if (course.sections.length > 0 && course.sections[0].chapters.length > 0) {
-      const firstSection = course.sections[0];
-      const firstChapter = firstSection.chapters[0];
-      return getChapterUrl(firstSection.id, firstChapter.id, firstChapter.title);
+      return getSectionUrl(lastViewedChapter.id, lastViewedSection.id, lastViewedSection.title);
+    } else if (course.chapters.length > 0 && course.chapters[0].sections.length > 0) {
+      const firstChapter = course.chapters[0];
+      const firstSection = firstChapter.sections[0];
+      return getSectionUrl(firstChapter.id, firstSection.id, firstSection.title);
     }
     return null;
   };
@@ -76,7 +76,7 @@ export function CourseOverview({ course }: CourseOverviewProps) {
               <div className="flex items-center gap-1">
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
-                  {course.sections.reduce((total, section) => total + section.chapters.length, 0)} chapters
+                  {course.chapters.reduce((total, chapter) => total + chapter.sections.length, 0)} sections
                 </span>
               </div>
               <div className="flex items-center gap-1">
@@ -107,23 +107,23 @@ export function CourseOverview({ course }: CourseOverviewProps) {
       <div className="space-y-6">
         <h2 className="text-2xl font-semibold">Course Content</h2>
         
-        {course.sections.map((section, sectionIndex) => (
-          <Card key={section.id} className="overflow-hidden scroll-mt-24" id={section.id}>
+        {course.chapters.map((chapter, chapterIndex) => (
+          <Card key={chapter.id} className="overflow-hidden scroll-mt-24" id={chapter.id}>
             <CardHeader className="bg-muted/50">
               <CardTitle className="text-lg">
-                Section {sectionIndex + 1}: {section.title}
+                Chapter {chapterIndex + 1}: {chapter.title}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <ul className="divide-y">
-                {section.chapters.map((chapter, _chapterIndex) => {
-                  const isCompleted = course.completedChapters.includes(chapter.id);
-                  const chapterUrl = getChapterUrl(section.id, chapter.id, chapter.title);
+                {chapter.sections.map((section, _sectionIndex) => {
+                  const isCompleted = course.completedChapters.includes(section.id);
+                  const sectionUrl = getSectionUrl(chapter.id, section.id, section.title);
                   
                   return (
-                    <li key={chapter.id}>
+                    <li key={section.id}>
                       <Link 
-                        href={chapterUrl}
+                        href={sectionUrl}
                         className="block p-4 hover:bg-muted/50 transition-colors"
                       >
                         <div className="flex justify-between items-center">
@@ -133,16 +133,15 @@ export function CourseOverview({ course }: CourseOverviewProps) {
                                 progress={isCompleted ? 100 : 0}
                                 size="md"
                               />
-                              <p className="font-medium">{chapter.title}</p>
+                              <p className="font-medium">{section.title}</p>
                             </div>
-                            <p className="text-sm text-muted-foreground ml-9 mt-1">
-                              {chapter.learningObjective}
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {section.learningObjective}
                             </p>
                           </div>
                           <Button 
                             variant="ghost" 
                             size="sm"
-                            className="shrink-0"
                             asChild
                           >
                             <span>{isCompleted ? "Review" : "Start"}</span>
