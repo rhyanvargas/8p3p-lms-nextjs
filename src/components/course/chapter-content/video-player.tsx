@@ -41,7 +41,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({
 	}));
 
 	useEffect(() => {
-		// Find the video element after Next Video renders
 		const findVideoElement = () => {
 			if (containerRef.current) {
 				const videoElement = containerRef.current.querySelector('video') as HTMLVideoElement;
@@ -54,13 +53,9 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({
 			}
 		};
 
-		// Try to find video element immediately
 		findVideoElement();
-
-		// Also try after a short delay in case Next Video hasn't rendered yet
 		const timeout = setTimeout(findVideoElement, 100);
 
-		// Set up a MutationObserver to detect when the video element is added
 		const observer = new MutationObserver(findVideoElement);
 		if (containerRef.current) {
 			observer.observe(containerRef.current, { childList: true, subtree: true });

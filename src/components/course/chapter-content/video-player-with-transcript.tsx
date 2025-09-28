@@ -24,8 +24,7 @@ export function VideoPlayerWithTranscript({
 
 	return (
 		<div className="flex gap-6">
-			{/* Video Player - Left Side */}
-			<div className="flex-auto w-[600px] p-4">
+			<div className="flex-auto w-[600px]">
 				<VideoPlayer
 					ref={videoPlayerRef}
 					videoId={videoId}
@@ -33,11 +32,9 @@ export function VideoPlayerWithTranscript({
 				/>
 			</div>
 
-			{/* Transcript - Right Side */}
-			<div className="flex-auto w-[300px] border-l border-gray-200">
+			<div className="flex-auto w-[300px] border-l border-gray-200 pl-6">
 				<div className="h-[400px] overflow-y-auto">
 					<InteractiveScript
-						className="p-0"
 						script={script}
 						videoElement={videoElement}
 					/>

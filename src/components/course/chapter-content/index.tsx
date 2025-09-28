@@ -67,23 +67,17 @@ export function ChapterContent({
 				<p className="text-muted-foreground">{section.learningObjective}</p>
 			</div>
 
-			{/* Content Layout - Different layouts based on section type */}
 			{section.sectionType === "video" ? (
-				/* 2-Column Layout for Video Sections */
-				<div className="flex gap-2 bg-white border border-gray-200 rounded-lg flex-wrap">
-					{/* Video Player Container - Left Column */}
-					<div className="flex-auto w-[600px]">
-						<VideoPlayerWithTranscript
-							videoId={section.id}
-							script={
-								section.videoScript ||
-								"No transcript available for this section."
-							}
-						/>
-					</div>
+				<div className="bg-white border border-gray-200 rounded-lg p-4">
+					<VideoPlayerWithTranscript
+						videoId={section.id}
+						script={
+							section.videoScript ||
+							"No transcript available for this section."
+						}
+					/>
 				</div>
 			) : section.sectionType === "quiz" ? (
-				/* Full Width Layout for Quiz Sections */
 				<div className="mb-8">
 					<ChapterQuiz
 						quiz={{
