@@ -35,17 +35,17 @@
 - **AI-Powered Help**: Modal-based question system (Tavus AI ready)
 - **Community Features**: Social learning with posts and interactions
 - **SEO-Friendly URLs**: Human-readable slugs with reliable ID references
-- **Hierarchical Structure**: Organized sections and chapters with auto-collapse
+- **Hierarchical Structure**: Course → Chapters → Sections with auto-collapse navigation
 
 ### ⏱️ **MVP Time Management System**
 
 - **Simple Time Estimation**: Basic formula for course completion times
   - `totalTime = videoTime + quizTime + learningCheckTime`
-  - Default 8-minute chapters with configurable quiz/learning check times
+  - Default 8-minute chapters with configurable quiz and learning check times
 - **Progress Calculation**: Two simple approaches
   - Time-based: `(timeSpent / totalTime) * 100`
   - Chapter-based: `(completedChapters / totalChapters) * 100`
-- **Reusable Timer Component**: 
+- **Reusable Timer Component**:
   - Countdown timers for quizzes and learning activities
   - Multiple variants (compact, default, large)
   - Built with shadcn countdown hook for reliability
@@ -71,13 +71,53 @@
 | **Framework**        | Next.js 15 (App Router)                  |
 | **Language**         | TypeScript 5.9                           |
 | **Authentication**   | AWS Amplify Gen2 + Cognito               |
-| **Styling**          | TailwindCSS v4 + shadcn/ui + next-themes |
 | **Forms**            | React Hook Form + Zod                    |
 | **State Management** | React Context + useState                 |
 | **Code Quality**     | ESLint + TypeScript strict mode          |
 | **Deployment**       | AWS Amplify Hosting                      |
 
-## 🏃‍♂️ Quick Start
+## 📖 Content Structure
+
+The 8P3P LMS follows a hierarchical content structure designed for optimal learning flow:
+
+### Course → Chapters → Sections
+
+```typescript
+Course {
+  id: "1"
+  title: "EMDR Therapy Fundamentals"
+  chapters: [
+    Chapter {
+      id: "chapter_1"
+      title: "EMDR Foundations"
+      sections: [
+        Section { id: "section_1_1", title: "Introduction", sectionType: "video" }
+        Section { id: "section_1_2", title: "How EMDR Works", sectionType: "video" }
+        Section { id: "section_1_3", title: "Trauma and the Body", sectionType: "video" }
+        Section { id: "section_1_4", title: "Closing", sectionType: "video" }
+        Section { id: "section_1_5", title: "Learning Check", sectionType: "ai_avatar" }
+        Section { id: "section_1_6", title: "Knowledge Assessment", sectionType: "quiz" }
+      ]
+    }
+  ]
+}
+```
+
+### Section Types
+
+- **📹 Video**: Video content with transcript and progress tracking
+- **🤖 AI Avatar**: Interactive conversation with AI instructor (Tavus integration)
+- **📝 Quiz**: Assessment with multiple choice questions and retry logic
+- **📚 Learning Check**: Interactive review and reinforcement activities
+
+### Dynamic Ordering
+
+Sections can be reordered dynamically without changing IDs:
+- Each section has an `order` field for flexible sequencing
+- Content can be reorganized based on learning objectives
+- Maintains consistent URLs and progress tracking
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -180,16 +220,19 @@ For rapid MVP development, we prioritize manual Q&A testing over comprehensive u
 #### ✅ **Manual Testing Scenarios**
 
 **Route Protection:**
+
 1. Visit protected routes without login → Should redirect to `/login`
 2. Login and access protected routes → Should work normally
 3. Logout → Should clear session and redirect appropriately
 
 **Course Navigation:**
+
 1. Browse course catalog → All courses should display correctly
 2. Navigate through chapters → Progress should update
 3. Complete quizzes → Should track completion status
 
 **Timer Functionality:**
+
 1. Start quiz timer → Should countdown properly
 2. Timer expiration → Should trigger appropriate actions
 3. Different timer variants → Should display correctly
@@ -210,8 +253,9 @@ npm run validate
 #### ✅ **Post-MVP Testing Plan**
 
 After feature completion, we'll implement:
+
 - Comprehensive unit test suite
-- Integration tests for key workflows  
+- Integration tests for key workflows
 - End-to-end testing with Playwright
 - Performance and accessibility testing
 
@@ -229,9 +273,9 @@ After feature completion, we'll implement:
 │   │   ├── 📁 dashboard/      # Protected dashboard
 │   │   ├── 📁 courses/        # Protected courses
 │   │   │   └── 📁 [id]/       # Course detail pages
-│   │   │       └── 📁 [sectionId]/  # Section pages
-│   │   │           └── 📁 chapters/  # Chapter content
-│   │   │               └── 📁 [chapterId]/  # Individual chapters
+│   │   │       └── 📁 [chapterId]/  # Chapter pages
+│   │   │           └── 📁 sections/  # Section content
+│   │   │               └── 📁 [sectionId]/  # Individual sections
 │   │   ├── 📁 api/            # API routes
 │   │   │   └── user/          # Protected user endpoint
 │   │   └── layout.tsx         # Root layout with auth provider
@@ -589,24 +633,27 @@ Comprehensive timer functionality for quizzes, AI interactions, and progress tra
 ```typescript
 // Custom timer logic with full control
 const timer = useTimer(300, {
-  variant: "countdown",
-  autoStart: true,
-  onComplete: () => submitQuiz(),
-  onTick: (state) => updateProgress(state.progress)
+	variant: "countdown",
+	autoStart: true,
+	onComplete: () => submitQuiz(),
+	onTick: (state) => updateProgress(state.progress),
 });
 
 // Timer state and controls
 const {
-  time,                    // Current time (seconds)
-  isRunning,              // Timer running state
-  isPaused,               // Timer paused state
-  isCompleted,            // Timer completed state
-  progress,               // Progress percentage (0-100)
-  start, pause, resume,   // Control functions
-  reset, toggle,          // Control functions
-  getFormattedTime,       // "05:30" format
-  getTimeWithLabel,       // "5 minutes 30 seconds remaining"
-  getColorTheme           // "success" | "warning" | "danger"
+	time, // Current time (seconds)
+	isRunning, // Timer running state
+	isPaused, // Timer paused state
+	isCompleted, // Timer completed state
+	progress, // Progress percentage (0-100)
+	start,
+	pause,
+	resume, // Control functions
+	reset,
+	toggle, // Control functions
+	getFormattedTime, // "05:30" format
+	getTimeWithLabel, // "5 minutes 30 seconds remaining"
+	getColorTheme, // "success" | "warning" | "danger"
 } = timer;
 ```
 
@@ -614,20 +661,20 @@ const {
 
 ```typescript
 // Automatic validation based on context
-validateTimerDuration(300, "quiz")     // ✅ Valid (30s - 1hr)
-validateTimerDuration(600, "ai")       // ❌ Too long (1min - 5min)
-validateTimerDuration(30, "learning")  // ❌ Too short (1min - 30min)
-validateTimerDuration(7200, "general") // ✅ Valid (1s - 2hr)
+validateTimerDuration(300, "quiz"); // ✅ Valid (30s - 1hr)
+validateTimerDuration(600, "ai"); // ❌ Too long (1min - 5min)
+validateTimerDuration(30, "learning"); // ❌ Too short (1min - 30min)
+validateTimerDuration(7200, "general"); // ✅ Valid (1s - 2hr)
 ```
 
 #### 🔧 **Time Formatting Utilities**
 
 ```typescript
-formatTime(90)                          // "01:30"
-formatTime(3661, true)                  // "1:01:01"
-formatTimeWithLabel(90, "remaining")    // "1 minute 30 seconds remaining"
-calculateProgress(30, 60)               // 50 (percent)
-getTimerColorTheme(10, 60)             // "danger" (< 25% remaining)
+formatTime(90); // "01:30"
+formatTime(3661, true); // "1:01:01"
+formatTimeWithLabel(90, "remaining"); // "1 minute 30 seconds remaining"
+calculateProgress(30, 60); // 50 (percent)
+getTimerColorTheme(10, 60); // "danger" (< 25% remaining)
 ```
 
 ### Data Models
@@ -640,25 +687,25 @@ interface Chapter {
 	videoCompleted?: boolean;
 	quizPassed?: boolean;
 	questionAskedCount?: number;
-	timeSpent?: number;              // Time spent in seconds
-	quizAttempts?: number;           // Number of quiz attempts
+	timeSpent?: number; // Time spent in seconds
+	quizAttempts?: number; // Number of quiz attempts
 }
 
 // Course progress tracking
 interface Course {
 	lastViewedChapter?: string;
 	completedChapters: string[];
-	totalTimeSpent?: number;         // Total learning time
-	averageQuizScore?: number;       // Average quiz performance
+	totalTimeSpent?: number; // Total learning time
+	averageQuizScore?: number; // Average quiz performance
 }
 
 // Timer interaction tracking
 interface TimerSession {
 	context: "quiz" | "ai" | "learning";
-	duration: number;                // Configured duration
-	timeUsed: number;               // Actual time used
-	completed: boolean;             // Whether timer completed naturally
-	pauseCount?: number;            // Number of pauses
+	duration: number; // Configured duration
+	timeUsed: number; // Actual time used
+	completed: boolean; // Whether timer completed naturally
+	pauseCount?: number; // Number of pauses
 }
 ```
 
@@ -673,6 +720,7 @@ We welcome contributions! Please see our [**Contributing Guide**](CONTRIBUTING.m
 - 🔄 **Release Process**: Sprint-based development and deployment
 
 ### Quick Start
+
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/amazing-feature`)
 3. **Run pre-commit checks** (`npm run pre-commit`)
@@ -711,18 +759,21 @@ The Content Estimation System provides intelligent time estimation for mixed edu
 ### Features
 
 #### 🧠 **Smart Content Analysis**
+
 - **Text Analysis**: Word count, reading speed calculation (150-250 WPM), complexity assessment
 - **Video Analysis**: Duration parsing, type classification (lecture/demo/interactive), engagement factors
 - **Mixed Content**: Combined analysis with interaction time calculation
 - **Complexity Detection**: Simple/Moderate/Complex classification based on technical terms and structure
 
 #### 👤 **Personalization Engine**
+
 - **User Profiles**: Reading speed tracking, completion rate history, learning pace preferences
 - **Adaptive Estimates**: Personalized time calculations based on user performance
 - **Confidence Scoring**: Reliability assessment for time estimates (0-1 scale)
 - **Profile Updates**: Automatic learning from actual completion times
 
 #### 🎯 **Learning Recommendations**
+
 - **Session Planning**: Optimal session length and break frequency suggestions
 - **Pace Recommendations**: Fast/Moderate/Slow based on content complexity and user profile
 - **Progress Tracking**: Real-time progress monitoring with remaining time calculations
@@ -730,34 +781,36 @@ The Content Estimation System provides intelligent time estimation for mixed edu
 ### Components
 
 #### Core Analysis Engine
+
 ```typescript
 // Text analysis with complexity detection
-import { analyzeTextContent } from '@/lib/content-analysis';
+import { analyzeTextContent } from "@/lib/content-analysis";
 const analysis = analyzeTextContent(content);
 
 // Video analysis with engagement factors
-import { analyzeVideoContent } from '@/lib/content-analysis';
+import { analyzeVideoContent } from "@/lib/content-analysis";
 const videoAnalysis = analyzeVideoContent(metadata);
 
 // Complete time estimation
-import { calculateTimeEstimate } from '@/lib/content-analysis';
+import { calculateTimeEstimate } from "@/lib/content-analysis";
 const estimate = calculateTimeEstimate(mixedContent, userProfile);
 ```
 
 #### UI Components
+
 ```typescript
 // Time estimate display (multiple variants)
 import { TimeEstimate } from '@/components/common/content-estimation';
-<TimeEstimate 
-  estimate={estimate} 
-  variant="detailed" 
-  showBreakdown={true} 
-  complexity="moderate" 
+<TimeEstimate
+  estimate={estimate}
+  variant="detailed"
+  showBreakdown={true}
+  complexity="moderate"
 />
 
 // Content estimator with analysis
 import { ContentEstimator } from '@/components/common/content-estimation';
-<ContentEstimator 
+<ContentEstimator
   content={mixedContent}
   userProfile={userProfile}
   onEstimateReady={(estimate) => console.log(estimate)}
@@ -766,7 +819,7 @@ import { ContentEstimator } from '@/components/common/content-estimation';
 
 // Progress tracking
 import { ProgressIndicator } from '@/components/common/progress';
-<ProgressIndicator 
+<ProgressIndicator
   progress={45}
   estimatedTime={1800}
   elapsedTime={810}
@@ -775,29 +828,26 @@ import { ProgressIndicator } from '@/components/common/progress';
 ```
 
 #### Custom Hooks
+
 ```typescript
 // Content estimation with caching
-import { useContentEstimation } from '@/hooks/useContentEstimation';
+import { useContentEstimation } from "@/hooks/useContentEstimation";
 const { estimate, isLoading, error, analyze } = useContentEstimation({
-  content: mixedContent,
-  userProfile: userProfile,
-  autoAnalyze: true
+	content: mixedContent,
+	userProfile: userProfile,
+	autoAnalyze: true,
 });
 
 // Progress tracking
-import { useProgressTracking } from '@/hooks/useContentEstimation';
-const { 
-  elapsedTime, 
-  remainingTime, 
-  progress, 
-  startTracking, 
-  stopTracking 
-} = useProgressTracking(estimatedTime);
+import { useProgressTracking } from "@/hooks/useContentEstimation";
+const { elapsedTime, remainingTime, progress, startTracking, stopTracking } =
+	useProgressTracking(estimatedTime);
 ```
 
 ### Integration Examples
 
 #### Basic Usage
+
 ```typescript
 import { ContentEstimator } from '@/components/common/content-estimation';
 
@@ -826,6 +876,7 @@ function LessonPage({ lesson }) {
 ```
 
 #### Advanced Usage with Progress Tracking
+
 ```typescript
 import { useContentEstimation, useProgressTracking } from '@/hooks/useContentEstimation';
 
@@ -872,6 +923,7 @@ function InteractiveLearningSession({ content, userProfile }) {
 ### Development & Integration
 
 The MVP system focuses on simple, reliable functionality:
+
 - **Basic time calculations** using configurable constants
 - **Reusable timer component** with multiple variants
 - **Simple progress tracking** based on chapter completion
@@ -890,11 +942,11 @@ npm run dev
 Comprehensive mock data available for development and testing:
 
 ```typescript
-import { 
-  mockLessons, 
-  mockUserProfiles, 
-  mockTimeEstimates 
-} from '@/lib/mock-data/content-estimation';
+import {
+	mockLessons,
+	mockUserProfiles,
+	mockTimeEstimates,
+} from "@/lib/mock-data/content-estimation";
 
 // Use in development
 const estimate = mockTimeEstimates.mediumLesson;

@@ -26,34 +26,34 @@ export function LayoutBreadcrumbs({ course }: LayoutBreadcrumbsProps) {
     { label: course.title, href: `/courses/${course.id}`, current: segments.length === 0 }
   ];
   
-  // Based on the console logs, we have a different URL structure:
-  // URL segments: ["section_1-emdr-foundations", "chapters", "ch_1_2-understanding-trauma"]
-  // This means the URL structure is: /courses/[id]/[sectionId]/chapters/[chapterId]
+  // Based on the new URL structure:
+  // URL segments: ["chapter_1-emdr-foundations", "sections", "section_1_2-understanding-trauma"]
+  // This means the URL structure is: /courses/[id]/[chapterId]/sections/[sectionId]
   // But the segments don't include the course ID (it's in the parent layout)
   
   if (segments.length >= 1) {
-    // First segment is the section
-    const sectionSegment = segments[0];
-    const sectionId = extractSectionId(sectionSegment);
-    const section = course.sections.find(s => s.id === sectionId);
+    // First segment is the chapter
+    const chapterSegment = segments[0];
+    const chapterId = extractChapterId(chapterSegment);
+    const chapter = course.chapters.find(c => c.id === chapterId);
     
-    if (section) {
+    if (chapter) {
       breadcrumbItems.push({
-        label: section.title,
-        href: `/courses/${course.id}#${section.id}`,
+        label: chapter.title,
+        href: `/courses/${course.id}#${chapter.id}`,
         current: segments.length === 1
       });
       
-      // Check if we have chapters segment
-      if (segments.length >= 3 && segments[1] === 'chapters') {
-        const chapterSegment = segments[2];
-        const chapterId = extractChapterId(chapterSegment);
-        const chapter = section.chapters.find(c => c.id === chapterId);
+      // Check if we have sections segment
+      if (segments.length >= 3 && segments[1] === 'sections') {
+        const sectionSegment = segments[2];
+        const sectionId = extractSectionId(sectionSegment);
+        const section = chapter.sections.find(s => s.id === sectionId);
         
-        if (chapter) {
+        if (section) {
           breadcrumbItems.push({
-            label: chapter.title,
-            href: `/courses/${course.id}/${sectionSegment}/chapters/${chapterSegment}`,
+            label: section.title,
+            href: `/courses/${course.id}/${chapterSegment}/sections/${sectionSegment}`,
             current: true
           });
         }
