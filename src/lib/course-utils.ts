@@ -9,8 +9,8 @@ export const getCourseProgress = (courseId: string): number => {
 export const getTotalChapters = (courseId: string): number => {
 	const course = courses.find((c) => c.id === courseId);
 	return (
-		course?.sections.reduce(
-			(total, section) => total + section.chapters.length,
+		course?.chapters.reduce(
+			(total, chapter) => total + chapter.sections.length,
 			0
 		) || 0
 	);
@@ -143,28 +143,28 @@ export const generateChapterSlug = (
  * @param sectionSlug The combined section ID-slug string
  * @returns The section object or undefined if not found
  */
-export const getSectionBySlug = (courseId: string, sectionSlug: string) => {
+export const getChapterBySlug = (courseId: string, chapterSlug: string) => {
 	const course = courses.find((c) => c.id === courseId);
-	const sectionId = extractCourseId(sectionSlug);
-	return course?.sections.find((section) => section.id === sectionId);
+	const chapterId = extractCourseId(chapterSlug);
+	return course?.chapters.find((chapter) => chapter.id === chapterId);
 };
 
 /**
- * Gets a chapter by its combined ID-slug
+ * Gets a section by its combined ID-slug
  * @param courseId The course ID
- * @param sectionId The section ID
- * @param chapterSlug The combined chapter ID-slug string
- * @returns The chapter object or undefined if not found
+ * @param chapterId The chapter ID
+ * @param sectionSlug The combined section ID-slug string
+ * @returns The section object or undefined if not found
  */
-export const getChapterBySlug = (
+export const getSectionBySlug = (
 	courseId: string,
-	sectionId: string,
-	chapterSlug: string
+	chapterId: string,
+	sectionSlug: string
 ) => {
 	const course = courses.find((c) => c.id === courseId);
-	const section = course?.sections.find((s) => s.id === sectionId);
-	const chapterId = extractCourseId(chapterSlug);
-	return section?.chapters.find((chapter) => chapter.id === chapterId);
+	const chapter = course?.chapters.find((c) => c.id === chapterId);
+	const sectionId = extractCourseId(sectionSlug);
+	return chapter?.sections.find((section) => section.id === sectionId);
 };
 
 /**
@@ -174,43 +174,43 @@ export const getChapterBySlug = (
  */
 export const getLastViewedChapter = (courseId: string) => {
 	const course = courses.find((c) => c.id === courseId);
-	// For now, return the first chapter of the first section
+	// For now, return the first section of the first chapter
 	// In a real app, this would be stored in user progress data
-	return course?.sections[0]?.chapters[0];
+	return course?.chapters[0]?.sections[0];
 };
 
 /**
- * Gets the next chapter in sequence
+ * Gets the next section in sequence
  * @param courseId The course ID
- * @param sectionId The current section ID
  * @param chapterId The current chapter ID
- * @returns The next chapter object or undefined if at the end
+ * @param sectionId The current section ID
+ * @returns The next section object or undefined if at the end
  */
 export const getNextChapter = (
 	courseId: string,
-	sectionId: string,
-	chapterId: string
+	chapterId: string,
+	sectionId: string
 ) => {
 	const course = courses.find((c) => c.id === courseId);
 	if (!course) return undefined;
 
-	const sectionIndex = course.sections.findIndex((s) => s.id === sectionId);
-	if (sectionIndex === -1) return undefined;
+	const chapterIndex = course.chapters.findIndex((c) => c.id === chapterId);
+	if (chapterIndex === -1) return undefined;
 
-	const section = course.sections[sectionIndex];
-	const chapterIndex = section.chapters.findIndex((c) => c.id === chapterId);
+	const chapter = course.chapters[chapterIndex];
+	const sectionIndex = chapter.sections.findIndex((s) => s.id === sectionId);
 
-	// If not the last chapter in section
-	if (chapterIndex < section.chapters.length - 1) {
-		return section.chapters[chapterIndex + 1];
+	// If not the last section in chapter
+	if (sectionIndex < chapter.sections.length - 1) {
+		return chapter.sections[sectionIndex + 1];
 	}
 
-	// If last chapter in section but not last section
-	if (sectionIndex < course.sections.length - 1) {
-		return course.sections[sectionIndex + 1].chapters[0];
+	// If last section in chapter but not last chapter
+	if (chapterIndex < course.chapters.length - 1) {
+		return course.chapters[chapterIndex + 1].sections[0];
 	}
 
-	// No next chapter
+	// No next section
 	return undefined;
 };
 
@@ -223,27 +223,27 @@ export const getNextChapter = (
  */
 export const getPreviousChapter = (
 	courseId: string,
-	sectionId: string,
-	chapterId: string
+	chapterId: string,
+	sectionId: string
 ) => {
 	const course = courses.find((c) => c.id === courseId);
 	if (!course) return undefined;
 
-	const sectionIndex = course.sections.findIndex((s) => s.id === sectionId);
-	if (sectionIndex === -1) return undefined;
+	const chapterIndex = course.chapters.findIndex((c) => c.id === chapterId);
+	if (chapterIndex === -1) return undefined;
 
-	const section = course.sections[sectionIndex];
-	const chapterIndex = section.chapters.findIndex((c) => c.id === chapterId);
+	const chapter = course.chapters[chapterIndex];
+	const sectionIndex = chapter.sections.findIndex((s) => s.id === sectionId);
 
-	// If not the first chapter in section
-	if (chapterIndex > 0) {
-		return section.chapters[chapterIndex - 1];
+	// If not the first section in chapter
+	if (sectionIndex > 0) {
+		return chapter.sections[sectionIndex - 1];
 	}
 
-	// If first chapter in section but not first section
-	if (sectionIndex > 0) {
-		const prevSection = course.sections[sectionIndex - 1];
-		return prevSection.chapters[prevSection.chapters.length - 1];
+	// If first section in chapter but not first chapter
+	if (chapterIndex > 0) {
+		const prevChapter = course.chapters[chapterIndex - 1];
+		return prevChapter.sections[prevChapter.sections.length - 1];
 	}
 
 	// No previous chapter
@@ -282,14 +282,14 @@ export const getChapterProgress = (
  * @returns Progress percentage (0-100)
  */
 export const calculateCourseProgress = (course: Course): number => {
-	const totalChapters = course.sections.reduce(
-		(total: number, section) => {
-			return total + section.chapters.length;
+	const totalSections = course.chapters.reduce(
+		(total: number, chapter) => {
+			return total + chapter.sections.length;
 		},
 		0
 	);
 
-	if (totalChapters === 0) return 0;
+	if (totalSections === 0) return 0;
 
-	return Math.round((course.completedChapters.length / totalChapters) * 100);
+	return Math.round((course.completedChapters.length / totalSections) * 100);
 };

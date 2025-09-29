@@ -6,26 +6,26 @@ import {
   extractChapterId
 } from "@/lib/course-utils";
 
-interface ChapterPageProps {
+interface SectionPageProps {
   params: Promise<{
     id: string;
-    sectionId: string;
     chapterId: string;
+    sectionId: string;
   }>;
 }
 
-export default async function ChapterPage({ params }: ChapterPageProps) {
+export default async function SectionPage({ params }: SectionPageProps) {
   // Await params in server component
-  const { id, sectionId, chapterId } = await params;
+  const { id, chapterId, sectionId } = await params;
   
   // Extract IDs from slugs
-  const sectionIdValue = extractSectionId(sectionId);
   const chapterIdValue = extractChapterId(chapterId);
+  const sectionIdValue = extractSectionId(sectionId);
   
-  // Find the course, section, and chapter
+  // Find the course, chapter, and section
   const course = getCourseBySlug(id);
-  const section = course?.sections.find((s) => s.id === sectionIdValue);
-  const chapter = section?.chapters.find((c) => c.id === chapterIdValue);
+  const chapter = course?.chapters.find((c) => c.id === chapterIdValue);
+  const section = chapter?.sections.find((s) => s.id === sectionIdValue);
   
   // If any of the resources are not found, show error message
   if (!course || !section || !chapter) {
@@ -33,7 +33,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
       <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
         <h1 className="text-2xl font-bold mb-4">Resource Not Found</h1>
         <p className="text-muted-foreground mb-6">
-          The chapter you&apos;re looking for doesn&apos;t exist or has been removed.
+          The section you&apos;re looking for doesn&apos;t exist or has been removed.
         </p>
         <Button onClick={() => window.history.back()}>Go Back</Button>
       </div>
