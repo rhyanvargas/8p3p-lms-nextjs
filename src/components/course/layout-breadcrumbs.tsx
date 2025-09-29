@@ -20,7 +20,7 @@ export function LayoutBreadcrumbs({ course }: LayoutBreadcrumbsProps) {
   console.log('LayoutBreadcrumbs - URL segments:', segments);
   console.log('LayoutBreadcrumbs - Course:', course.id, course.title);
   
-  // Default breadcrumb items - Dashboard is automatically added by BreadcrumbNav
+  // Default breadcrumb items - Dashboard is automatically added by ResponsiveBreadcrumb
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: "Courses", href: "/courses" },
     { label: course.title, href: `/courses/${course.id}`, current: segments.length === 0 }
