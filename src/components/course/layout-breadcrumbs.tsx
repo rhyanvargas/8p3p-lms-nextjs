@@ -1,7 +1,7 @@
 "use client";
 
 import { useSelectedLayoutSegments } from "next/navigation";
-import { BreadcrumbNav, BreadcrumbItem } from "@/components/course/breadcrumb-nav";
+import { ResponsiveBreadcrumb, BreadcrumbItem } from "@/components/course/responsive-breadcrumb";
 import { Course } from "@/lib/mock-data";
 import { 
   extractSectionId, 
@@ -61,5 +61,5 @@ export function LayoutBreadcrumbs({ course }: LayoutBreadcrumbsProps) {
     }
   }
   
-  return <BreadcrumbNav items={breadcrumbItems} />;
+  return <ResponsiveBreadcrumb items={breadcrumbItems} />;
 }
