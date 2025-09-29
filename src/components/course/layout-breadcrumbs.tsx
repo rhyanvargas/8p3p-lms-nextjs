@@ -1,7 +1,7 @@
 "use client";
 
 import { useSelectedLayoutSegments } from "next/navigation";
-import { BreadcrumbNav, BreadcrumbItem } from "@/components/course/breadcrumb-nav";
+import { ResponsiveBreadcrumb, BreadcrumbItem } from "@/components/course/responsive-breadcrumb";
 import { Course } from "@/lib/mock-data";
 import { 
   extractSectionId, 
@@ -20,7 +20,7 @@ export function LayoutBreadcrumbs({ course }: LayoutBreadcrumbsProps) {
   console.log('LayoutBreadcrumbs - URL segments:', segments);
   console.log('LayoutBreadcrumbs - Course:', course.id, course.title);
   
-  // Default breadcrumb items - Dashboard is automatically added by BreadcrumbNav
+  // Default breadcrumb items - Dashboard is automatically added by ResponsiveBreadcrumb
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: "Courses", href: "/courses" },
     { label: course.title, href: `/courses/${course.id}`, current: segments.length === 0 }
@@ -61,5 +61,5 @@ export function LayoutBreadcrumbs({ course }: LayoutBreadcrumbsProps) {
     }
   }
   
-  return <BreadcrumbNav items={breadcrumbItems} />;
+  return <ResponsiveBreadcrumb items={breadcrumbItems} />;
 }

@@ -23,8 +23,8 @@ export function VideoPlayerWithTranscript({
 	};
 
 	return (
-		<div className="flex gap-6">
-			<div className="flex-auto w-[600px]">
+		<div className="flex flex-wrap gap-6">
+			<div className="flex-auto lg:w-[600px]">
 				<VideoPlayer
 					ref={videoPlayerRef}
 					videoId={videoId}
@@ -32,12 +32,9 @@ export function VideoPlayerWithTranscript({
 				/>
 			</div>
 
-			<div className="flex-auto w-[300px] border-l border-gray-200 pl-6">
+			<div className="flex-auto lg:w-[300px] border-l border-gray-200 pl-6">
 				<div className="h-[400px] overflow-y-auto">
-					<InteractiveScript
-						script={script}
-						videoElement={videoElement}
-					/>
+					<InteractiveScript script={script} videoElement={videoElement} />
 				</div>
 			</div>
 		</div>
