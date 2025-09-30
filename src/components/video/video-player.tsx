@@ -1,13 +1,13 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import Video from "next-video";
 import { cn } from "@/lib/utils";
 
 /**
  * Provider-agnostic VideoPlayer component using next-video
  * 
- * This component abstracts away the video provider (Mux, Vercel Blob, AWS S3, etc.)
+{{ ... }}
  * and provides a consistent interface for video playback with transcript synchronization.
  * 
  * @example
@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 
 export interface VideoPlayerProps {
   /** Video source - can be local file path, remote URL, or next-video Asset */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   src: string | any; // Asset type from next-video
   /** Poster image URL */
   poster?: string;
@@ -85,16 +86,16 @@ export const VideoPlayer = ({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // Handle time updates
-  const handleTimeUpdate = (event: Event) => {
+  const handleTimeUpdate = useCallback((event: Event) => {
     const video = event.target as HTMLVideoElement;
     onTimeUpdate?.(video.currentTime);
-  };
+  }, [onTimeUpdate]);
 
   // Handle duration change
-  const handleDurationChange = (event: Event) => {
+  const handleDurationChange = useCallback((event: Event) => {
     const video = event.target as HTMLVideoElement;
     onDurationChange?.(video.duration);
-  };
+  }, [onDurationChange]);
 
   // Attach event listeners to the video element
   useEffect(() => {
@@ -118,7 +119,7 @@ export const VideoPlayer = ({
       video.removeEventListener('loadeddata', onLoadedData || (() => {}));
       video.removeEventListener('durationchange', handleDurationChange);
     };
-  }, [onTimeUpdate, onPlay, onPause, onEnded, onLoadedData, onDurationChange]);
+  }, [onPlay, onPause, onEnded, onLoadedData, handleTimeUpdate, handleDurationChange]);
 
   return (
     <div className={cn("relative", className)}>

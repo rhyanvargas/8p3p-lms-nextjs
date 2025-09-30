@@ -36,6 +36,7 @@ export interface TranscriptSegment {
 
 export interface InteractiveVideoPlayerProps {
 	/** Video source - can be local file path, remote URL, or next-video Asset */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	src: string | any; // Asset type from next-video
 	/** Video poster/thumbnail URL */
 	poster?: string;
