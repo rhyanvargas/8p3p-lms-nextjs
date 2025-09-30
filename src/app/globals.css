@@ -99,6 +99,21 @@
 	--shadow-xl:
 		0px 2px 4px 0px hsl(0 0% 0% / 0.1), 0px 8px 10px -1px hsl(0 0% 0% / 0.1);
 	--shadow-2xl: 0px 2px 4px 0px hsl(0 0% 0% / 0.25);
+
+	/* VIDEO */
+	--media-primary-color: var(--accent);
+	--media-secondary-color: var(--accent-foreground);
+	--media-text-color: var(--foreground);
+	--media-background-color: var(--background);
+	--media-control-background: transparent;
+	--media-font-family: var(--font-sans);
+	--media-live-button-icon-color: var(--muted-foreground);
+	--media-live-button-indicator-color: var(--destructive);
+	--media-range-track-background: var(--border);
+	--media-accent-color: var(--accent);
+	/* --media-preview-time-text-shadow: none; */
+	/* --media-control-hover-background: var(--primary); */
+	/* --media-preview-time-background: var(--primary); */
 }
 
 .dark {
