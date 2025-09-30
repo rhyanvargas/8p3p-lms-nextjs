@@ -137,8 +137,9 @@ export const VideoPlayer = ({
           height: height || 'auto',
           aspectRatio: '16/9', // Prevent layout shift
         }}
-        // Enable loading optimizations
-        preload="metadata"
+        // Prevent loading until user interaction (prevents error flash)
+        preload="none"
+        playsInline
       />
     </div>
   );
