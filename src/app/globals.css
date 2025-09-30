@@ -99,6 +99,20 @@
 	--shadow-xl:
 		0px 2px 4px 0px hsl(0 0% 0% / 0.1), 0px 8px 10px -1px hsl(0 0% 0% / 0.1);
 	--shadow-2xl: 0px 2px 4px 0px hsl(0 0% 0% / 0.25);
+
+	/* VIDEO */
+	--media-primary-color: var(--primary);
+	--media-secondary-color: var(--background);
+	--media-text-color: var(--foreground);
+	--media-background-color: var(--background);
+	--media-control-background: transparent;
+	--media-control-hover-background: oklch(0.326 0.0353 284.27 / 20%);
+	--media-font-family: var(--font-sans);
+	--media-live-button-icon-color: var(--muted-foreground);
+	--media-live-button-indicator-color: var(--destructive);
+	--media-range-track-background: var(--border);
+	--media-preview-time-background: var(--background);
+	--media-preview-time-text-shadow: none;
 }
 
 .dark {
@@ -281,5 +295,17 @@
 			var(--brand-gold-hex);
 		--amplify-components-tabs-item-active-border-color: var(--brand-gold-hex);
 		font-family: var(--font-display);
+	}
+	/* VIDEO PLAYER */
+	.media-gradient-bottom {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: calc(8 * var(--base));
+		pointer-events: none;
+	}
+	.media-control-button {
+		padding: 0.25rem 0.5rem;
+		height: 100%;
 	}
 }
