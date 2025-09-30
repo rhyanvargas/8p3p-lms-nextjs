@@ -1,3 +1,9 @@
+import video_1_1 from "@/videos/Intro-8p3p-Ch1-Section-1-1.mp4";
+import video_1_2 from "@/videos/How EMDR Works-8p3p-Ch1-Section-1-2.mp4";
+import video_1_3 from "@/videos/Trauma and the Body-8p3p-Ch1-Section-1-3.mp4";
+import video_1_4 from "@/videos/Closing-8p3p-Ch1-Section-1-4.mp4";
+import { Asset } from "next-video/dist/assets.js";
+
 // Type definitions for simplified course structure
 export interface TranscriptItem {
 	id: number;
@@ -25,7 +31,7 @@ export interface Section {
 	title: string;
 	learningObjective: string;
 	videoScript: string;
-	videoUrl?: string; // Path to video file
+	videoUrl?: Asset | string; // Path to video file
 	quiz?: Quiz; // Optional - not all sections have quizzes
 	sectionType?: "video" | "ai_avatar" | "quiz"; // Type of learning object
 	completed?: boolean;
@@ -205,7 +211,7 @@ export const courses: Course[] = [
 						title: "Introduction",
 						learningObjective:
 							"Understand how the brain processes overwhelming experiences and the concept of dysfunctionally stored memory.",
-						videoUrl: "/videos/Intro-8p3p-Ch1-Section-1-1.mp4",
+						videoUrl: video_1_1,
 						videoScript:
 							"Welcome to Chapter 1 of the EMDR Foundations course! We're glad you're here to learn about how the brain processes overwhelming experiences. When people go through overwhelming experiences such as combat, assault, or childhood trauma, the brain may store memories in a way that keeps the pain alive. This is called dysfunctionally stored memory. Instead of fading into the past, these memories can trigger fear, shame, or physical reactions as if the danger is happening again.",
 						sectionType: "video",
@@ -217,7 +223,7 @@ export const courses: Course[] = [
 						title: "How EMDR Works",
 						learningObjective:
 							"Learn how Eye Movement Desensitization and Reprocessing helps the brain unlock and reprocess traumatic memories.",
-						videoUrl: "/videos/How EMDR Works-8p3p-Ch1-Section-1-2.mp4",
+						videoUrl: video_1_2,
 						videoScript:
 							"Eye Movement Desensitization and Reprocessing, or EMDR, is a therapy that helps the brain unlock and reprocess those memories. Using bilateral stimulation such as guided eye movements, tapping, or tones the therapist activates the brain's natural information-processing system. This allows traumatic memories to shift from being raw and overwhelming into adaptive memories that feel resolved. Think of it like a physical wound, if it's blocked, it can't heal. EMDR clears the block so the mind and body can finish the healing process. Research shows that even long-lasting trauma can improve in just a few sessions.",
 						sectionType: "video",
@@ -229,7 +235,7 @@ export const courses: Course[] = [
 						title: "Trauma and the Body",
 						learningObjective:
 							"Understand how trauma is stored in both the mind and body, and how EMDR addresses both aspects.",
-						videoUrl: "/videos/Trauma and the Body-8p3p-Ch1-Section-1-3.mp4",
+						videoUrl: video_1_3,
 						videoScript:
 							"Trauma is not only stored in the mind it also lives in the body. People may feel tense, numb, or constantly on alert. The body 'keeps the score,' holding the imprint of traumatic stress until it is released. EMDR, combined with grounding techniques, can reduce these reactions and restore balance across the brain's major networks which consist of the default mode (self-reflection), central executive (focus and planning), and salience network (threat detection).",
 						sectionType: "video",
@@ -241,7 +247,7 @@ export const courses: Course[] = [
 						title: "Closing",
 						learningObjective:
 							"Understand the goal of EMDR therapy: helping people remember without reliving.",
-						videoUrl: "/videos/Closing-8p3p-Ch1-Section-1-4.mp4",
+						videoUrl: video_1_4,
 						videoScript:
 							"In this chapter, we learned how trauma can remain stuck, how EMDR reactivates the brain’s natural ability to heal, and how restoring balance across brain networks allows people to remember without reliving. Now it’s your turn. Take a short knowledge check quiz to review what you’ve learned and reinforce these key concepts before moving forward.",
 						sectionType: "video",

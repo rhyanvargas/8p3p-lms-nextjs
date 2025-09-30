@@ -21,6 +21,7 @@
 		"@aws-amplify/adapter-nextjs": "^1.6.9",
 		"@aws-amplify/ui-react": "^6.12.0",
 		"@hookform/resolvers": "^5.2.1",
+		"@mux/mux-player-react": "^3.6.0",
 		"@radix-ui/react-avatar": "^1.1.10",
 		"@radix-ui/react-collapsible": "^1.1.12",
 		"@radix-ui/react-dialog": "^1.1.15",
@@ -48,6 +49,7 @@
 		"react-hook-form": "^7.43.0",
 		"sonner": "^2.0.7",
 		"tailwind-merge": "^3.3.1",
+		"vaul": "^1.1.2",
 		"zod": "^4.1.5"
 	},
 	"devDependencies": {
