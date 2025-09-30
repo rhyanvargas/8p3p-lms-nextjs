@@ -1,14 +1,12 @@
 /**
  * Video Components
  * 
- * Provider-agnostic video components built on next-video
- * for seamless video integration with transcript synchronization.
+ * Simplified video components using next-video default player
+ * with transcript synchronization support.
  */
 
 export { VideoPlayer, useVideoPlayerRef } from './video-player';
 export type { VideoPlayerProps, VideoPlayerRef } from './video-player';
-
-export { default as CustomMuxPlayer, createMuxMetadata } from './custom-mux-player';
 
 export { InteractiveVideoPlayer, createTranscriptFromScript } from './interactive-video-player';
 export type { InteractiveVideoPlayerProps, TranscriptSegment } from './interactive-video-player';

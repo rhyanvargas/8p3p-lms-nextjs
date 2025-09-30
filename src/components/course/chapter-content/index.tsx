@@ -70,7 +70,7 @@ export function ChapterContent({
 			{section.sectionType === "video" ? (
 				<div className="bg-white border border-gray-200 rounded-lg p-4">
 					<InteractiveVideoPlayer
-						src={section.videoUrl || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"}
+						src={section.videoUrl}
 						showTranscript={!!section.videoScript}
 						transcript={
 							section.videoScript

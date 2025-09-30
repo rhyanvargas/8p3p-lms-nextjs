@@ -1,4 +1,4 @@
-import { withNextVideo } from "./next-video.mjs";
+import { withNextVideo } from "next-video/process";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
