@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import type { PlayerProps } from "next-video";
 import MuxPlayer from "@mux/mux-player-react";
 import { cn } from "@/lib/utils";
@@ -38,6 +38,7 @@ interface CustomMuxPlayerProps extends Omit<PlayerProps, 'theme'> {
     video_id?: string;
     video_title?: string;
     viewer_user_id?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   };
   /** Custom theme configuration */
@@ -72,22 +73,23 @@ export default function CustomMuxPlayer({
   onDurationChange,
   ...rest
 }: CustomMuxPlayerProps) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const playerRef = useRef<any>(null);
 
   // Extract Mux playback ID from asset metadata
   const playbackId = asset?.providerMetadata?.mux?.playbackId;
 
   // Handle time updates
-  const handleTimeUpdate = (event: Event) => {
+  const handleTimeUpdate = useCallback((event: Event) => {
     const video = event.target as HTMLVideoElement;
     onTimeUpdate?.(video.currentTime);
-  };
+  }, [onTimeUpdate]);
 
   // Handle duration change
-  const handleDurationChange = (event: Event) => {
+  const handleDurationChange = useCallback((event: Event) => {
     const video = event.target as HTMLVideoElement;
     onDurationChange?.(video.duration);
-  };
+  }, [onDurationChange]);
 
   // Set up event listeners
   useEffect(() => {
@@ -111,10 +113,12 @@ export default function CustomMuxPlayer({
       player.removeEventListener('loadeddata', onLoadedData || (() => {}));
       player.removeEventListener('durationchange', handleDurationChange);
     };
-  }, [onTimeUpdate, onPlay, onPause, onEnded, onLoadedData, onDurationChange]);
+  }, [onPlay, onPause, onEnded, onLoadedData, handleTimeUpdate, handleDurationChange]);
 
   // Convert poster to string if it's a StaticImageData
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const posterUrl = typeof poster === 'string' ? poster : (poster as any)?.src;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const blurUrl = typeof blurDataURL === 'string' ? blurDataURL : (blurDataURL as any)?.src;
 
   // If we have a Mux playback ID, use it directly

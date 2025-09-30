@@ -14,7 +14,7 @@ import {
 import {
 	InteractiveVideoPlayer,
 	createTranscriptFromScript,
-} from "@/components/interactive-video-player";
+} from "@/components/video";
 
 interface ChapterContentProps {
 	course: Course;

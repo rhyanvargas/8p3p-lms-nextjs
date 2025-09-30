@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { VideoPlayer, useVideoPlayerRef } from "./video";
+import { VideoPlayer, useVideoPlayerRef } from "./video-player";
 import { TranscriptPanel } from "./transcript-panel";
 import { cn } from "@/lib/utils";
 
@@ -9,18 +9,21 @@ import { cn } from "@/lib/utils";
  * Utility function to convert a script text into basic transcript segments
  * This is a simple implementation - in production you'd want more sophisticated parsing
  */
-export function createTranscriptFromScript(script: string, videoDuration = 60): TranscriptSegment[] {
+export function createTranscriptFromScript(
+	script: string,
+	videoDuration = 60
+): TranscriptSegment[] {
 	if (!script) return [];
-	
+
 	// Split script into sentences and create segments
-	const sentences = script.split(/[.!?]+/).filter(s => s.trim().length > 0);
+	const sentences = script.split(/[.!?]+/).filter((s) => s.trim().length > 0);
 	const segmentDuration = videoDuration / sentences.length;
-	
+
 	return sentences.map((sentence, index) => ({
 		id: `segment-${index + 1}`,
 		startTime: index * segmentDuration,
 		endTime: (index + 1) * segmentDuration,
-		text: sentence.trim() + (index < sentences.length - 1 ? '.' : ''),
+		text: sentence.trim() + (index < sentences.length - 1 ? "." : ""),
 	}));
 }
 
@@ -82,7 +85,7 @@ export function InteractiveVideoPlayer({
 	// Find active segment based on current time
 	useEffect(() => {
 		if (transcript.length === 0) return;
-		
+
 		const activeSegment = transcript.find(
 			(segment: TranscriptSegment) =>
 				currentTime >= segment.startTime && currentTime < segment.endTime
