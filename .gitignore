@@ -60,3 +60,7 @@ videos/*
 !videos/*.js
 !videos/*.ts
 public/_next-video
+
+# troubleshooting documentation (development artifacts)
+/troubleshooting/*
+!/troubleshooting/README.md
