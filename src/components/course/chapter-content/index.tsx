@@ -14,6 +14,7 @@ import {
 import {
 	InteractiveVideoPlayer,
 	createTranscriptFromScript,
+	parseVTT,
 } from "@/components/video";
 
 interface ChapterContentProps {
@@ -71,9 +72,11 @@ export function ChapterContent({
 				<div className="bg-white border border-gray-200 rounded-lg p-4">
 					<InteractiveVideoPlayer
 						src={section.videoUrl}
-						showTranscript={!!section.videoScript}
+						showTranscript={!!(section.videoVTT || section.videoScript)}
 						transcript={
-							section.videoScript
+							section.videoVTT
+								? parseVTT(section.videoVTT)
+								: section.videoScript
 								? createTranscriptFromScript(section.videoScript, 90)
 								: []
 						}

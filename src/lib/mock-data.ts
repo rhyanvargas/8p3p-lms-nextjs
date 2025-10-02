@@ -25,13 +25,13 @@ export interface Quiz {
 	questions: QuizQuestion[];
 	passingScore: number; // Added for component compatibility
 }
-
 export interface Section {
 	id: string;
 	title: string;
 	learningObjective: string;
 	videoScript: string;
 	videoUrl?: Asset | string; // Path to video file
+	videoVTT?: string; // WebVTT transcript content
 	quiz?: Quiz; // Optional - not all sections have quizzes
 	sectionType?: "video" | "ai_avatar" | "quiz"; // Type of learning object
 	completed?: boolean;
@@ -214,6 +214,47 @@ export const courses: Course[] = [
 						videoUrl: video_1_1,
 						videoScript:
 							"Welcome to Chapter 1 of the EMDR Foundations course! We're glad you're here to learn about how the brain processes overwhelming experiences. When people go through overwhelming experiences such as combat, assault, or childhood trauma, the brain may store memories in a way that keeps the pain alive. This is called dysfunctionally stored memory. Instead of fading into the past, these memories can trigger fear, shame, or physical reactions as if the danger is happening again.",
+						videoVTT: `WEBVTT
+
+1
+00:00:00.000 --> 00:00:03.600
+Welcome to chapter one of the EMDR Foundation's course.
+
+2
+00:00:03.600 --> 00:00:07.410
+We're glad you're here to learn about how the brain processes overwhelming
+
+3
+00:00:07.410 --> 00:00:08.160
+experiences.
+
+4
+00:00:08.160 --> 00:00:12.000
+When people go through overwhelming experiences such as combat, assault, or
+
+5
+00:00:12.000 --> 00:00:13.120
+childhood trauma,
+
+6
+00:00:13.120 --> 00:00:16.480
+the brain may store memories in a way that keeps the pain alive.
+
+7
+00:00:16.480 --> 00:00:18.880
+This is called dysfunctionally stored memory.
+
+8
+00:00:18.880 --> 00:00:23.010
+Instead of fading into the past, these memories can trigger fear, shame, or
+
+9
+00:00:23.010 --> 00:00:24.160
+physical reactions
+
+10
+00:00:24.160 --> 00:00:26.000
+as if the danger is happening again.`,
 						sectionType: "video",
 						estimatedDuration: 30, // 30 seconds
 						completed: false,
