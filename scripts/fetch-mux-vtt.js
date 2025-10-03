@@ -1,13 +1,21 @@
 #!/usr/bin/env node
 
 /**
- * Fetch VTT (WebVTT) transcripts from Mux for Chapter 1 videos
+ * Fetch VTT (WebVTT) transcripts from Mux
+ * 
+ * Purpose: Utility script to fetch VTT transcripts for new videos from Mux.
+ * 
+ * Usage:
+ * 1. Update the `videos` array below with new video metadata
+ * 2. Run: node scripts/fetch-mux-vtt.js
+ * 3. Copy the outputted videoVTT content to src/lib/mock-data.ts
  * 
  * Mux VTT endpoint: https://stream.mux.com/:PLAYBACK_ID/text/:TRACK_ID.vtt
  * 
  * Prerequisites:
  * - Videos must have generated captions/subtitles in Mux
  * - Track IDs can be found via Mux API or dashboard
+ * - Playback IDs are in the .mp4.json files in /videos directory
  */
 
 const https = require('https');

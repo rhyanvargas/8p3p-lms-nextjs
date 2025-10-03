@@ -785,10 +785,11 @@ videos/
 #### **2. Fetching VTT Transcripts**
 
 ```bash
-# Fetch VTT files from Mux
+# Fetch VTT files from Mux (requires playback ID + track ID)
 node scripts/fetch-mux-vtt.js
 
-# Output: scripts/vtt-output.json with VTT content
+# Script outputs formatted VTT content to console
+# Copy the videoVTT snippets directly to mock-data.ts
 ```
 
 #### **3. Mock Data Integration**

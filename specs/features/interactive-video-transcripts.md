@@ -304,8 +304,7 @@ See [video-transcript-auto-sync-2025-10-02.md](../troubleshooting/video-transcri
 ## Related Documentation
 
 - [specs/troubleshooting/video-transcript-auto-sync-2025-10-02.md](../troubleshooting/video-transcript-auto-sync-2025-10-02.md) - Root cause analysis
-- [scripts/fetch-mux-vtt.js](../../scripts/fetch-mux-vtt.js) - VTT fetching script
-- [scripts/new-video-metadata.md](../../scripts/new-video-metadata.md) - Video replacement guide
+- [scripts/fetch-mux-vtt.js](../../scripts/fetch-mux-vtt.js) - VTT fetching script for future videos
 
 ## Changelog
 
