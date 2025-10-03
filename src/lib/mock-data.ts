@@ -267,6 +267,48 @@ as if the danger is happening again.`,
 						videoUrl: video_1_2,
 						videoScript:
 							"Eye Movement Desensitization and Reprocessing, or EMDR, is a therapy that helps the brain unlock and reprocess those memories. Using bilateral stimulation such as guided eye movements, tapping, or tones the therapist activates the brain's natural information-processing system. This allows traumatic memories to shift from being raw and overwhelming into adaptive memories that feel resolved. Think of it like a physical wound, if it's blocked, it can't heal. EMDR clears the block so the mind and body can finish the healing process. Research shows that even long-lasting trauma can improve in just a few sessions.",
+						videoVTT: `WEBVTT
+
+1
+00:00:00.000 --> 00:00:05.330
+Eye movement desensitization and reprocessing, or EMDR, is a therapy that helps
+
+2
+00:00:05.330 --> 00:00:09.000
+the brain unlock and reprocess those memories.
+
+3
+00:00:09.000 --> 00:00:13.080
+Using bilateral stimulation such as guided eye movements, tapping, or tones,
+
+4
+00:00:13.080 --> 00:00:17.000
+the therapist activates the brain's natural information processing system.
+
+5
+00:00:17.000 --> 00:00:20.860
+This allows traumatic memories to shift from being raw and overwhelming into
+
+6
+00:00:20.860 --> 00:00:23.000
+adaptive memories that feel resolved.
+
+7
+00:00:23.000 --> 00:00:27.000
+Think of it like a physical wound. If it's blocked, it can't heal.
+
+8
+00:00:27.000 --> 00:00:32.000
+EMDR clears the block so the mind and body can finish the healing process.
+
+9
+00:00:32.000 --> 00:00:36.710
+Research shows that even long-lasting trauma can improve in just a few sessions
+
+10
+00:00:36.710 --> 00:00:37.000
+.
+`,
 						sectionType: "video",
 						estimatedDuration: 60, // 60 seconds
 						completed: false,
@@ -279,6 +321,44 @@ as if the danger is happening again.`,
 						videoUrl: video_1_3,
 						videoScript:
 							"Trauma is not only stored in the mind it also lives in the body. People may feel tense, numb, or constantly on alert. The body 'keeps the score,' holding the imprint of traumatic stress until it is released. EMDR, combined with grounding techniques, can reduce these reactions and restore balance across the brain's major networks which consist of the default mode (self-reflection), central executive (focus and planning), and salience network (threat detection).",
+						videoVTT: `WEBVTT
+
+1
+00:00:00.000 --> 00:00:03.600
+Trauma is not only stored in the mind, it also lives in the body.
+
+2
+00:00:03.600 --> 00:00:07.300
+People may feel tense, numb, or constantly on alert.
+
+3
+00:00:07.300 --> 00:00:11.240
+The body keeps the score, holding the imprint of traumatic stress until it is
+
+4
+00:00:11.240 --> 00:00:11.800
+released.
+
+5
+00:00:11.800 --> 00:00:16.550
+EMDR, combined with grounding techniques, can reduce these reactions and
+
+6
+00:00:16.550 --> 00:00:17.400
+restore balance
+
+7
+00:00:17.400 --> 00:00:21.760
+across the brain's major networks, which consist of the default mode, self-ref
+
+8
+00:00:21.760 --> 00:00:22.400
+lection,
+
+9
+00:00:22.400 --> 00:00:27.600
+central executive, focus and planning, and salient network, threat detection.
+`,
 						sectionType: "video",
 						estimatedDuration: 45, // 45 seconds
 						completed: false,
@@ -290,7 +370,37 @@ as if the danger is happening again.`,
 							"Understand the goal of EMDR therapy: helping people remember without reliving.",
 						videoUrl: video_1_4,
 						videoScript:
-							"In this chapter, we learned how trauma can remain stuck, how EMDR reactivates the brain’s natural ability to heal, and how restoring balance across brain networks allows people to remember without reliving. Now it’s your turn. Take a short knowledge check quiz to review what you’ve learned and reinforce these key concepts before moving forward.",
+							"In this chapter, we learned how trauma can remain stuck, how EMDR reactivates the brain's natural ability to heal, and how restoring balance across brain networks allows people to remember without reliving. Now it's your turn. Take a short knowledge check quiz to review what you've learned and reinforce these key concepts before moving forward.",
+						videoVTT: `WEBVTT
+
+1
+00:00:00.000 --> 00:00:04.780
+In this chapter, we learned how trauma can remain stuck, how EMDR reactivates
+
+2
+00:00:04.780 --> 00:00:06.840
+the brain's natural ability to heal,
+
+3
+00:00:06.840 --> 00:00:10.490
+and how restoring balance across brain networks allows people to remember
+
+4
+00:00:10.490 --> 00:00:11.500
+without reliving.
+
+5
+00:00:11.500 --> 00:00:12.860
+Now it's your turn.
+
+6
+00:00:12.860 --> 00:00:16.660
+Take a short knowledge check quiz to review what you've learned and reinforce
+
+7
+00:00:16.660 --> 00:00:19.340
+these key concepts before moving forward.
+`,
 						sectionType: "video",
 						estimatedDuration: 15, // 15 seconds
 						completed: false,

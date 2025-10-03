@@ -16,6 +16,8 @@ const eslintConfig = [
 			".next/**/*",
 			"node_modules/**/*",
 			"public/**/*",
+			"scripts/**/*",
+			"videos/**/*",
 			"**/*.min.js",
 			"amplify/**/*",
 			".amplify/**/*",

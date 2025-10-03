@@ -59,7 +59,11 @@
 - **Dark/Light Themes**: CSS-first theming with next-themes integration
 - **Accessibility**: WCAG compliant components and navigation
 - **Loading States**: Smooth transitions and professional loading indicators
-- **Interactive Video Player**: Custom video controls with progress tracking
+- **Interactive Video Player**: Next-video with Mux streaming + synchronized WebVTT transcripts
+  - Auto-highlighting transcript segments during playback
+  - Click-to-seek: Jump to any part by clicking transcript text
+  - Callback ref pattern for seamless video-transcript sync
+  - VTT parser with precise timestamp handling
 - **Breadcrumb Navigation**: Clear hierarchical navigation paths
 - **Timer Components**: Comprehensive timer system for quizzes, AI interactions, and progress tracking
 - **Content Estimation System**: AI-powered time estimation for reading and video content with personalized learning recommendations
@@ -71,6 +75,8 @@
 | **Framework**        | Next.js 15 (App Router)                  |
 | **Language**         | TypeScript 5.9                           |
 | **Authentication**   | AWS Amplify Gen2 + Cognito               |
+| **Video Streaming**  | next-video + Mux                         |
+| **Transcripts**      | WebVTT with custom parser                |
 | **Forms**            | React Hook Form + Zod                    |
 | **State Management** | React Context + useState                 |
 | **Code Quality**     | ESLint + TypeScript strict mode          |
@@ -676,6 +682,184 @@ formatTimeWithLabel(90, "remaining"); // "1 minute 30 seconds remaining"
 calculateProgress(30, 60); // 50 (percent)
 getTimerColorTheme(10, 60); // "danger" (< 25% remaining)
 ```
+
+## 🎥 Interactive Video Player with Transcript Sync
+
+The 8P3P LMS features a production-ready video player with synchronized WebVTT transcripts, providing an accessible and engaging learning experience.
+
+### ✨ **Key Features**
+
+- **📹 Mux Streaming**: Adaptive HLS streaming with automatic quality adjustment
+- **📝 Live Transcripts**: Real-time synchronized captions with precise timestamps
+- **🎯 Auto-Highlighting**: Active transcript segment highlights as video plays
+- **👆 Click-to-Seek**: Jump to any video moment by clicking transcript text
+- **♿ Accessibility**: Full screen reader support and keyboard navigation
+- **🔄 Bidirectional Sync**: Video controls transcript, transcript controls video
+
+### 🛠️ **Technical Implementation**
+
+#### **Video Player Architecture**
+
+```typescript
+// InteractiveVideoPlayer - Full featured player with transcript
+<InteractiveVideoPlayer
+  src={video_url}                     // next-video Asset or string URL
+  showTranscript={true}               // Toggle transcript panel
+  transcript={parsedVTT}              // Array of TranscriptSegment[]
+  layout="default"                    // default | theater | compact
+  autoPlay={false}
+  muted={false}
+/>
+```
+
+#### **VTT Parser**
+
+Converts WebVTT format to structured transcript segments:
+
+```typescript
+import { parseVTT } from '@/lib/utils/vtt-parser';
+
+const vttContent = `WEBVTT
+
+1
+00:00:00.000 --> 00:00:05.330
+Welcome to chapter one of the EMDR course.`;
+
+const segments = parseVTT(vttContent);
+// [{ id: "1", startTime: 0, endTime: 5.33, text: "Welcome..." }]
+```
+
+#### **Callback Ref Pattern**
+
+Ensures reliable video-transcript synchronization:
+
+```typescript
+// VideoPlayer uses callback ref for event listeners
+const setVideoRef = useCallback((element: HTMLVideoElement | null) => {
+  if (element) {
+    // Attach listeners immediately when element mounts
+    element.addEventListener('timeupdate', handleTimeUpdate);
+    element.addEventListener('durationchange', handleDurationChange);
+  }
+}, []);
+
+<Video ref={setVideoRef} ... />
+```
+
+### 📊 **How Sync Works**
+
+**Video → Transcript (Auto-highlight)**
+```typescript
+const handleTimeUpdate = (currentTime: number) => {
+  // Find active segment based on current time
+  const active = transcript.find(
+    seg => currentTime >= seg.startTime && currentTime < seg.endTime
+  );
+  setActiveSegmentId(active?.id);
+};
+```
+
+**Transcript → Video (Click-to-seek)**
+```typescript
+const handleSegmentClick = (startTime: number) => {
+  // Seek video to timestamp
+  videoPlayerRef.seekTo(startTime);
+  setCurrentTime(startTime);
+};
+```
+
+### 🎬 **Video Management Workflow**
+
+#### **1. Video Processing**
+
+Videos are uploaded to Mux and processed automatically:
+
+```bash
+# Videos stored in /videos directory
+videos/
+  ├── Intro-8p3p-Ch1-Section-1-1.mp4
+  ├── Intro-8p3p-Ch1-Section-1-1.mp4.json  # Auto-generated metadata
+  └── ...
+```
+
+#### **2. Fetching VTT Transcripts**
+
+```bash
+# Fetch VTT files from Mux
+node scripts/fetch-mux-vtt.js
+
+# Output: scripts/vtt-output.json with VTT content
+```
+
+#### **3. Mock Data Integration**
+
+```typescript
+{
+  id: "section_1_1",
+  title: "Introduction",
+  videoUrl: video_1_1,           // next-video Asset
+  videoScript: "...",             // Plain text script
+  videoVTT: `WEBVTT...`,         // WebVTT format transcript
+  sectionType: "video"
+}
+```
+
+### 🔧 **Component API**
+
+#### **InteractiveVideoPlayer Props**
+
+```typescript
+interface InteractiveVideoPlayerProps {
+  src: Asset | string;                  // Video source
+  poster?: string;                       // Thumbnail image
+  transcript?: TranscriptSegment[];      // Parsed VTT segments
+  showTranscript?: boolean;              // Show/hide transcript
+  layout?: "default" | "theater" | "compact";
+  autoPlay?: boolean;
+  muted?: boolean;
+  className?: string;
+}
+```
+
+#### **TranscriptSegment Type**
+
+```typescript
+interface TranscriptSegment {
+  id: string;           // Unique segment identifier
+  startTime: number;    // Start time in seconds (e.g., 5.33)
+  endTime: number;      // End time in seconds
+  text: string;         // Transcript text content
+}
+```
+
+### 📖 **Usage Example**
+
+```typescript
+import { InteractiveVideoPlayer, parseVTT } from '@/components/video';
+
+export function VideoSection({ section }) {
+  const transcript = section.videoVTT 
+    ? parseVTT(section.videoVTT)
+    : createTranscriptFromScript(section.videoScript, 90);
+
+  return (
+    <InteractiveVideoPlayer
+      src={section.videoUrl}
+      showTranscript={true}
+      transcript={transcript}
+      layout="default"
+    />
+  );
+}
+```
+
+### 🎯 **Benefits**
+
+- **📚 Enhanced Learning**: Visual + audio + text reinforcement
+- **♿ Accessibility**: Deaf/hard-of-hearing support, non-native speakers
+- **🔍 Quick Reference**: Click transcript to review specific concepts
+- **📱 Mobile-Friendly**: Responsive design with touch support
+- **⚡ Performance**: Lazy-loaded transcripts, optimized rendering
 
 ### Data Models
 
