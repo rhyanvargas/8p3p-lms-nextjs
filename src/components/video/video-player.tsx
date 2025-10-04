@@ -138,8 +138,10 @@ export const VideoPlayer = forwardRef<HTMLVideoElement, VideoPlayerProps>(
             aspectRatio: '16/9', // Prevent layout shift
           }}
           // Prevent loading until user interaction (prevents error flash)
-          preload="none"
+          preload="metadata"
           playsInline
+          // Suppress blur placeholder errors from Mux processing
+          blurDataURL=""
         />
       </div>
     );
