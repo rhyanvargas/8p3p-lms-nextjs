@@ -60,3 +60,7 @@ videos/*
 !videos/*.js
 !videos/*.ts
 public/_next-video
+
+# scripts output files
+scripts/*-output.json
+scripts/*.log

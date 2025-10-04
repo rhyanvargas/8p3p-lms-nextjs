@@ -4,26 +4,17 @@ import { useState, useEffect } from "react";
 import { VideoPlayer, useVideoPlayerRef } from "./video-player";
 import { TranscriptPanel } from "./transcript-panel";
 import { cn } from "@/lib/utils";
+import { scriptToTranscript } from "@/lib/utils/vtt-parser";
+
 /**
  * Utility function to convert a script text into basic transcript segments
- * This is a simple implementation - in production you'd want more sophisticated parsing
+ * @deprecated Use parseVTT for VTT content or scriptToTranscript for plain text
  */
 export function createTranscriptFromScript(
 	script: string,
-	videoDuration = 60
+	segmentDuration: number = 10
 ): TranscriptSegment[] {
-	if (!script) return [];
-
-	// Split script into sentences and create segments
-	const sentences = script.split(/[.!?]+/).filter((s) => s.trim().length > 0);
-	const segmentDuration = videoDuration / sentences.length;
-
-	return sentences.map((sentence, index) => ({
-		id: `segment-${index + 1}`,
-		startTime: index * segmentDuration,
-		endTime: (index + 1) * segmentDuration,
-		text: sentence.trim() + (index < sentences.length - 1 ? "." : ""),
-	}));
+	return scriptToTranscript(script, segmentDuration);
 }
 
 export interface TranscriptSegment {
@@ -78,7 +69,7 @@ export function InteractiveVideoPlayer({
 }: InteractiveVideoPlayerProps) {
 	const [currentTime, setCurrentTime] = useState(0);
 	const [activeSegmentId, setActiveSegmentId] = useState<string | null>(null);
-	const [_videoRef, playerRef] = useVideoPlayerRef();
+	const [videoRef, playerRef] = useVideoPlayerRef();
 
 	// Find active segment based on current time
 	useEffect(() => {
@@ -93,17 +84,14 @@ export function InteractiveVideoPlayer({
 	}, [currentTime, transcript]);
 
 	const handleSeekToTime = (time: number) => {
-		// For now, we'll implement transcript sync later
-		// Direct video element access will be needed for seeking
-		const videoElement = playerRef.getVideoElement();
-		if (videoElement) {
-			videoElement.currentTime = time;
-			setCurrentTime(time);
-		}
+		// Seek video to the specified time
+		playerRef.seekTo(time);
+		setCurrentTime(time);
 	};
 
-	// TODO: Implement proper time sync with next-video player
-	// This will be handled in the next phase
+	const handleTimeUpdate = (newTime: number) => {
+		setCurrentTime(newTime);
+	};
 
 	// Layout configurations
 	const layoutClasses = {
@@ -128,14 +116,15 @@ export function InteractiveVideoPlayer({
 		<div className={cn(layoutClasses[layout], className)}>
 			<div className={videoColSpan[layout]}>
 				<VideoPlayer
+					ref={videoRef}
 					src={src}
 					poster={poster}
 					autoPlay={autoPlay}
 					muted={muted}
 					controls={true}
 					className="w-full aspect-video rounded-lg overflow-hidden"
+					onTimeUpdate={handleTimeUpdate}
 				/>
-				{/* TODO: Implement time sync between video and transcript */}
 			</div>
 			{showTranscript && transcript.length > 0 && (
 				<div className={transcriptColSpan[layout]}>

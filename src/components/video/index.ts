@@ -13,6 +13,9 @@ export type { InteractiveVideoPlayerProps, TranscriptSegment } from './interacti
 
 export { TranscriptPanel } from './transcript-panel';
 
+// VTT Parser utilities
+export { parseVTT, scriptToTranscript } from '@/lib/utils/vtt-parser';
+
 // Re-export next-video for convenience
 export { default as Video } from 'next-video';
 export type { PlayerProps } from 'next-video';
