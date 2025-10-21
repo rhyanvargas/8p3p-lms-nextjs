@@ -32,7 +32,11 @@
   - "Next Chapter" button on quiz success
   - "Retry Quiz" + "Ask Question" on failure
   - Question interaction tracking per chapter
-- **AI-Powered Help**: Modal-based question system (Tavus AI ready)
+- **AI-Powered Help**: Tavus conversational video AI for asking questions about chapter content
+  - Real-time video conversations with AI instructor
+  - Chapter-specific context injection
+  - 4-minute sessions with countdown timer
+  - Camera/microphone controls
 - **Community Features**: Social learning with posts and interactions
 - **SEO-Friendly URLs**: Human-readable slugs with reliable ID references
 - **Hierarchical Structure**: Course → Chapters → Sections with auto-collapse navigation
@@ -75,6 +79,7 @@
 | **Framework**        | Next.js 15 (App Router)                  |
 | **Language**         | TypeScript 5.9                           |
 | **Authentication**   | AWS Amplify Gen2 + Cognito               |
+| **AI Conversations** | Tavus CVI (@tavus/cvi-ui)                |
 | **Video Streaming**  | next-video + Mux                         |
 | **Transcripts**      | WebVTT with custom parser                |
 | **Forms**            | React Hook Form + Zod                    |
@@ -142,10 +147,35 @@ npm install
 
 ### 2. Environment Setup
 
+#### AWS Amplify (Authentication)
+
 ```bash
 # Start Amplify sandbox (handles auth backend)
 npx ampx sandbox
+```
 
+#### Tavus AI (Ask a Question Feature)
+
+```bash
+# Copy environment template
+cp .env.example .env.local
+
+# Edit .env.local and add your Tavus credentials:
+# TAVUS_API_KEY=your_tavus_api_key_here
+# TAVUS_REPLICA_ID=your_replica_id_here
+# TAVUS_PERSONA_ID=your_persona_id_here  # Optional
+# TAVUS_DEFAULT_CALL_DURATION=240  # Optional (default: 4 minutes)
+```
+
+**Get Tavus Credentials**:
+1. Sign up at [https://www.tavus.io/](https://www.tavus.io/)
+2. Create a replica (AI avatar) in the Tavus dashboard
+3. Copy API Key and Replica ID to `.env.local`
+4. See [Tavus Documentation](https://docs.tavus.io/) for details
+
+#### Start Development Server
+
+```bash
 # In another terminal, start development server
 npm run dev
 
@@ -283,6 +313,8 @@ After feature completion, we'll implement:
 │   │   │           └── 📁 sections/  # Section content
 │   │   │               └── 📁 [sectionId]/  # Individual sections
 │   │   ├── 📁 api/            # API routes
+│   │   │   ├── tavus/         # Tavus AI conversation API
+│   │   │   │   └── conversation/  # Create conversation endpoint
 │   │   │   └── user/          # Protected user endpoint
 │   │   └── layout.tsx         # Root layout with auth provider
 │   ├── 📁 components/         # Reusable components
@@ -306,6 +338,13 @@ After feature completion, we'll implement:
 │   │   │   └── 📁 timer/      # Timer component system
 │   │   │       ├── Timer.tsx          # Main timer component (Client)
 │   │   │       └── TimerDisplay.tsx   # Timer display (Server)
+│   │   ├── 📁 cvi/            # Tavus CVI components (auto-generated)
+│   │   │   ├── 📁 components/ # CVI UI components
+│   │   │   │   ├── conversation/     # Conversation component
+│   │   │   │   ├── cvi-provider/     # CVI provider
+│   │   │   │   └── device-select/    # Device management
+│   │   │   └── 📁 hooks/      # CVI hooks
+│   │   │       └── use-cvi-call.tsx  # CVI call hook
 │   │   └── 📁 ui/             # shadcn/ui components
 │   ├── 📁 hooks/              # Custom React hooks
 │   │   ├── useTimer.ts        # Timer hook with state management
@@ -318,6 +357,8 @@ After feature completion, we'll implement:
 │   │   ├── utils.ts           # General utilities
 │   │   └── 📁 utils/          # Utility modules
 │   │       └── time-formatting.ts # Time formatting and validation
+│   ├── 📁 types/              # TypeScript type definitions
+│   │   └── tavus.ts           # Tavus API types
 │   └── amplify_outputs.json   # Amplify configuration
 ├── 📁 context/              # Documentation and context
 │   ├── course-page-structure.md  # Course page structure guide

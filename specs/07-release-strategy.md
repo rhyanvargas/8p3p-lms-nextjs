@@ -129,6 +129,34 @@ git push origin feature/timer-01-core
 - **Automated Checks**: Lint + tests must pass
 - **Documentation**: Update relevant specs and README
 
+##### LOC Verification (MANDATORY)
+
+**Before every commit**, verify actual line count using:
+
+```bash
+# Check staged changes line count
+git diff --cached --shortstat
+
+# Detailed breakdown by file
+git diff --cached --stat
+```
+
+**Rules**:
+- **MUST** verify actual LOC before committing
+- **NEVER** estimate or assume LOC without verification
+- **ALWAYS** report actual numbers in commit messages
+- **EXCEPTION**: Auto-generated library files (document in commit message)
+
+**Example Output**:
+```
+23 files changed, 1712 insertions(+), 41 deletions(-)
+```
+
+**Documentation Required**:
+- If LOC exceeds target (200-400), document why in commit message
+- Separate auto-generated code from manual code in explanation
+- Provide breakdown: "Manual: 450 LOC, Auto-generated: 900 LOC"
+
 #### 4. Stacked PRs (for dependent features)
 ```bash
 # PR #1: Core timer component

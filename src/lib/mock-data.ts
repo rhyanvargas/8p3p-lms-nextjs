@@ -3,6 +3,7 @@ import video_1_2 from "@/videos/How EMDR Works-8p3p-Ch1-Section-1-2.mp4";
 import video_1_3 from "@/videos/Trauma and the Body-8p3p-Ch1-Section-1-3.mp4";
 import video_1_4 from "@/videos/Closing-8p3p-Ch1-Section-1-4.mp4";
 import { Asset } from "next-video/dist/assets.js";
+import type { ConversationalContextConfig } from "@/types/tavus";
 
 // Type definitions for simplified course structure
 export interface TranscriptItem {
@@ -45,6 +46,13 @@ export interface Chapter {
 	id: string;
 	title: string;
 	sections: Section[];
+	/**
+	 * Conversational context for Tavus AI instructor
+	 * 
+	 * Defines how the AI should behave when answering questions about this chapter
+	 * Used by Ask a Question feature (Tavus integration)
+	 */
+	conversationalContext?: ConversationalContextConfig;
 }
 
 export interface Course {
@@ -496,6 +504,19 @@ these key concepts before moving forward.
 						completed: false,
 					},
 				],
+				conversationalContext: {
+					instructorTone: 'conversational',
+					keyConcepts: [
+						'trauma theory',
+						'bilateral stimulation',
+						'adaptive information processing',
+						'dysfunctionally stored memory',
+						'network balance model',
+					],
+					responseLength: 'moderate',
+					customInstructions:
+						'Focus on foundational EMDR concepts. Use simple analogies to explain complex neuroscience. Encourage learners to connect concepts to real-world applications.',
+				},
 			},
 			{
 				id: "chapter_2",
@@ -622,6 +643,19 @@ these key concepts before moving forward.
 						},
 					},
 				],
+				conversationalContext: {
+					instructorTone: 'professional',
+					keyConcepts: [
+						'8-phase protocol',
+						'client preparation',
+						'history taking',
+						'treatment planning',
+						'self-regulation techniques',
+					],
+					responseLength: 'detailed',
+					customInstructions:
+						'Focus on practical protocol implementation. Provide step-by-step guidance. Reference specific phases when answering questions.',
+				},
 			},
 		],
 	},
@@ -784,6 +818,20 @@ these key concepts before moving forward.
 						},
 					},
 				],
+				conversationalContext: {
+					instructorTone: 'encouraging',
+					keyConcepts: [
+						'dissociative disorders',
+						'complex trauma',
+						'attachment trauma',
+						'protocol modifications',
+						'client safety',
+						'stabilization techniques',
+					],
+					responseLength: 'moderate',
+					customInstructions:
+						'Focus on advanced applications and clinical nuances. Emphasize safety considerations. Help learners understand when to modify standard protocols.',
+				},
 			},
 		],
 	},
