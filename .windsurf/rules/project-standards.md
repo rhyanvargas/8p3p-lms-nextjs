@@ -4,39 +4,66 @@ trigger: always_on
 
 # 8P3P LMS - Windsurf Project Rules
 
-> **Consolidated project standards distilled from specifications**
-> **Activation Mode**: Always On
-> **File Limit**: 12000 characters (Windsurf requirement)
-
----
-
 <project_context>
 
-- **Project**: EMDR therapist training LMS (Learning Management System)
+- **Project**: EMDR therapist training LMS
 - **Stack**: Next.js 15, React 19, TypeScript 5.9, AWS Amplify Gen2, Tailwind v4, shadcn/ui
 - **Development Phase**: MVP feature completion (Phase 1)
 - **Testing Strategy**: Manual Q&A testing (no unit tests until post-MVP)
   </project_context>
 
----
+<protocol_hierarchy>
+
+## Protocol Execution Order (CRITICAL)
+
+**MANDATORY SEQUENCE** - Must be followed in exact order:
+
+### Step 1: Codebase Analysis Protocol (ALWAYS FIRST)
+
+- **Trigger**: ANY request involving files, components, or functionality
+- **Required**: Complete existing implementation check before ANY recommendations
+- **Blocker**: Cannot proceed to other protocols without completing this step
+
+### Step 2: Branch Readiness Protocol
+
+- **Trigger**: Creating new branches or starting development work
+- **Required**: User confirmation before any branch creation
+- **Depends on**: Step 1 completion
+
+### Step 3: Implementation
+
+- **Trigger**: After user approval from Step 2
+- **Required**: Follow all quality gates and standards
+- **Depends on**: Steps 1 & 2 completion
+
+**VIOLATION CONSEQUENCES**:
+
+- Inaccurate recommendations (ignoring existing work)
+- Wasted development time
+- Loss of user trust in AI recommendations
+  </protocol_hierarchy>
 
 <development_workflow>
 
 ## Branch Readiness Protocol (MANDATORY)
 
+**PREREQUISITE**: Codebase Analysis Protocol MUST be completed first.
+
 Before starting ANY new feature:
 
-1. **Present Branch Readiness Plan**: Show feature spec, branch strategy, stacked PR plan, timeline
-2. **Get User Confirmation**: Ask "Ready to create the branch and start {feature_name} development? 🚀"
-3. **Wait for Approval**: Do NOT create branches without explicit user confirmation
-4. **Document Decision**: Record approval before proceeding
+1. **Complete Codebase Analysis**: Verify existing implementations and acknowledge current state
+2. **Present Branch Readiness Plan**: Show feature spec, branch strategy, stacked PR plan, timeline
+3. **Get User Confirmation**: Ask "Ready to create the branch and start {feature_name} development? 🚀"
+4. **Wait for Approval**: Do NOT create branches without explicit user confirmation
+5. **Document Decision**: Record approval before proceeding
+
+**BLOCKER**: Cannot proceed without completing Step 1 (Codebase Analysis)
 
 ## LOC Verification (MANDATORY)
 
 Before every commit:
 
 ```bash
-# Verify actual line count
 git diff --cached --shortstat
 git diff --cached --stat
 ```
@@ -54,10 +81,7 @@ git diff --cached --stat
 - **Stacked PRs**: For complex features, break into dependent PRs
 - **Commit Format**: Semantic commits (feat:, fix:, docs:, refactor:, etc.)
 - **Branch Strategy**: feature → dev → release/vX.Y.Z → main
-
-</development_workflow>
-
----
+  </development_workflow>
 
 <next_js_15_architecture>
 
@@ -108,20 +132,11 @@ export default function ClientComponent({
 - **Prefer**: Server-side data fetching in Server Components
 - **Client-side**: Only when server-side isn't suitable (real-time updates, user interactions)
 - **Use**: ISR with `next: { revalidate: 3600 }` for cacheable data
-
-</next_js_15_architecture>
-
----
+  </next_js_15_architecture>
 
 <aws_amplify_backend>
 
 ## Authentication Standards
-
-### Required Imports
-
-```typescript
-import { defineAuth, secret } from "@aws-amplify/backend";
-```
 
 ### Core Rules
 
@@ -147,11 +162,7 @@ import { defineAuth, secret } from "@aws-amplify/backend";
 ### Enums
 
 - Don't use `.required()` or `.defaultValue()` with enums
-- Enums are type-safe by definition
-
-</aws_amplify_backend>
-
----
+  </aws_amplify_backend>
 
 <design_system>
 
@@ -161,62 +172,78 @@ import { defineAuth, secret } from "@aws-amplify/backend";
 
 - **No config file needed**: Tailwind v4 uses CSS-first configuration
 - **Single import**: `@import "tailwindcss";` in globals.css
-- **Theme customization**: Use `@theme` directive with CSS variables
 
 ### Stylesheet Structure (globals.css)
 
-**Order matters**:
-
-1. `@import` statements first
-2. `@theme` directive for Tailwind customization
-3. CSS variables in `:root` and `.dark`
-4. `@layer` directives last
+**Order matters**: `@import` → `@theme` → CSS variables → `@layer`
 
 ### Base Layer Rules
 
 - **Use CSS variables directly** in `@layer base`
 - **Correct**: `background-color: var(--background);`
 - **Incorrect**: `@apply bg-background;`
-- **Reason**: Tailwind v4 promotes CSS-first approach
 
 ### Component Standards
 
 - **Primary**: shadcn/ui components for all UI elements
 - **Custom Components**: Follow shadcn/ui patterns and composition
 - **Styling**: Tailwind utility classes only (no CSS Modules except auto-generated libraries)
-- **Theme**: Use CSS variables for dynamic theming
-
-</design_system>
-
----
+  </design_system>
 
 <code_quality>
 
-## Codebase Analysis Protocol (MANDATORY)
+## Codebase Analysis Protocol (MANDATORY - ALWAYS FIRST)
 
-Before ANY recommendations about files/components/functionality:
+**CRITICAL**: This protocol MUST be executed BEFORE any other protocols or recommendations.
 
-### 1. Existing Implementation Check
+### Trigger Conditions
+
+- User requests feature implementation
+- User asks about existing functionality
+- User mentions creating/modifying files
+- User says "proceed with [feature]"
+- ANY development-related request
+
+### Required Analysis Steps
+
+**Step 1: Search Existing Implementations**
 
 ```bash
-grep_search "functionName|ComponentName"     # Check existing implementations
-find_by_name "*feature*|*component*"        # Find related files
-grep_search "import.*ComponentName"          # Check usage patterns
+grep_search "featureName|ComponentName"
+find_by_name "*feature*|*component*"
+grep_search "import.*ComponentName"
 ```
 
-### 2. Duplication Prevention
+**Step 2: Read Complete Context**
 
-- **NEVER** suggest creating new files without checking existing implementations
-- **NEVER** assume functionality doesn't exist without comprehensive searching
-- **ALWAYS** build upon existing work rather than recreating it
-- **ALWAYS** acknowledge existing implementations before suggesting changes
+- Read ALL related files completely (not partial)
+- Understand existing architecture and patterns
+- Identify what's already implemented vs what's missing
 
-### 3. Recommendation Protocol
+**Step 3: Acknowledge Before Recommending**
 
-- **READ FIRST, RECOMMEND SECOND**: Scan existing codebase thoroughly
-- **VERIFY ASSUMPTIONS**: Never assume something doesn't exist
-- **ASK CLARIFYING QUESTIONS**: "I see you have X, are you looking to enhance it or replace it?"
-- **ACKNOWLEDGE EXISTING WORK**: Recognize what's already implemented
+- **ALWAYS** acknowledge existing implementations first
+- State completion percentage: "X is 85% complete, missing Y and Z"
+- Build upon existing work rather than recreating
+
+### Enforcement Rules
+
+- **NEVER** present plans without completing analysis first
+- **NEVER** assume files don't exist without searching
+- **NEVER** ignore existing implementations in recommendations
+- **ALWAYS** state "Following Codebase Analysis Protocol" when starting
+- **ALWAYS** acknowledge existing work before suggesting new work
+
+### Violation Prevention
+
+**Before ANY recommendation, ask yourself**:
+
+1. ✅ Did I search for existing implementations?
+2. ✅ Did I read the complete existing code?
+3. ✅ Did I acknowledge what's already built?
+4. ✅ Am I building upon existing work vs recreating?
+
+**If ANY answer is NO, STOP and complete the analysis first.**
 
 ## Quality Gates (Before Feature Completion)
 
@@ -241,7 +268,6 @@ grep_search "import.*ComponentName"          # Check usage patterns
 
 - **Variables/Functions**: camelCase
 - **Components/Types**: PascalCase
-- **Unused Variables**: Prefix with `_`
 - **Files**: kebab-case for utilities, PascalCase for components
 
 ## Comment Standards
@@ -251,14 +277,8 @@ grep_search "import.*ComponentName"          # Check usage patterns
 ```typescript
 /**
  * Analyzes video content and calculates engagement time
- *
  * @param content - Video URL and metadata
- * @param userProfile - User's learning preferences
  * @returns Estimated completion time with confidence score
- *
- * @example
- * const estimate = analyzeVideo('/videos/intro.mp4', userProfile);
- * // Returns: { timeMinutes: 15, confidence: 0.85 }
  */
 ```
 
@@ -267,19 +287,33 @@ grep_search "import.*ComponentName"          # Check usage patterns
 - **WHY decisions**: Document reasoning behind non-obvious implementations
 - **Edge Cases**: Explain handling of special conditions
 - **Error Handling**: Document recovery strategies
-- **Performance**: Note optimization reasons
 
-### TODO Comments
+## AI Accountability Standards
 
-```typescript
-// TODO: [#TICKET-123] High priority - Add error retry logic
-// Context: Current implementation fails silently on network errors
-// Timeline: Sprint 3
-```
+### Protocol Compliance Verification
 
-</code_quality>
+**Before presenting ANY plan or recommendation**:
 
----
+1. ✅ **State Protocol**: "Following Codebase Analysis Protocol..."
+2. ✅ **Show Evidence**: Present search results and existing implementations found
+3. ✅ **Acknowledge Work**: "I found X is already implemented, Y needs completion"
+4. ✅ **Build Upon**: "Building upon existing work rather than recreating"
+5. ✅ **Accurate Scope**: Present realistic LOC and timeline based on actual state
+
+### Trust Maintenance
+
+**User can rely on AI recommendations when**:
+
+- All protocols followed in correct sequence
+- Existing work acknowledged and respected
+- Plans based on actual codebase state, not assumptions
+
+**User should question AI recommendations when**:
+
+- Protocols skipped or reordered
+- Existing implementations ignored
+- Plans seem to recreate existing functionality
+  </code_quality>
 
 <component_development>
 
@@ -304,16 +338,7 @@ grep_search "ComponentName" src/components/
 1. **Reuse existing**: Extend or compose existing components
 2. **shadcn/ui base**: Build on shadcn/ui components
 3. **Create new**: Only when above options aren't suitable
-
-### 4. Composition Over Creation
-
-- Prefer composing multiple small components
-- Document component composition in JSDoc headers
-- Follow shadcn/ui patterns for consistency
-
-</component_development>
-
----
+   </component_development>
 
 <bug_resolution>
 
@@ -329,12 +354,10 @@ grep_search "ComponentName" src/components/
 ### Confirmation Process
 
 ```
-REQUIRED STEPS:
 1. Present solution and changes made
 2. Ask user to test the fix
 3. Request explicit confirmation: "Can you confirm this issue is resolved?"
 4. Wait for user verification
-5. If not resolved, investigate further
 ```
 
 ### RCA Documentation
@@ -343,13 +366,8 @@ Create RCA document when:
 
 - Bug required significant investigation (>30 minutes)
 - Root cause was non-obvious
-- Issue involves React/Next.js patterns not widely known
 - Multiple approaches were evaluated
-- Debugging revealed important architecture insights
-
-</bug_resolution>
-
----
+  </bug_resolution>
 
 <specification_process>
 
@@ -359,45 +377,19 @@ Create RCA document when:
 
 - **ALWAYS** ask clarifying questions before implementation
 - **NEVER** assume requirements without confirmation
-- **DOCUMENT** all assumptions and decisions
-- **VALIDATE** understanding before proceeding
 
 ### Question Categories
 
-**Technical Architecture**:
-
-- Data structure and relationships
-- User interaction flow
-- Performance requirements
-- Integration patterns
-- Scalability considerations
-
-**Feature Specification**:
-
-- Exact functionality
-- Edge case handling
-- Validation rules
-- Error handling approach
-- Accessibility requirements
-
-**Implementation**:
-
-- Technology stack choices
-- Component architecture
-- State management approach
-- Testing strategy
-- Deployment approach
+**Technical Architecture**: Data structure, user flow, performance, integration, scalability
+**Feature Specification**: Functionality, edge cases, validation, error handling, accessibility
+**Implementation**: Technology choices, component architecture, state management, testing, deployment
 
 ## MoSCoW Prioritization
 
 - **Must Have**: Critical features for MVP
 - **Should Have**: Important but not critical
 - **Could Have**: Nice to have features
-- **Won't Have**: Out of scope for current iteration
-
-</specification_process>
-
----
+  </specification_process>
 
 <testing_strategy>
 
@@ -408,14 +400,7 @@ Create RCA document when:
 - **No unit tests**: Deferred until post-MVP
 - **Focus**: Feature completion over test coverage
 - **Quality Gates**: ESLint, TypeScript, build validation only
-
-**Rationale**: Rapid iteration and feature completion for MVP delivery
-
-**Post-MVP**: Comprehensive automated testing suite will be implemented
-
-</testing_strategy>
-
----
+  </testing_strategy>
 
 <mock_data>
 
@@ -424,12 +409,7 @@ Create RCA document when:
 - **Location**: Centralized in `src/lib/mock-data.ts`
 - **TypeScript**: Use proper interfaces for typed data
 - **Organization**: Group by feature
-- **Structure**: Easy replacement for real APIs
-- **Alternatives**: `src/data/`, `src/mocks/`, or `src/lib/data/` for larger projects
-
-</mock_data>
-
----
+  </mock_data>
 
 <technical_debt>
 
@@ -438,13 +418,5 @@ Create RCA document when:
 ### Tavus CVI Components - CSS Modules
 
 **Status**: Deferred to Post-MVP
-
 **Issue**: Tavus CVI uses CSS modules; project uses Tailwind v4 + shadcn/ui
-
-**Impact**: Two styling systems in codebase
-
-**Action**: Post-MVP migration to Tailwind patterns
-
-**Priority**: Medium (after feature validation)
-
-</technical_debt>
+**Action**: Po

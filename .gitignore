@@ -67,3 +67,6 @@ public/_next-video
 # scripts output files
 scripts/*-output.json
 scripts/*.log
+
+# specs archive (historical files not tracked)
+specs/archive/
