@@ -52,8 +52,10 @@ amplifyconfiguration*
 logs/*
 
 # windsurf
-.windsurf
-.windsurf/rules
+.windsurf/*
+!.windsurf/rules/
+.windsurf/rules/*
+!.windsurf/rules/project-standards.md
 
 # next-video
 videos/*
