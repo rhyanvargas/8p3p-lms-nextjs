@@ -5,6 +5,7 @@ import AuthProvider from "@/components/auth/AuthProvider";
 import SessionHandler from "@/components/auth/SessionHandler";
 import EmailVerificationHandler from "@/components/auth/EmailVerificationHandler";
 import { ThemeProvider } from "@/components/theme-provider";
+import { CVIProvider } from "@/components/cvi/components/cvi-provider";
 
 export const metadata: Metadata = {
 	title: "8P3P LMS",
@@ -24,8 +25,7 @@ export default function RootLayout({
 					<AuthProvider>
 						<SessionHandler />
 						<EmailVerificationHandler />
-
-						{children}
+						<CVIProvider>{children}</CVIProvider>
 					</AuthProvider>
 				</ThemeProvider>
 			</body>

@@ -12,7 +12,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, XCircle, ArrowRight } from "lucide-react";
-import { AskQuestion } from "@/components/course/chapter-content/ask-question";
+// import { AskQuestion } from "@/components/course/chapter-content/ask-question";
 
 interface QuizQuestion {
 	id: string;
@@ -174,20 +174,20 @@ export function ChapterQuiz({
 									<ArrowRight className="h-4 w-4" />
 								</Button>
 							)}
-							<AskQuestion
+							{/* <AskQuestion
 								chapterTitle={chapterTitle || "Chapter"}
 								chapterId={chapterId}
-							/>
+							/> */}
 						</>
 					) : (
 						<>
 							<Button onClick={handleRetry} className="flex-1">
 								Retry Quiz
 							</Button>
-							<AskQuestion
+							{/* <AskQuestion
 								chapterTitle={chapterTitle || "Chapter"}
 								chapterId={chapterId}
-							/>
+							/> */}
 						</>
 					)}
 				</CardFooter>

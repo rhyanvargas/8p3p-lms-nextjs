@@ -45,7 +45,6 @@ const VideoPreview = React.memo(({ id }: { id: string }) => {
 		</div>
 	);
 });
-VideoPreview.displayName = 'VideoPreview';
 
 const PreviewVideos = React.memo(() => {
 	const localId = useLocalSessionId();
@@ -62,7 +61,6 @@ const PreviewVideos = React.memo(() => {
 		</>
 	);
 });
-PreviewVideos.displayName = 'PreviewVideos';
 
 const MainVideo = React.memo(() => {
 	const replicaIds = useReplicaIDs();
@@ -97,9 +95,8 @@ const MainVideo = React.memo(() => {
 		</div>
 	);
 });
-MainVideo.displayName = 'MainVideo';
 
-const ConversationComponent = React.memo(({ onLeave, conversationUrl }: ConversationProps) => {
+export const Conversation = React.memo(({ onLeave, conversationUrl }: ConversationProps) => {
 	const { joinCall, leaveCall } = useCVICall();
 	const meetingState = useMeetingState();
 	const { hasMicError } = useDevices()
@@ -113,7 +110,7 @@ const ConversationComponent = React.memo(({ onLeave, conversationUrl }: Conversa
 	// Initialize call when conversation is available
 	useEffect(() => {
 		joinCall({ url: conversationUrl });
-	}, [joinCall, conversationUrl]);
+	}, []);
 
 	const handleLeave = useCallback(() => {
 		leaveCall();
@@ -176,6 +173,3 @@ const ConversationComponent = React.memo(({ onLeave, conversationUrl }: Conversa
 		</div>
 	);
 });
-ConversationComponent.displayName = 'Conversation';
-
-export const Conversation = ConversationComponent;
