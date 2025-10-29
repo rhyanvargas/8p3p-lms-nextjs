@@ -33,6 +33,7 @@ interface ChapterQuizProps {
 	onNextChapter?: () => void;
 	chapterTitle?: string;
 	chapterId?: string;
+	onQuizComplete?: (passed: boolean, score: number) => void;
 }
 
 export function ChapterQuiz({
@@ -40,6 +41,7 @@ export function ChapterQuiz({
 	onNextChapter,
 	chapterTitle,
 	chapterId,
+	onQuizComplete,
 }: ChapterQuizProps) {
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [selectedOptions, setSelectedOptions] = useState<number[]>(
@@ -77,8 +79,15 @@ export function ChapterQuiz({
 		const calculatedScore = Math.round(
 			(correctAnswers / quiz.questions.length) * 100
 		);
+		const passed = calculatedScore >= quiz.passingScore;
+
 		setScore(calculatedScore);
 		setSubmitted(true);
+
+		// Notify parent component of quiz completion
+		if (onQuizComplete) {
+			onQuizComplete(passed, calculatedScore);
+		}
 	};
 
 	const handleRetry = () => {
@@ -190,13 +199,11 @@ export function ChapterQuiz({
 	const question = quiz.questions[currentQuestion];
 
 	return (
-		<Card>
+		<Card className="shadow-none">
 			<CardHeader>
-				<CardTitle>{quiz.title}</CardTitle>
-				<p className="text-muted-foreground">{quiz.description}</p>
-			</CardHeader>
-			<CardContent className="p-6">
-				<div className="mb-6">
+				{/* <CardTitle>{quiz.title}</CardTitle>
+				<p className="text-muted-foreground">{quiz.description}</p> */}
+				<div className="">
 					<div className="flex justify-between items-center mb-2">
 						<span className="text-sm font-medium">
 							Question {currentQuestion + 1} of {quiz.questions.length}
@@ -217,7 +224,8 @@ export function ChapterQuiz({
 						></div>
 					</div>
 				</div>
-
+			</CardHeader>
+			<CardContent className="p-6">
 				<div className="mb-6">
 					<h3 className="text-lg font-medium mb-4">{question.question}</h3>
 

@@ -48,7 +48,7 @@ export interface Chapter {
 	sections: Section[];
 	/**
 	 * Conversational context for Tavus AI instructor
-	 * 
+	 *
 	 * Defines how the AI should behave when answering questions about this chapter
 	 * Used by Ask a Question feature (Tavus integration)
 	 */
@@ -422,7 +422,7 @@ these key concepts before moving forward.
 							"Complete this assessment to demonstrate your mastery of the EMDR foundations concepts.",
 						sectionType: "quiz",
 						estimatedDuration: 300, // 5 minutes for quiz
-						completed: false,
+						completed: true,
 						quiz: {
 							id: "quiz_1_foundations",
 							title: "EMDR Foundations Final Assessment",
@@ -505,17 +505,17 @@ these key concepts before moving forward.
 					},
 				],
 				conversationalContext: {
-					instructorTone: 'conversational',
+					instructorTone: "conversational",
 					keyConcepts: [
-						'trauma theory',
-						'bilateral stimulation',
-						'adaptive information processing',
-						'dysfunctionally stored memory',
-						'network balance model',
+						"trauma theory",
+						"bilateral stimulation",
+						"adaptive information processing",
+						"dysfunctionally stored memory",
+						"network balance model",
 					],
-					responseLength: 'moderate',
+					responseLength: "moderate",
 					customInstructions:
-						'Focus on foundational EMDR concepts. Use simple analogies to explain complex neuroscience. Encourage learners to connect concepts to real-world applications.',
+						"Focus on foundational EMDR concepts. Use simple analogies to explain complex neuroscience. Encourage learners to connect concepts to real-world applications.",
 				},
 			},
 			{
@@ -644,17 +644,17 @@ these key concepts before moving forward.
 					},
 				],
 				conversationalContext: {
-					instructorTone: 'professional',
+					instructorTone: "professional",
 					keyConcepts: [
-						'8-phase protocol',
-						'client preparation',
-						'history taking',
-						'treatment planning',
-						'self-regulation techniques',
+						"8-phase protocol",
+						"client preparation",
+						"history taking",
+						"treatment planning",
+						"self-regulation techniques",
 					],
-					responseLength: 'detailed',
+					responseLength: "detailed",
 					customInstructions:
-						'Focus on practical protocol implementation. Provide step-by-step guidance. Reference specific phases when answering questions.',
+						"Focus on practical protocol implementation. Provide step-by-step guidance. Reference specific phases when answering questions.",
 				},
 			},
 		],
@@ -819,18 +819,18 @@ these key concepts before moving forward.
 					},
 				],
 				conversationalContext: {
-					instructorTone: 'encouraging',
+					instructorTone: "encouraging",
 					keyConcepts: [
-						'dissociative disorders',
-						'complex trauma',
-						'attachment trauma',
-						'protocol modifications',
-						'client safety',
-						'stabilization techniques',
+						"dissociative disorders",
+						"complex trauma",
+						"attachment trauma",
+						"protocol modifications",
+						"client safety",
+						"stabilization techniques",
 					],
-					responseLength: 'moderate',
+					responseLength: "moderate",
 					customInstructions:
-						'Focus on advanced applications and clinical nuances. Emphasize safety considerations. Help learners understand when to modify standard protocols.',
+						"Focus on advanced applications and clinical nuances. Emphasize safety considerations. Help learners understand when to modify standard protocols.",
 				},
 			},
 		],

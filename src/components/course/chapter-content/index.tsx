@@ -1,8 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { ChapterQuiz } from "./chapter-quiz";
+import { LearningCheck } from "./learning-check";
 import { Button } from "@/components/ui/button";
 import { Course, Section, Chapter } from "@/lib/mock-data";
 import {
@@ -11,11 +13,9 @@ import {
 	generateChapterSlug,
 	getNextChapter,
 } from "@/lib/course-utils";
-import {
-	InteractiveVideoPlayer,
-	createTranscriptFromScript,
-	parseVTT,
-} from "@/components/video";
+import { InteractiveVideoPlayer } from "@/components/video/interactive-video-player";
+import { createTranscriptFromScript } from "@/components/video/interactive-video-player";
+import { parseVTT } from "@/lib/utils/vtt-parser";
 
 interface ChapterContentProps {
 	course: Course;
@@ -30,8 +30,35 @@ export function ChapterContent({
 }: ChapterContentProps) {
 	const router = useRouter();
 
+	// Find the quiz section in this chapter (quiz comes before Learning Check)
+	const chapterQuizSection = chapter.sections.find(
+		(s) => s.sectionType === "quiz"
+	);
+
+	// Track quiz completion for Learning Check gating
+	// Initialize from mock data (quiz.completed status)
+	// TODO: In production, this should come from database/user progress state
+	const [quizPassed, setQuizPassed] = useState(
+		chapterQuizSection?.completed ?? false
+	);
+	const [quizScore, setQuizScore] = useState<number | undefined>(
+		chapterQuizSection?.completed ? 100 : undefined // Mock score for completed quizzes
+	);
+
+	// Handler for when quiz is completed
+	const handleQuizComplete = (passed: boolean, score: number) => {
+		setQuizPassed(passed);
+		setQuizScore(score);
+		console.log("Quiz completed:", { passed, score, chapterId: chapter.id });
+	};
+
 	// Generate slugs for navigation
 	const courseSlug = generateCourseSlug(course.id, course.title);
+
+	// Generate quiz URL for Learning Check navigation
+	const quizUrl = chapterQuizSection
+		? `/courses/${courseSlug}/${generateChapterSlug(chapter.id, chapter.title)}/sections/${generateSectionSlug(chapterQuizSection.id, chapterQuizSection.title)}`
+		: undefined;
 
 	// Get next section for navigation
 	const nextSection = getNextChapter(course.id, chapter.id, section.id);
@@ -68,8 +95,8 @@ export function ChapterContent({
 				<p className="text-muted-foreground">{section.learningObjective}</p>
 			</div>
 
-			{section.sectionType === "video" ? (
-				<div className="bg-white border border-gray-200 rounded-lg p-4">
+			<div className="bg-white border border-gray-200 rounded-lg p-4">
+				{section.sectionType === "video" ? (
 					<InteractiveVideoPlayer
 						src={section.videoUrl}
 						showTranscript={!!(section.videoVTT || section.videoScript)}
@@ -77,16 +104,14 @@ export function ChapterContent({
 							section.videoVTT
 								? parseVTT(section.videoVTT)
 								: section.videoScript
-								? createTranscriptFromScript(section.videoScript, 90)
-								: []
+									? createTranscriptFromScript(section.videoScript, 90)
+									: []
 						}
 						layout="default"
 						autoPlay={false}
 						muted={false}
 					/>
-				</div>
-			) : section.sectionType === "quiz" ? (
-				<div className="mb-8">
+				) : section.sectionType === "quiz" ? (
 					<ChapterQuiz
 						quiz={{
 							id: section.quiz!.id,
@@ -95,19 +120,39 @@ export function ChapterContent({
 							questions: section.quiz!.questions,
 							passingScore: section.quiz!.passingScore,
 						}}
+						chapterId={chapter.id}
+						chapterTitle={chapter.title}
+						onQuizComplete={handleQuizComplete}
 					/>
-				</div>
-			) : (
-				/* Default Layout for Other Section Types (AI Avatar, etc.) */
-				<div className="mb-8">
-					<div className="bg-white border border-gray-200 rounded-lg p-4">
-						<p>Content for {section.sectionType} sections coming soon...</p>
+				) : section.sectionType === "ai_avatar" ? (
+					<div className="mb-8">
+						<LearningCheck
+							chapterId={chapter.id}
+							chapterTitle={chapter.title}
+							quizPassed={quizPassed}
+							quizScore={quizScore}
+							quizUrl={quizUrl}
+							onComplete={() => {
+								console.log(
+									"Learning Check completed for chapter:",
+									chapter.id
+								);
+								// TODO: Update user progress in database
+							}}
+						/>
 					</div>
-				</div>
-			)}
+				) : (
+					/* Default Layout for Other Section Types */
+					<div className="mb-8">
+						<div className="bg-white border border-gray-200 rounded-lg p-4">
+							<p>Content for {section.sectionType} sections coming soon...</p>
+						</div>
+					</div>
+				)}
+			</div>
 
 			{/* Quiz Section - Show after video content if available */}
-			{section.sectionType === "video" && section.quiz && (
+			{/* {section.sectionType === "video" && section.quiz && (
 				<div className="mt-8">
 					<ChapterQuiz
 						quiz={{
@@ -119,7 +164,7 @@ export function ChapterContent({
 						}}
 					/>
 				</div>
-			)}
+			)} */}
 
 			{/* Navigation */}
 			{nextSection && (
