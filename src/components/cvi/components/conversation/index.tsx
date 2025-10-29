@@ -7,11 +7,9 @@ import {
 	useDevices,
 	useLocalSessionId,
 	useMeetingState,
-	useScreenVideoTrack,
 	useVideoTrack
 } from "@daily-co/daily-react";
-import { MicSelectBtn, CameraSelectBtn, ScreenShareButton } from '../device-select'
-import { useLocalScreenshare } from "../../hooks/use-local-screenshare";
+import { MicSelectBtn, CameraSelectBtn } from '../device-select'
 import { useReplicaIDs } from "../../hooks/use-replica-ids";
 import { useCVICall } from "../../hooks/use-cvi-call";
 import { AudioWave } from "../audio-wave";
@@ -48,15 +46,14 @@ const VideoPreview = React.memo(({ id }: { id: string }) => {
 
 const PreviewVideos = React.memo(() => {
 	const localId = useLocalSessionId();
-	const { isScreenSharing } = useLocalScreenshare();
-	const replicaIds = useReplicaIDs();
-	const replicaId = replicaIds[0];
+	// Screen sharing disabled for Learning Check
+	// const { isScreenSharing } = useLocalScreenshare();
+	// const replicaIds = useReplicaIDs();
+	// const replicaId = replicaIds[0];
 
 	return (
 		<>
-			{isScreenSharing && (
-				<VideoPreview id={replicaId} />
-			)}
+			{/* Screen share preview removed */}
 			<VideoPreview id={localId} />
 		</>
 	);
@@ -64,10 +61,12 @@ const PreviewVideos = React.memo(() => {
 
 const MainVideo = React.memo(() => {
 	const replicaIds = useReplicaIDs();
-	const localId = useLocalSessionId();
 	const videoState = useVideoTrack(replicaIds[0]);
-	const screenVideoState = useScreenVideoTrack(localId);
-	const isScreenSharing = !screenVideoState.isOff;
+	// Screen sharing disabled for Learning Check
+	// const localId = useLocalSessionId();
+	// const screenVideoState = useScreenVideoTrack(localId);
+	// const isScreenSharing = !screenVideoState.isOff;
+	
 	// This is one-to-one call, so we can use the first replica id
 	const replicaId = replicaIds[0];
 
@@ -79,18 +78,14 @@ const MainVideo = React.memo(() => {
 		);
 	}
 
-	// Switching between replica video and screen sharing video
+	// Screen share switching removed - showing only replica video
 	return (
-		<div
-			className={`${styles.mainVideoContainer} ${isScreenSharing ? styles.mainVideoContainerScreenSharing : ''}`}
-		>
+		<div className={styles.mainVideoContainer}>
 			<DailyVideo
 				automirror
-				sessionId={isScreenSharing ? localId : replicaId}
-				type={isScreenSharing ? "screenVideo" : "video"}
-				className={`${styles.mainVideo}
-				${isScreenSharing ? styles.mainVideoScreenSharing : ''}
-				${videoState.isOff ? styles.mainVideoHidden : ''}`}
+				sessionId={replicaId}
+				type="video"
+				className={`${styles.mainVideo} ${videoState.isOff ? styles.mainVideoHidden : ''}`}
 			/>
 		</div>
 	);
@@ -107,10 +102,12 @@ export const Conversation = React.memo(({ onLeave, conversationUrl }: Conversati
 		}
 	}, [meetingState, onLeave]);
 
-	// Initialize call when conversation is available
+	// Auto-join when conversation URL is provided
 	useEffect(() => {
-		joinCall({ url: conversationUrl });
-	}, []);
+		if (conversationUrl) {
+			joinCall({ url: conversationUrl });
+		}
+	}, [conversationUrl, joinCall]);
 
 	const handleLeave = useCallback(() => {
 		leaveCall();
@@ -144,7 +141,7 @@ export const Conversation = React.memo(({ onLeave, conversationUrl }: Conversati
 				<div className={styles.footerControls}>
 					<MicSelectBtn />
 					<CameraSelectBtn />
-					<ScreenShareButton />
+					{/* ScreenShare disabled for Learning Check */}
 					<button type="button" className={styles.leaveButton} onClick={handleLeave}>
 						<span className={styles.leaveButtonIcon}>
 							<svg
