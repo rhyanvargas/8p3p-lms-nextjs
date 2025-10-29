@@ -12,7 +12,6 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, XCircle, ArrowRight } from "lucide-react";
-// import { AskQuestion } from "@/components/course/chapter-content/ask-question";
 
 interface QuizQuestion {
 	id: string;
@@ -174,20 +173,12 @@ export function ChapterQuiz({
 									<ArrowRight className="h-4 w-4" />
 								</Button>
 							)}
-							{/* <AskQuestion
-								chapterTitle={chapterTitle || "Chapter"}
-								chapterId={chapterId}
-							/> */}
 						</>
 					) : (
 						<>
 							<Button onClick={handleRetry} className="flex-1">
 								Retry Quiz
 							</Button>
-							{/* <AskQuestion
-								chapterTitle={chapterTitle || "Chapter"}
-								chapterId={chapterId}
-							/> */}
 						</>
 					)}
 				</CardFooter>
@@ -238,7 +229,10 @@ export function ChapterQuiz({
 					>
 						<div className="space-y-3">
 							{question.options.map((option, index) => (
-								<div key={index} className="flex items-center space-x-2">
+								<div
+									key={index}
+									className="flex items-center space-x-2 hover:bg-muted/50 rounded-lg p-1 pl-1.5"
+								>
 									<RadioGroupItem
 										value={index.toString()}
 										id={`option-${index}`}
