@@ -1,54 +1,61 @@
 /**
  * Tavus Configuration for Learning Check Feature
- * 
+ *
  * Centralized configuration for Tavus Conversational Video Interface (CVI)
  * including objectives, guardrails, and persona settings.
- * 
+ *
  * This file serves as the single source of truth for all Tavus-related
  * configurations, making it easy to:
  * - Update configurations in one place
  * - Maintain consistency across API routes and scripts
  * - Version control configuration changes
  * - Share configurations between environments
- * 
+ *
  * @see https://docs.tavus.io/
  */
 
 /**
  * Learning Check Objectives Configuration
- * 
+ *
  * Defines the structured assessment sequence that the AI must follow:
  * recall → application → self-explanation
  */
-export const LEARNING_CHECK_OBJECTIVES = [
-	{
-		objective_name: "recall_assessment",
-		objective_prompt:
-			"Ask at least 1 recall question about key concepts from this chapter to test the learner's memory and understanding of fundamental concepts.",
-		confirmation_mode: "auto" as const,
-		modality: "verbal" as const,
-		next_required_objectives: ["application_assessment"],
-	},
-	{
-		objective_name: "application_assessment",
-		objective_prompt:
-			"Ask at least 1 application question about how the learner would apply these concepts in real-world scenarios or therapeutic practice.",
-		confirmation_mode: "auto" as const,
-		modality: "verbal" as const,
-		next_required_objectives: ["self_explanation_assessment"],
-	},
-	{
-		objective_name: "self_explanation_assessment",
-		objective_prompt:
-			"Ask at least 1 self-explanation question to check the learner's deeper understanding and ability to explain concepts in their own words.",
-		confirmation_mode: "auto" as const,
-		modality: "verbal" as const,
-	},
-];
+export const LEARNING_CHECK_OBJECTIVES = {
+	name: "Learning Check Compliance Objectives",
+	data: [
+		{
+			objective_name: "recall_assessment",
+			objective_prompt:
+				"Ask at least one recall question about key concepts from this chapter to test memory of fundamentals.",
+			confirmation_mode: "auto",
+			modality: "verbal",
+			output_variables: ["recall_key_terms", "recall_score"],
+			next_required_objectives: ["application_assessment"],
+		},
+		{
+			objective_name: "application_assessment",
+			objective_prompt:
+				"Ask at least one application question about using these concepts in realistic scenarios or therapeutic practice.",
+			confirmation_mode: "auto",
+			modality: "verbal",
+			output_variables: ["application_example", "application_score"],
+			next_required_objectives: ["self_explanation_assessment"],
+		},
+		{
+			objective_name: "self_explanation_assessment",
+			objective_prompt:
+				"Ask at least one self-explanation prompt to assess deeper understanding in the learner’s own words.",
+			confirmation_mode: "auto",
+			modality: "verbal",
+			output_variables: ["explanation_summary", "explanation_score"],
+			// next_conditional_objectives: { "remediation_loop": "If explanation_score is low" } // optional
+		},
+	],
+};
 
 /**
  * Learning Check Guardrails Configuration
- * 
+ *
  * Enforces strict behavioral boundaries:
  * - Quiz answer protection
  * - Time management
@@ -61,33 +68,33 @@ export const LEARNING_CHECK_GUARDRAILS = {
 		{
 			guardrail_name: "quiz_answer_protection",
 			guardrail_prompt:
-				"IMPORTANT: Never reveal quiz answers or discuss specific quiz questions. If the learner asks about quiz content, politely redirect to discussing the underlying concepts instead.",
-			modality: "verbal" as const,
+				"Never reveal quiz answers or discuss specific quiz items. If asked, redirect to underlying concepts.",
+			modality: "verbal",
 		},
 		{
 			guardrail_name: "time_management",
 			guardrail_prompt:
-				"Keep responses brief (1-2 sentences maximum) and move efficiently through questions. This conversation automatically ends in 3 minutes, so be concise while maintaining quality.",
-			modality: "verbal" as const,
+				"Keep responses brief and move efficiently; this session ends automatically when max conversation time is reached.",
+			modality: "verbal",
 		},
 		{
 			guardrail_name: "content_scope",
 			guardrail_prompt:
-				"Keep conversation focused on this chapter's content only. If the learner asks about topics outside this chapter's scope, politely redirect back to the current chapter topics.",
-			modality: "verbal" as const,
+				"Stay strictly within this chapter’s content. If off-scope, politely redirect to current chapter topics.",
+			modality: "verbal",
 		},
 		{
 			guardrail_name: "encouraging_tone",
 			guardrail_prompt:
-				"Maintain an encouraging and supportive tone. Acknowledge good answers positively and gently correct misconceptions without being discouraging.",
-			modality: "verbal" as const,
+				"Maintain an encouraging, supportive tone. Acknowledge correct elements and correct misconceptions succinctly.",
+			modality: "verbal",
 		},
 	],
 };
 
 /**
  * Persona Configuration
- * 
+ *
  * Defines the AI Instructor Assistant personality and behavior
  */
 export const PERSONA_CONFIG = {
@@ -96,7 +103,7 @@ export const PERSONA_CONFIG = {
 
 	/**
 	 * System Prompt
-	 * 
+	 *
 	 * Defines the AI's core behavior and personality.
 	 * Updated to reference structured objectives and time constraints.
 	 */
@@ -106,7 +113,7 @@ Follow the structured assessment objectives to ensure comprehensive learning eva
 
 	/**
 	 * Context
-	 * 
+	 *
 	 * Provides conversation-specific guidance.
 	 * Updated to work harmoniously with guardrails (no hardcoded redirects).
 	 */
@@ -118,7 +125,7 @@ Maintain accuracy based on the provided materials in the knowledge base. Ask ope
 
 	/**
 	 * Layers Configuration
-	 * 
+	 *
 	 * Configures perception, TTS, LLM, and STT layers
 	 */
 	layers: {
@@ -157,7 +164,7 @@ Maintain accuracy based on the provided materials in the knowledge base. Ask ope
 
 /**
  * Conversation Context Builder
- * 
+ *
  * Builds chapter-specific context for AI instructor.
  * This is injected into each conversation at creation time.
  */
@@ -166,29 +173,18 @@ export function buildChapterContext(
 	chapterTitle: string
 ): string {
 	// TODO: In production, fetch actual chapter data from database
-	// For Phase 1, use static context
-
-	return `
-Current Learning Check Context:
-Chapter: ${chapterTitle}
-Chapter ID: ${chapterId}
-
-Learning Objectives:
-- Understand the core concepts covered in this chapter
-- Apply knowledge to real-world scenarios
-- Explain concepts in your own words
-
-Chapter Topics:
-This chapter covers foundational concepts that the learner should be able to recall, apply, and explain in their own words.
-
-Assessment Structure:
-Follow the structured objectives: recall → application → self-explanation questions to comprehensively assess understanding.
-`.trim();
+	return [
+		"Mode: Learning Check",
+		`Chapter: ${chapterTitle} (${chapterId})`,
+		"Goals: confirm recall, application, and ability to explain concepts.",
+		"Flow: 1 recall → 1 application → 1 self-explanation → brief summary.",
+		"Constraints: stay in chapter; do not reveal quiz answers; keep replies concise and supportive.",
+	].join(" | ");
 }
 
 /**
  * Greeting Builder
- * 
+ *
  * Builds a custom greeting for each conversation.
  * This is the first thing the AI will say when the learner joins.
  */
@@ -198,7 +194,7 @@ export function buildGreeting(chapterTitle: string): string {
 
 /**
  * Default Configuration Values
- * 
+ *
  * These are application-level constants that don't change between environments.
  * Deployment-specific values (API keys, IDs) should be in environment variables.
  */
@@ -227,7 +223,7 @@ export const TAVUS_DEFAULTS = {
 
 /**
  * Environment Variable Helpers
- * 
+ *
  * Type-safe accessors for environment variables with fallbacks to defaults.
  * Use these instead of accessing process.env directly.
  */
@@ -241,13 +237,17 @@ export const TAVUS_ENV = {
 	/** Get learning check duration (with fallback to default) */
 	getLearningCheckDuration: (): number => {
 		const envValue = process.env.TAVUS_LEARNING_CHECK_DURATION;
-		return envValue ? parseInt(envValue, 10) : TAVUS_DEFAULTS.LEARNING_CHECK_DURATION;
+		return envValue
+			? parseInt(envValue, 10)
+			: TAVUS_DEFAULTS.LEARNING_CHECK_DURATION;
 	},
 
 	/** Get max concurrent sessions (with fallback to default) */
 	getMaxConcurrentSessions: (): number => {
 		const envValue = process.env.TAVUS_MAX_CONCURRENT_SESSIONS;
-		return envValue ? parseInt(envValue, 10) : TAVUS_DEFAULTS.MAX_CONCURRENT_SESSIONS;
+		return envValue
+			? parseInt(envValue, 10)
+			: TAVUS_DEFAULTS.MAX_CONCURRENT_SESSIONS;
 	},
 
 	/** Get webhook secret from environment */
