@@ -43,6 +43,7 @@ const VideoPreview = React.memo(({ id }: { id: string }) => {
 		</div>
 	);
 });
+VideoPreview.displayName = 'VideoPreview';
 
 const PreviewVideos = React.memo(() => {
 	const localId = useLocalSessionId();
@@ -58,6 +59,7 @@ const PreviewVideos = React.memo(() => {
 		</>
 	);
 });
+PreviewVideos.displayName = 'PreviewVideos';
 
 const MainVideo = React.memo(() => {
 	const replicaIds = useReplicaIDs();
@@ -90,6 +92,7 @@ const MainVideo = React.memo(() => {
 		</div>
 	);
 });
+MainVideo.displayName = 'MainVideo';
 
 export const Conversation = React.memo(({ onLeave, conversationUrl }: ConversationProps) => {
 	const { joinCall, leaveCall } = useCVICall();
@@ -170,3 +173,4 @@ export const Conversation = React.memo(({ onLeave, conversationUrl }: Conversati
 		</div>
 	);
 });
+Conversation.displayName = 'Conversation';
