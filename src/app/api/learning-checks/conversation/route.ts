@@ -1,135 +1,147 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
+import {
+	buildChapterContext,
+	buildGreeting,
+	TAVUS_DEFAULTS,
+	TAVUS_ENV,
+} from "@/lib/tavus";
 
 /**
  * Create Tavus Conversation for Learning Check
- * 
- * Phase 1: Basic conversation creation with chapter context
+ *
+ * Phase 1: Structured conversation with objectives, guardrails, and chapter context
  * Phase 2: Add webhook URL for perception analysis
- * 
+ *
+ * Architecture:
+ * - Objectives: Enforce assessment structure (recall → application → self-explanation)
+ * - Guardrails: Enforce behavioral boundaries (quiz protection, time management, scope)
+ * - Context: Chapter-specific information and learning objectives
+ *
  * @see specs/features/learning-check/learning-check-implementation.md
+ * @see src/lib/tavus/config.ts for configuration
  */
 
 interface CreateConversationRequest {
-  chapterId: string;
-  chapterTitle: string;
+	chapterId: string;
+	chapterTitle: string;
+	objectivesId?: string; // Optional: override default objectives
+	guardrailsId?: string; // Optional: override default guardrails
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    const body: CreateConversationRequest = await request.json();
-    const { chapterId, chapterTitle } = body;
+	try {
+		const body: CreateConversationRequest = await request.json();
+		const { chapterId, chapterTitle, objectivesId, guardrailsId } = body;
 
-    // Validate required fields
-    if (!chapterId || !chapterTitle) {
-      return NextResponse.json(
-        { error: 'Missing required fields: chapterId, chapterTitle' },
-        { status: 400 }
-      );
-    }
+		// Validate required fields
+		if (!chapterId || !chapterTitle) {
+			return NextResponse.json(
+				{ error: "Missing required fields: chapterId, chapterTitle" },
+				{ status: 400 }
+			);
+		}
 
-    // Validate environment variables
-    const apiKey = process.env.TAVUS_API_KEY;
-    const personaId = process.env.TAVUS_PERSONA_ID;
+		// Get environment variables using type-safe helpers
+		const apiKey = TAVUS_ENV.getApiKey();
+		const personaId = TAVUS_ENV.getPersonaId();
 
-    if (!apiKey || !personaId) {
-      console.error('Missing Tavus configuration:', { 
-        hasApiKey: !!apiKey, 
-        hasPersonaId: !!personaId 
-      });
-      return NextResponse.json(
-        { error: 'Tavus configuration missing. Please set TAVUS_API_KEY and TAVUS_PERSONA_ID.' },
-        { status: 500 }
-      );
-    }
+		if (!apiKey || !personaId) {
+			console.error("Missing Tavus configuration:", {
+				hasApiKey: !!apiKey,
+				hasPersonaId: !!personaId,
+			});
+			return NextResponse.json(
+				{
+					error:
+						"Tavus configuration missing. Please set TAVUS_API_KEY and TAVUS_PERSONA_ID.",
+				},
+				{ status: 500 }
+			);
+		}
 
-    // Build chapter-specific context for AI instructor
-    const conversationalContext = buildChapterContext(chapterId, chapterTitle);
+		// Build chapter-specific context and greeting for AI instructor
+		const conversationalContext = buildChapterContext(chapterId, chapterTitle);
+		const customGreeting = buildGreeting(chapterTitle);
 
-    // Create Tavus conversation with minimal required fields
-    // Note: properties and max_call_duration are not supported in Tavus API v2
-    const tavusResponse = await fetch('https://tavusapi.com/v2/conversations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-      },
-      body: JSON.stringify({
-        persona_id: personaId,
-        conversational_context: conversationalContext,
-        conversation_name: `Learning Check: ${chapterTitle}`,
-        // Phase 2: Add callback_url for perception analysis webhook
-        // callback_url: process.env.TAVUS_WEBHOOK_URL,
-      })
-    });
+		// Get learning check duration from environment (default: 180 seconds = 3 minutes)
+		const learningCheckDuration = TAVUS_ENV.getLearningCheckDuration();
 
-    if (!tavusResponse.ok) {
-      const errorData = await tavusResponse.json().catch(() => ({}));
-      console.error('Tavus API error:', {
-        status: tavusResponse.status,
-        statusText: tavusResponse.statusText,
-        error: errorData
-      });
-      return NextResponse.json(
-        { error: 'Failed to create Tavus conversation' },
-        { status: tavusResponse.status }
-      );
-    }
+		// Create Tavus conversation with structured objectives and guardrails
+		const conversationBody: Record<string, unknown> = {
+			persona_id: personaId,
+			replica_id: TAVUS_DEFAULTS.DEFAULT_REPLICA_ID, // Required if persona doesn't have default replica
+			conversational_context: conversationalContext,
+			custom_greeting: customGreeting,
+			conversation_name: `Learning Check: ${chapterTitle}`,
+			test_mode: TAVUS_DEFAULTS.TEST_MODE,
+			// Enforce time limit (max 3600 seconds per Tavus API)
+			properties: {
+				max_call_duration: learningCheckDuration,
+				participant_left_timeout: 10, // End 10 seconds after participant leaves
+				participant_absent_timeout: 60, // End if no one joins within 60 seconds
+			},
+		};
 
-    const data = await tavusResponse.json();
+		// Add objectives ID (for structured assessment)
+		// Use provided ID or fall back to environment variable
+		const finalObjectivesId = objectivesId || TAVUS_ENV.getObjectivesId();
+		if (finalObjectivesId) {
+			conversationBody.objectives_id = finalObjectivesId;
+		}
 
-    return NextResponse.json({
-      conversationUrl: data.conversation_url,
-      conversationId: data.conversation_id,
-      expiresAt: data.expires_at
-    });
+		// Add guardrails ID (for compliance enforcement)
+		// Use provided ID or fall back to environment variable
+		const finalGuardrailsId = guardrailsId || TAVUS_ENV.getGuardrailsId();
+		if (finalGuardrailsId) {
+			conversationBody.guardrails_id = finalGuardrailsId;
+		}
 
-  } catch (error) {
-    console.error('Error creating conversation:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
+		// Phase 2: Add callback_url for perception analysis webhook
+		const webhookUrl = TAVUS_ENV.getWebhookUrl();
+		if (webhookUrl) {
+			conversationBody.callback_url = webhookUrl;
+		}
+
+		const tavusResponse = await fetch(
+			`${TAVUS_DEFAULTS.API_BASE_URL}/conversations`,
+			{
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"x-api-key": apiKey,
+			},
+			body: JSON.stringify(conversationBody),
+		});
+
+		if (!tavusResponse.ok) {
+			const errorData = await tavusResponse.json().catch(() => ({}));
+			console.error("Tavus API error:", {
+				status: tavusResponse.status,
+				statusText: tavusResponse.statusText,
+				error: errorData,
+			});
+			return NextResponse.json(
+				{ error: "Failed to create Tavus conversation" },
+				{ status: tavusResponse.status }
+			);
+		}
+
+		const data = await tavusResponse.json();
+
+		return NextResponse.json({
+			conversationUrl: data.conversation_url,
+			conversationId: data.conversation_id,
+			expiresAt: data.expires_at,
+		});
+	} catch (error) {
+		console.error("Error creating conversation:", error);
+		return NextResponse.json(
+			{ error: "Internal server error" },
+			{ status: 500 }
+		);
+	}
 }
 
-/**
- * Build chapter-specific context for AI instructor
- * This context is injected into the Tavus persona at conversation creation
- */
-function buildChapterContext(chapterId: string, chapterTitle: string): string {
-  // TODO: In production, fetch actual chapter data from database
-  // For Phase 1, use static context
-  
-  return `
-Current Learning Check Context:
-Chapter: ${chapterTitle}
-Chapter ID: ${chapterId}
-
-Time Constraint:
-- This conversation will automatically end after 4 minutes
-- Keep your questions concise and pace the conversation accordingly
-- Aim to ask 3-4 questions total within the time limit
-
-Learning Objectives for This Chapter:
-- Understand the core concepts covered in this chapter
-- Apply knowledge to real-world scenarios
-- Explain concepts in your own words
-
-Assessment Focus:
-- Ask at least 1 recall question about key concepts from this chapter
-- Ask at least 1 application question about real-world usage
-- Ask at least 1 self-explanation question to check understanding
-- IMPORTANT: Never reveal quiz answers or discuss specific quiz questions
-- Keep conversation focused on this chapter's content
-- Politely redirect if student asks about topics outside this chapter's scope
-
-Conversation Guidelines:
-- Be encouraging and supportive
-- Use natural, conversational language
-- Keep responses brief (1-2 sentences maximum)
-- Ask follow-up questions to deepen understanding
-- Acknowledge good answers positively
-- Gently correct misconceptions without being discouraging
-- Move efficiently through questions to respect the 4-minute time limit
-`.trim();
-}
+// Helper functions moved to @/lib/tavus/config.ts for centralized configuration
+// - buildGreeting(chapterTitle): Creates custom greeting
+// - buildChapterContext(chapterId, chapterTitle): Builds chapter-specific context
