@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
 			replica_id: TAVUS_DEFAULTS.DEFAULT_REPLICA_ID, // Required if persona doesn't have default replica
 			conversational_context: conversationalContext,
 			custom_greeting: customGreeting,
-			conversation_name: `Learning Check: ${chapterTitle}`,
+			conversation_name: `Learning Check: ${chapterTitle}`, //TODO: add session id to conversation name
 			test_mode: TAVUS_DEFAULTS.TEST_MODE,
 			// Enforce time limit (max 3600 seconds per Tavus API)
 			properties: {
@@ -105,13 +105,14 @@ export async function POST(request: NextRequest) {
 		const tavusResponse = await fetch(
 			`${TAVUS_DEFAULTS.API_BASE_URL}/conversations`,
 			{
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"x-api-key": apiKey,
-			},
-			body: JSON.stringify(conversationBody),
-		});
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"x-api-key": apiKey,
+				},
+				body: JSON.stringify(conversationBody),
+			}
+		);
 
 		if (!tavusResponse.ok) {
 			const errorData = await tavusResponse.json().catch(() => ({}));

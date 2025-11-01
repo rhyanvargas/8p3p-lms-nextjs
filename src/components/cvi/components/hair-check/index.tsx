@@ -7,6 +7,7 @@ import { useStartHaircheck } from "../../hooks/use-start-haircheck";
 import { useLocalCamera } from "../../hooks/use-local-camera";
 
 import styles from "./hair-check.module.css";
+import { TAVUS_ENV } from "@/lib/tavus";
 
 const JoinBtn = ({
 	onClick,
@@ -75,7 +76,7 @@ export const HairCheck = memo(
 			if (isPermissionsDenied) {
 				return "Camera and mic access denied. Allow permissions to continue.";
 			}
-			return "You're all set! The 4-minute timer will start when you join.";
+			return `Ready to go! The ${TAVUS_ENV.getLearningCheckDuration() / 60} minute timer will start when you join.`;
 		};
 		return (
 			<div className={styles.haircheckBlock}>

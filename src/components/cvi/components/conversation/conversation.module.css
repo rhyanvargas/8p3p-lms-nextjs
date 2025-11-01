@@ -10,7 +10,7 @@
 	overflow: hidden;
 	border-radius: 0.5rem;
 	max-height: 90vh;
-  background: linear-gradient(135deg, #4b5563 0%, #1f2937 100%);
+	background: linear-gradient(135deg, #4b5563 0%, #1f2937 100%);
 	background-size: 400% 400%;
 	animation: gradient 15s ease infinite;
 }
@@ -77,9 +77,9 @@
 }
 
 .leaveButtonIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 /* ReplicaVideo styles */
@@ -240,7 +240,7 @@
 }
 
 .joinButton {
-	background-color: #10b981;
+	background-color: var(--accent);
 	color: white;
 	padding: 0.75rem 2rem;
 	border-radius: 0.5rem;
@@ -251,6 +251,6 @@
 }
 
 .joinButton:hover {
-	background-color: #059669;
+	background-color: var(--accent-hover);
 	transform: scale(1.02);
 }
