@@ -88,7 +88,7 @@ export function ChapterContent({
 	};
 
 	return (
-		<div className="container mx-auto px-4 py-6 max-w-7xl">
+		<div className="container mx-auto px-4 py-6 lg:px-6 xl:max-w-7xl">
 			{/* Section Header */}
 			<div className="mb-8">
 				<h1 className="text-3xl font-bold mb-2">{section.title}</h1>
@@ -125,7 +125,7 @@ export function ChapterContent({
 						onQuizComplete={handleQuizComplete}
 					/>
 				) : section.sectionType === "ai_avatar" ? (
-					<div className="mb-8">
+					<div className="">
 						<LearningCheck
 							chapterId={chapter.id}
 							chapterTitle={chapter.title}
@@ -150,21 +150,6 @@ export function ChapterContent({
 					</div>
 				)}
 			</div>
-
-			{/* Quiz Section - Show after video content if available */}
-			{/* {section.sectionType === "video" && section.quiz && (
-				<div className="mt-8">
-					<ChapterQuiz
-						quiz={{
-							id: section.quiz.id,
-							title: section.quiz.title,
-							description: section.quiz.description,
-							questions: section.quiz.questions,
-							passingScore: section.quiz.passingScore,
-						}}
-					/>
-				</div>
-			)} */}
 
 			{/* Navigation */}
 			{nextSection && (

@@ -420,20 +420,13 @@ export function LearningCheck({
 	if (state === "hair_check") {
 		return (
 			<div className="space-y-4">
-				<Alert>
-					<AlertDescription className="text-sm">
-						<strong>Important:</strong> The 4-minute timer and billing will
-						start when you join the conversation. Test your camera and mic
-						first!
-					</AlertDescription>
-				</Alert>
-
-				<HairCheck
-					isJoinBtnLoading={isLoading}
-					onJoin={createConversation}
-					onCancel={() => setState("ready")}
-				/>
-
+				<div className="">
+					<HairCheck
+						isJoinBtnLoading={isLoading}
+						onJoin={createConversation}
+						onCancel={() => setState("ready")}
+					/>
+				</div>
 				{error && (
 					<Alert variant="destructive" className="mt-4">
 						<AlertDescription>{error}</AlertDescription>

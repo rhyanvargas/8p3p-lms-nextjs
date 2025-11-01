@@ -39,8 +39,8 @@ interface ChapterQuizProps {
 export function ChapterQuiz({
 	quiz,
 	onNextChapter,
-	chapterTitle,
-	chapterId,
+	chapterTitle: _chapterTitle,
+	chapterId: _chapterId,
 	onQuizComplete,
 }: ChapterQuizProps) {
 	const [currentQuestion, setCurrentQuestion] = useState(0);
