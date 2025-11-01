@@ -56,7 +56,7 @@ export const HairCheck = memo(
 
 		useEffect(() => {
 			requestPermissions();
-		}, []);
+		}, [requestPermissions]);
 
 		const onCancelHairCheck = () => {
 			if (daily) {

@@ -44,7 +44,13 @@ export async function PATCH(request: NextRequest) {
     const updatedContext = PERSONA_CONFIG.context;
 
     // Build JSON Patch operations array (per Tavus PATCH API spec)
-    const patchOperations: any[] = [
+    type JsonPatchOperation = {
+      op: 'replace' | 'add' | 'remove';
+      path: string;
+      value?: string;
+    };
+    
+    const patchOperations: JsonPatchOperation[] = [
       {
         op: 'replace',
         path: '/system_prompt',

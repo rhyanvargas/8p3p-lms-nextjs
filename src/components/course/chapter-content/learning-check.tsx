@@ -116,7 +116,12 @@ export function LearningCheck({
 				guardrailsId: guardrailsId || "fallback to context-only"
 			});
 
-			const requestBody: any = {
+			const requestBody: {
+				chapterId: string;
+				chapterTitle: string;
+				objectivesId?: string;
+				guardrailsId?: string;
+			} = {
 				chapterId,
 				chapterTitle,
 			};
