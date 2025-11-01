@@ -5,8 +5,8 @@
  *
  * Phase 1 MVP: Core functionality with console logging
  * - Quiz-gated access
- * - 4-minute timer with hard stop
- * - Engagement tracking (≥120s threshold)
+ * - 3-minute timer with hard stop
+ * - Engagement tracking (≥90s threshold)
  * - Conversation termination on all triggers
  * - Console log completion data
  *
@@ -84,6 +84,7 @@ export function LearningCheck({
 	const [conversationUrl, setConversationUrl] = useState<string | null>(null);
 	const [conversationId, setConversationId] = useState<string | null>(null);
 	const [engagementTime, setEngagementTime] = useState(0);
+	const [finalEngagementTime, setFinalEngagementTime] = useState(0); // Store final value for ended states
 	const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
@@ -92,10 +93,11 @@ export function LearningCheck({
 	const engagementIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
 	// Constants
-	const SESSION_DURATION = 240; // 4 minutes
-	const ENGAGEMENT_THRESHOLD = 120; // 50% of 240 seconds
+	const SESSION_DURATION = 180; // 3 minutes
+	const ENGAGEMENT_THRESHOLD = 90; // 50% of 180 seconds
 	const engagementPercent = (engagementTime / SESSION_DURATION) * 100;
 	const thresholdMet = engagementTime >= ENGAGEMENT_THRESHOLD;
+	const TEST_MODE = false;
 
 	/**
 	 * Create Tavus conversation
@@ -105,13 +107,32 @@ export function LearningCheck({
 		setError(null);
 
 		try {
+			// Get structured objectives and guardrails IDs from environment
+			const objectivesId = process.env.NEXT_PUBLIC_TAVUS_LEARNING_CHECK_OBJECTIVES_ID;
+			const guardrailsId = process.env.NEXT_PUBLIC_TAVUS_LEARNING_CHECK_GUARDRAILS_ID;
+
+			console.log("🎯 Creating conversation with structured assets:", {
+				objectivesId: objectivesId || "fallback to context-only",
+				guardrailsId: guardrailsId || "fallback to context-only"
+			});
+
+			const requestBody: any = {
+				chapterId,
+				chapterTitle,
+			};
+
+			// Add structured assets if available
+			if (objectivesId) {
+				requestBody.objectivesId = objectivesId;
+			}
+			if (guardrailsId) {
+				requestBody.guardrailsId = guardrailsId;
+			}
+
 			const response = await fetch("/api/learning-checks/conversation", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					chapterId,
-					chapterTitle,
-				}),
+				body: JSON.stringify(requestBody),
 			});
 
 			if (!response.ok) {
@@ -128,6 +149,8 @@ export function LearningCheck({
 			console.log("📊 Analytics: lc_started", {
 				chapterId,
 				userId: "user-123", // TODO: Get from auth context
+				hasObjectives: !!objectivesId,
+				hasGuardrails: !!guardrailsId,
 				timestamp: new Date().toISOString(),
 			});
 
@@ -142,18 +165,26 @@ export function LearningCheck({
 	};
 
 	/**
+	 * Handle timer tick - track elapsed time for engagement
+	 */
+	const handleTimerTick = useCallback((remainingTime: number) => {
+		const elapsedTime = SESSION_DURATION - remainingTime;
+		setEngagementTime(elapsedTime);
+		console.log("⏱️ Engagement time:", elapsedTime, "seconds");
+	}, [SESSION_DURATION]);
+
+	/**
 	 * Mock engagement tracking (Phase 1)
 	 * In Phase 2, this will use Daily.co audio level detection
 	 */
 	const startEngagementTracking = () => {
-		// Simulate engagement: increment every 2 seconds (mock 50% engagement rate)
-		engagementIntervalRef.current = setInterval(() => {
-			setEngagementTime((prev) => Math.min(prev + 1, SESSION_DURATION));
-		}, 2000);
+		console.log("🟢 Starting engagement tracking via timer...");
+		// Engagement now tracked via timer onTick callback
 	};
 
 	const stopEngagementTracking = () => {
 		if (engagementIntervalRef.current) {
+			console.log("🔴 Stopping engagement tracking");
 			clearInterval(engagementIntervalRef.current);
 			engagementIntervalRef.current = null;
 		}
@@ -193,46 +224,86 @@ export function LearningCheck({
 	 * Handle timer expiration (hard stop at 4 minutes)
 	 */
 	const handleTimerExpire = useCallback(async () => {
+		console.log("⏰ Timer expired");
+
+		// Stop tracking first
+		stopEngagementTracking();
+
 		await terminateConversation("timeout");
 
-		const endState: LearningCheckState = thresholdMet
-			? "ended_complete"
-			: "ended_incomplete";
+		// Capture final engagement time
+		setEngagementTime((currentEngagementTime) => {
+			console.log(
+				"📊 Final engagement time at timeout:",
+				currentEngagementTime
+			);
 
-		setState(endState);
+			setFinalEngagementTime(currentEngagementTime);
 
-		// Log completion data
-		logCompletionData("timeout");
+			const currentThresholdMet = currentEngagementTime >= ENGAGEMENT_THRESHOLD;
 
-		console.log("📊 Analytics: lc_timeout", {
-			chapterId,
-			userId: "user-123",
-			engagementTime,
-			thresholdMet,
+			const endState: LearningCheckState = currentThresholdMet
+				? "ended_complete"
+				: "ended_incomplete";
+
+			setState(endState);
+
+			console.log("📊 Analytics: lc_timeout", {
+				chapterId,
+				userId: "user-123",
+				engagementTime: currentEngagementTime,
+				thresholdMet: currentThresholdMet,
+			});
+
+			return currentEngagementTime;
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [terminateConversation, thresholdMet, chapterId, engagementTime]);
+	}, [terminateConversation, chapterId, conversationId]);
 
 	/**
 	 * Handle manual end session
 	 */
 	const handleEndSession = async () => {
-		await terminateConversation("manual");
+		console.log("🔴 handleEndSession called");
 
-		const endState: LearningCheckState = thresholdMet
-			? "ended_complete"
-			: "ended_incomplete";
+		// Stop tracking FIRST to prevent further updates
+		stopEngagementTracking();
 
-		setState(endState);
+		// Capture the current engagement time using functional update
+		setEngagementTime((currentEngagementTime) => {
+			console.log("📊 Final engagement time captured:", currentEngagementTime);
 
-		// Log completion data
-		logCompletionData("manual");
+			// Store the final value
+			setFinalEngagementTime(currentEngagementTime);
 
-		console.log("📊 Analytics: lc_user_end", {
-			chapterId,
-			userId: "user-123",
-			engagementTime,
-			thresholdMet,
+			const currentThresholdMet = currentEngagementTime >= ENGAGEMENT_THRESHOLD;
+
+			// Terminate conversation
+			terminateConversation("manual");
+
+			// Determine end state
+			const endState: LearningCheckState = currentThresholdMet
+				? "ended_complete"
+				: "ended_incomplete";
+
+			console.log(
+				"📊 Setting state to:",
+				endState,
+				"with engagement:",
+				currentEngagementTime
+			);
+			setState(endState);
+
+			// Log analytics
+			console.log("📊 Analytics: lc_user_end", {
+				chapterId,
+				userId: "user-123",
+				engagementTime: currentEngagementTime,
+				thresholdMet: currentThresholdMet,
+				timestamp: new Date().toISOString(),
+			});
+
+			return currentEngagementTime;
 		});
 	};
 
@@ -261,10 +332,13 @@ export function LearningCheck({
 	 * Handle retry - reset all state and start over
 	 */
 	const handleRetry = () => {
+		console.log("🔄 Retrying learning check...");
+
 		// Reset all conversation state
 		setConversationUrl(null);
 		setConversationId(null);
 		setEngagementTime(0);
+		setFinalEngagementTime(0); // Reset final time too
 		setSessionStartTime(null);
 		setError(null);
 
@@ -319,13 +393,14 @@ export function LearningCheck({
 	}, [state, conversationId, terminateConversation]);
 
 	/**
-	 * Handle page navigation
+	 * Handle browser navigation (tab close, refresh, external links)
+	 * Note: beforeunload only fires for browser-level navigation, not Next.js route changes
 	 */
 	useEffect(() => {
 		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
 			if (state === "active") {
 				e.preventDefault();
-				e.returnValue = "";
+				e.returnValue = ""; // Still required despite deprecation for cross-browser compatibility
 
 				// Use sendBeacon for reliability
 				if (conversationId) {
@@ -339,6 +414,42 @@ export function LearningCheck({
 
 		window.addEventListener("beforeunload", handleBeforeUnload);
 		return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+	}, [state, conversationId]);
+
+	/**
+	 * Handle SPA navigation (Next.js route changes)
+	 * Modern approach: Use popstate for back/forward, component unmount handles normal navigation
+	 */
+	useEffect(() => {
+		if (state !== "active") return;
+
+		const handlePopState = (e: PopStateEvent) => {
+			const confirmed = window.confirm(
+				"You have an active Learning Check conversation. Are you sure you want to leave? Your progress may be lost."
+			);
+
+			if (!confirmed) {
+				// Prevent navigation by restoring history
+				window.history.pushState(null, "", window.location.href);
+				e.preventDefault();
+			} else {
+				// Allow navigation, terminate conversation
+				if (conversationId) {
+					navigator.sendBeacon(
+						"/api/learning-checks/terminate",
+						JSON.stringify({ conversationId })
+					);
+				}
+			}
+		};
+
+		// Push initial state to enable popstate detection
+		window.history.pushState(null, "", window.location.href);
+		window.addEventListener("popstate", handlePopState);
+
+		return () => {
+			window.removeEventListener("popstate", handlePopState);
+		};
 	}, [state, conversationId]);
 
 	// Render locked state
@@ -382,7 +493,7 @@ export function LearningCheck({
 				<CardHeader className="p-2">
 					<CardTitle>{chapterTitle}</CardTitle>
 					<CardDescription className="text-muted-foreground">
-						Have a 4-minute conversation with your AI instructor to demonstrate
+						Have a 3-minute conversation with your AI instructor to demonstrate
 						your understanding of this chapter.
 					</CardDescription>
 				</CardHeader>
@@ -390,9 +501,9 @@ export function LearningCheck({
 					<div className="space-y-2">
 						<h4 className="font-semibold">What to expect:</h4>
 						<ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-							<li>4-minute conversation with AI avatar</li>
+							<li>3-minute conversation with AI avatar</li>
 							<li>Questions about recall, application, and self-explanation</li>
-							<li>Must engage for at least 2 minutes (50%) to complete</li>
+							<li>Must engage for at least 90 seconds (50%) to complete</li>
 							<li>Camera and microphone required</li>
 						</ul>
 					</div>
@@ -415,20 +526,56 @@ export function LearningCheck({
 		);
 	}
 
-	// Render hair check state (camera preview - NOT billed yet!)
-	// Uses Tavus official HairCheck component with live camera preview
-	if (state === "hair_check") {
+	// Render hair check OR conversation (never both at once - Tavus pattern)
+	// HairCheck must unmount before Conversation mounts to avoid Daily.co state conflicts
+	if (state === "hair_check" || state === "active") {
 		return (
 			<div className="space-y-4">
-				<div className="">
+				{state === "hair_check" && (
 					<HairCheck
 						isJoinBtnLoading={isLoading}
-						onJoin={createConversation}
+						onJoin={async () => {
+							// Create conversation when user clicks "Join Video"
+							// This follows Tavus recommended flow
+							await createConversation();
+						}}
 						onCancel={() => setState("ready")}
 					/>
-				</div>
+				)}
+				
+				{state === "active" && conversationUrl && (
+					<>
+						{/* Header with timer and engagement */}
+						<div className="flex justify-between items-center">
+							<div className="text-sm">
+								<span>Learning Check In Progress...</span>
+								<p className="text-xs text-muted-foreground">
+									Speak and engage for at least 90 seconds to complete this learning
+									check
+								</p>
+							</div>
+							<Timer
+								duration={SESSION_DURATION}
+								onExpire={handleTimerExpire}
+								onTick={handleTimerTick}
+								autoStart={true}
+								warningThreshold={30}
+								variant="compact"
+							/>
+						</div>
+						{TEST_MODE ? (
+							<div className="h-[600px] bg-gray-200">TEST MODE ON</div>
+						) : (
+							<Conversation
+								conversationUrl={conversationUrl}
+								onLeave={handleEndSession}
+							/>
+						)}
+					</>
+				)}
+				
 				{error && (
-					<Alert variant="destructive" className="mt-4">
+					<Alert variant="destructive">
 						<AlertDescription>{error}</AlertDescription>
 					</Alert>
 				)}
@@ -436,60 +583,20 @@ export function LearningCheck({
 		);
 	}
 
-	// Render active conversation
-	if (state === "active" && conversationUrl) {
-		return (
-			<div className="space-y-4">
-				{/* Header with timer and engagement */}
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center justify-between">
-							<span>Learning Check — {chapterTitle}</span>
-							<Timer
-								duration={SESSION_DURATION}
-								onExpire={handleTimerExpire}
-								autoStart={true}
-								warningThreshold={30}
-								variant="compact"
-							/>
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className="space-y-2">
-							<div className="flex justify-between text-sm">
-								<span>Engagement Progress</span>
-								<span
-									className={thresholdMet ? "text-green-600 font-semibold" : ""}
-								>
-									{engagementTime}s / {ENGAGEMENT_THRESHOLD}s
-									{thresholdMet && " ✓"}
-								</span>
-							</div>
-							<Progress value={engagementPercent} className="h-2" />
-							<p className="text-xs text-muted-foreground">
-								Speak and engage for at least 2 minutes to complete this
-								learning check
-							</p>
-						</div>
-					</CardContent>
-				</Card>
-
-				{/* Conversation */}
-				<Conversation
-					conversationUrl={conversationUrl}
-					onLeave={handleEndSession}
-				/>
-			</div>
-		);
-	}
-
 	// Render ended states
 	if (state === "ended_incomplete" || state === "ended_complete") {
+		// Use finalEngagementTime for display (captured when session ended)
+		const displayEngagementTime =
+			finalEngagementTime > 0 ? finalEngagementTime : engagementTime;
+		const displayEngagementPercent =
+			(displayEngagementTime / SESSION_DURATION) * 100;
+		const displayThresholdMet = displayEngagementTime >= ENGAGEMENT_THRESHOLD;
+
 		return (
 			<Card className="shadow-none">
 				<CardHeader>
 					<CardTitle className="flex items-center gap-2">
-						{thresholdMet ? (
+						{displayThresholdMet ? (
 							<>
 								<CheckCircle className="h-5 w-5 text-green-600" />
 								Session Complete
@@ -507,19 +614,19 @@ export function LearningCheck({
 						<div className="flex justify-between text-sm">
 							<span>Engagement Time:</span>
 							<span className="font-semibold">
-								{engagementTime}s / {ENGAGEMENT_THRESHOLD}s
+								{displayEngagementTime}s / {ENGAGEMENT_THRESHOLD}s
 							</span>
 						</div>
-						<Progress value={engagementPercent} className="h-2" />
+						<Progress value={displayEngagementPercent} className="h-2" />
 					</div>
 
-					{thresholdMet ? (
+					{displayThresholdMet ? (
 						<>
 							<Alert>
 								<CheckCircle className="h-4 w-4" />
 								<AlertDescription>
-									Great job! You engaged for {engagementTime} seconds. Click
-									below to mark this learning check as complete.
+									Great job! You engaged for {displayEngagementTime} seconds.
+									Click below to mark this learning check as complete.
 								</AlertDescription>
 							</Alert>
 							<Button onClick={handleMarkComplete} className="w-full">
@@ -532,8 +639,8 @@ export function LearningCheck({
 								<AlertTriangle className="h-4 w-4" />
 								<AlertDescription>
 									You need to engage for at least {ENGAGEMENT_THRESHOLD}{" "}
-									seconds. You engaged for {engagementTime} seconds. Please try
-									again.
+									seconds. You engaged for {displayEngagementTime} seconds.
+									Please try again.
 								</AlertDescription>
 							</Alert>
 							<Button onClick={handleRetry} className="w-full">

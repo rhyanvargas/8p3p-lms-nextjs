@@ -1,10 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 import { ChapterQuiz } from "./chapter-quiz";
-import { LearningCheck } from "./learning-check";
+import { LearningCheckBase } from "./learning-check-base";
 import { Button } from "@/components/ui/button";
 import { Course, Section, Chapter } from "@/lib/mock-data";
 import {
@@ -30,35 +29,14 @@ export function ChapterContent({
 }: ChapterContentProps) {
 	const router = useRouter();
 
-	// Find the quiz section in this chapter (quiz comes before Learning Check)
-	const chapterQuizSection = chapter.sections.find(
-		(s) => s.sectionType === "quiz"
-	);
-
-	// Track quiz completion for Learning Check gating
-	// Initialize from mock data (quiz.completed status)
-	// TODO: In production, this should come from database/user progress state
-	const [quizPassed, setQuizPassed] = useState(
-		chapterQuizSection?.completed ?? false
-	);
-	const [quizScore, setQuizScore] = useState<number | undefined>(
-		chapterQuizSection?.completed ? 100 : undefined // Mock score for completed quizzes
-	);
-
-	// Handler for when quiz is completed
-	const handleQuizComplete = (passed: boolean, score: number) => {
-		setQuizPassed(passed);
-		setQuizScore(score);
-		console.log("Quiz completed:", { passed, score, chapterId: chapter.id });
-	};
-
 	// Generate slugs for navigation
 	const courseSlug = generateCourseSlug(course.id, course.title);
 
-	// Generate quiz URL for Learning Check navigation
-	const quizUrl = chapterQuizSection
-		? `/courses/${courseSlug}/${generateChapterSlug(chapter.id, chapter.title)}/sections/${generateSectionSlug(chapterQuizSection.id, chapterQuizSection.title)}`
-		: undefined;
+	// Handler for when quiz is completed (for future use/analytics)
+	const handleQuizComplete = (passed: boolean, score: number) => {
+		console.log("Quiz completed:", { passed, score, chapterId: chapter.id });
+		// TODO: In production, update user progress in database
+	};
 
 	// Get next section for navigation
 	const nextSection = getNextChapter(course.id, chapter.id, section.id);
@@ -126,19 +104,9 @@ export function ChapterContent({
 					/>
 				) : section.sectionType === "ai_avatar" ? (
 					<div className="">
-						<LearningCheck
+						<LearningCheckBase
 							chapterId={chapter.id}
 							chapterTitle={chapter.title}
-							quizPassed={quizPassed}
-							quizScore={quizScore}
-							quizUrl={quizUrl}
-							onComplete={() => {
-								console.log(
-									"Learning Check completed for chapter:",
-									chapter.id
-								);
-								// TODO: Update user progress in database
-							}}
 						/>
 					</div>
 				) : (
