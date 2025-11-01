@@ -11,7 +11,7 @@ TAVUS_API_KEY=your_tavus_api_key_here
 TAVUS_PERSONA_ID=your_persona_id_here
 
 # Optional: Configuration
-TAVUS_LEARNING_CHECK_DURATION=240
+TAVUS_LEARNING_CHECK_DURATION=180
 TAVUS_MAX_CONCURRENT_SESSIONS=10
 ```
 
@@ -70,7 +70,7 @@ Press `F12` or `Cmd+Option+I` to open DevTools and view the Console tab.
 - ✅ Shows "Learning Check — [Chapter Title]" card
 - ✅ Displays "Start Learning Check" button
 - ✅ Shows feature description and requirements
-- ✅ Lists what to expect (4 minutes, questions, engagement threshold)
+- ✅ Lists what to expect (3 minutes, questions, engagement threshold)
 
 ---
 

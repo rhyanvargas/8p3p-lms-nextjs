@@ -426,7 +426,7 @@ Assessment Focus:
 - Ask at least 1 recall question about key concepts from this chapter
 - Ask at least 1 application question about real-world usage
 - Ask at least 1 self-explanation question to check understanding
-- Duration: 4 minutes for this learning check
+- Duration: 3 minutes for this learning check
 - IMPORTANT: Never reveal quiz answers or discuss specific quiz questions
 - Keep conversation focused on this chapter's content
 - Politely redirect if student asks about topics outside this chapter's scope
@@ -504,7 +504,7 @@ useEffect(() => {
 ```bash
 TAVUS_API_KEY=required
 TAVUS_PERSONA_ID=required # Dashboard persona ID (e.g., "pd8#1eb0d8e")
-TAVUS_LEARNING_CHECK_DURATION=240 # configurable (seconds)
+TAVUS_LEARNING_CHECK_DURATION=180 # configurable (seconds)
 TAVUS_MAX_CONCURRENT_SESSIONS=10 # cost management
 TAVUS_WEBHOOK_SECRET=required # Webhook signature verification
 TAVUS_WEBHOOK_URL=required # Public URL for perception analysis webhook

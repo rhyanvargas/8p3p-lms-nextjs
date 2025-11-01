@@ -41,7 +41,7 @@
 - **Visual State**: Show locked state with clear message if quiz not passed
 
 ### 2. Time Management
-- **Duration**: 4 minutes (240 seconds) hard limit
+- **Duration**: 3 minutes (180 seconds) hard limit
 - **Timer Display**: Visible countdown timer showing minutes:seconds remaining
 - **Hard Stop**: Session automatically ends at 0:00, no extensions
 - **Warning**: Visual/audio notification at 30 seconds remaining (Assumption)
@@ -53,9 +53,9 @@
 - **Start Button**: Only enabled after successful Hair Check completion
 
 ### 4. Engagement Tracking
-- **Threshold**: Minimum 120 seconds (50%) of active speaking/engagement out of 240 seconds
+- **Threshold**: Minimum 90 seconds (50%) of active speaking/engagement out of 180 seconds
 - **Calculation**: Track time when learner's microphone detects speech activity (Assumption: use Tavus/Daily.co audio level detection)
-- **Progress Indicator**: Visual bar showing engagement progress toward 120s threshold
+- **Progress Indicator**: Visual bar showing engagement progress toward 90s threshold
 - **Completion Button**: "Mark Learning Check Complete" only visible after threshold met AND session ended
 
 ### 5. Conversation Behavior (AI Instructor Persona)
