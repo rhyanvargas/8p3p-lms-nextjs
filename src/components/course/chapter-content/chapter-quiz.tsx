@@ -12,7 +12,6 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, XCircle, ArrowRight } from "lucide-react";
-import { AskQuestion } from "@/components/course/chapter-content/ask-question";
 
 interface QuizQuestion {
 	id: string;
@@ -34,13 +33,15 @@ interface ChapterQuizProps {
 	onNextChapter?: () => void;
 	chapterTitle?: string;
 	chapterId?: string;
+	onQuizComplete?: (passed: boolean, score: number) => void;
 }
 
 export function ChapterQuiz({
 	quiz,
 	onNextChapter,
-	chapterTitle,
-	chapterId,
+	chapterTitle: _chapterTitle,
+	chapterId: _chapterId,
+	onQuizComplete,
 }: ChapterQuizProps) {
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [selectedOptions, setSelectedOptions] = useState<number[]>(
@@ -78,8 +79,15 @@ export function ChapterQuiz({
 		const calculatedScore = Math.round(
 			(correctAnswers / quiz.questions.length) * 100
 		);
+		const passed = calculatedScore >= quiz.passingScore;
+
 		setScore(calculatedScore);
 		setSubmitted(true);
+
+		// Notify parent component of quiz completion
+		if (onQuizComplete) {
+			onQuizComplete(passed, calculatedScore);
+		}
 	};
 
 	const handleRetry = () => {
@@ -174,20 +182,12 @@ export function ChapterQuiz({
 									<ArrowRight className="h-4 w-4" />
 								</Button>
 							)}
-							<AskQuestion
-								chapterTitle={chapterTitle || "Chapter"}
-								chapterId={chapterId}
-							/>
 						</>
 					) : (
 						<>
 							<Button onClick={handleRetry} className="flex-1">
 								Retry Quiz
 							</Button>
-							<AskQuestion
-								chapterTitle={chapterTitle || "Chapter"}
-								chapterId={chapterId}
-							/>
 						</>
 					)}
 				</CardFooter>
@@ -199,13 +199,11 @@ export function ChapterQuiz({
 	const question = quiz.questions[currentQuestion];
 
 	return (
-		<Card>
+		<Card className="shadow-none">
 			<CardHeader>
-				<CardTitle>{quiz.title}</CardTitle>
-				<p className="text-muted-foreground">{quiz.description}</p>
-			</CardHeader>
-			<CardContent className="p-6">
-				<div className="mb-6">
+				{/* <CardTitle>{quiz.title}</CardTitle>
+				<p className="text-muted-foreground">{quiz.description}</p> */}
+				<div className="">
 					<div className="flex justify-between items-center mb-2">
 						<span className="text-sm font-medium">
 							Question {currentQuestion + 1} of {quiz.questions.length}
@@ -226,7 +224,8 @@ export function ChapterQuiz({
 						></div>
 					</div>
 				</div>
-
+			</CardHeader>
+			<CardContent className="p-6">
 				<div className="mb-6">
 					<h3 className="text-lg font-medium mb-4">{question.question}</h3>
 
@@ -238,7 +237,10 @@ export function ChapterQuiz({
 					>
 						<div className="space-y-3">
 							{question.options.map((option, index) => (
-								<div key={index} className="flex items-center space-x-2">
+								<div
+									key={index}
+									className="flex items-center space-x-2 hover:bg-muted/50 rounded-lg p-1 pl-1.5"
+								>
 									<RadioGroupItem
 										value={index.toString()}
 										id={`option-${index}`}
