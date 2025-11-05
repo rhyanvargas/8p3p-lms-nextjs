@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Conversation } from "@/components/cvi/components/conversation";
 import { HairCheck } from "@/components/cvi/components/hair-check";
 import { LearningCheckReadyScreen } from "./learning-check-ready";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
+import { Timer } from "@/components/common/timer";
+import React from "react";
+import { TAVUS_DEFAULTS } from "@/lib/tavus";
 
 interface ConversationResponse {
 	conversationUrl: string;
@@ -28,10 +31,12 @@ export const LearningCheckBase = ({
 	);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [engagementTime, setEngagementTime] = useState(0);
 
 	const handleEnd = async () => {
 		try {
 			setScreen("ready");
+			console.log("⏱️ Engagement time:", engagementTime, "seconds");
 
 			if (!conversation?.conversationId) return;
 
@@ -76,9 +81,7 @@ export const LearningCheckBase = ({
 
 			if (!response.ok) {
 				const errorData = await response.json().catch(() => ({}));
-				throw new Error(
-					errorData.error || "Failed to create conversation"
-				);
+				throw new Error(errorData.error || "Failed to create conversation");
 			}
 
 			const data = await response.json();
@@ -96,6 +99,14 @@ export const LearningCheckBase = ({
 			setLoading(false);
 		}
 	};
+
+	/**
+	 * Handle timer tick - track elapsed time for engagement
+	 */
+	const handleTimerTick = useCallback((remainingTime: number) => {
+		const elapsedTime = TAVUS_DEFAULTS.LEARNING_CHECK_DURATION - remainingTime;
+		setEngagementTime(elapsedTime);
+	}, []);
 
 	return (
 		<div className="space-y-4">
@@ -130,10 +141,20 @@ export const LearningCheckBase = ({
 
 			{/* Active Conversation */}
 			{screen === "call" && conversation && (
-				<Conversation
-					conversationUrl={conversation.conversationUrl}
-					onLeave={handleEnd}
-				/>
+				<div className="flex flex-col items-center gap-2">
+					<Conversation
+						conversationUrl={conversation.conversationUrl}
+						onLeave={handleEnd}
+					/>
+					<Timer
+						className=""
+						duration={TAVUS_DEFAULTS.LEARNING_CHECK_DURATION}
+						onTick={handleTimerTick}
+						autoStart={true}
+						warningThreshold={30}
+						variant="compact"
+					/>
+				</div>
 			)}
 		</div>
 	);
