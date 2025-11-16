@@ -4,37 +4,56 @@ This directory contains the split specification for the Learning Check (Chapter-
 
 ## Documentation Structure
 
-### 📄 [learning-check-spec.md](./learning-check-spec.md)
-**Product Requirements Document** (~400 lines)
-- Overview & Goals
-- User Stories
-- Functional Requirements (1-9)
-- MoSCoW Prioritization
-- Success Metrics
-- Open Questions
-- Risk Mitigation
+### 📋 [requirements.md](./requirements.md)
+**Requirements Specification** (~600 lines)
+- User Stories with Gherkin acceptance criteria
+- Edge cases and negative flows
+- Non-functional requirements
+- MoSCoW prioritization
+- Dependencies and integration points
+- Success criteria
 
-**Audience**: Product Managers, Designers, Stakeholders
+**Audience**: Product Managers, Designers, Engineers, QA
 
-### 🔧 [learning-check-implementation.md](./learning-check-implementation.md)
-**Technical Implementation Guide** (~400 lines)
-- Perception Analysis Integration
-- Webhook Setup & Configuration
-- Data Structures & Interfaces
-- Technical Requirements
-- Implementation Phases (1-5)
-- Acceptance Criteria
-- Code Examples
+### 🔧 [design.md](./design.md)
+**Design Specification** (~310 lines)
+- System architecture and data flow
+- Component structure
+- API routes
+- Data models
+- Configuration
+- Analytics events
+- UI/UX design
+- Security and error handling
 
 **Audience**: Developers, Technical Leads
+
+### ✅ [tasks.md](./tasks.md)
+**Task Breakdown** (~217 lines)
+- 31 tasks across 5 implementation phases
+- Task estimates and traceability matrix
+- Current status tracking (Phase 1 Complete)
+
+**Audience**: Engineering Team
+
+### 🧪 [TESTING.md](./TESTING.md)
+**Testing Guide** (~400 lines)
+- Setup instructions
+- Test scenarios for Phase 1
+- Expected console outputs
+- Manual Q&A testing procedures
+
+**Audience**: QA, Developers
 
 ---
 
 ## Quick Links
 
-- **Start Here**: [Product Spec](./learning-check-spec.md) for requirements overview
-- **Implementation**: [Technical Guide](./learning-check-implementation.md) for development details
-- **Original Spec**: [learning-check-tavus.md](../learning-check-tavus.md) (deprecated, kept for reference)
+- **Start Here**: [Requirements](./requirements.md) for user stories and acceptance criteria
+- **Technical Design**: [Design Doc](./design.md) for architecture and implementation
+- **Task Tracking**: [Tasks](./tasks.md) for implementation progress
+- **Testing**: [Testing Guide](./TESTING.md) for Phase 1 Q&A testing
+- **Archived Docs**: Historical specs moved to `/docs/archive/`
 
 ---
 
