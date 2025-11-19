@@ -15,7 +15,7 @@ This document breaks the Better Auth migration into phases and implementation ta
 
 ### Task 1.1 – Install Better Auth Dependencies
 
-- **Status**: Pending
+- **Status**: Completed
 - **Depends on**: None
 - **Estimate**: S
 - **Description**: Add Better Auth core + Next.js + React client packages to `package.json`.
@@ -25,7 +25,7 @@ This document breaks the Better Auth migration into phases and implementation ta
 
 ### Task 1.2 – Ensure Postgres + Drizzle Setup
 
-- **Status**: Pending
+- **Status**: Completed
 - **Depends on**: 1.1
 - **Estimate**: M
 - **Description**: Confirm existing Drizzle + Postgres setup or add `src/lib/db.ts` and base Drizzle configuration.
@@ -35,7 +35,7 @@ This document breaks the Better Auth migration into phases and implementation ta
 
 ### Task 1.3 – Create Better Auth Instance (`auth.ts`)
 
-- **Status**: Pending
+- **Status**: Completed
 - **Depends on**: 1.1, 1.2
 - **Estimate**: M
 - **Description**: Implement `src/lib/auth.ts` using `betterAuth` with Drizzle adapter and email/password enabled.
@@ -45,7 +45,7 @@ This document breaks the Better Auth migration into phases and implementation ta
 
 ### Task 1.4 – Generate and Apply Better Auth Schema
 
-- **Status**: Pending
+- **Status**: Completed
 - **Depends on**: 1.3
 - **Estimate**: M
 - **Description**: Run `npx @better-auth/cli generate` and integrate the schema into Drizzle migrations.
@@ -55,7 +55,7 @@ This document breaks the Better Auth migration into phases and implementation ta
 
 ### Task 1.5 – Add `/api/auth/[...all]` Route
 
-- **Status**: Pending
+- **Status**: Completed
 - **Depends on**: 1.3, 1.4
 - **Estimate**: S
 - **Description**: Implement `app/api/auth/[...all]/route.ts` using `toNextJsHandler(auth.handler)`.
@@ -201,7 +201,7 @@ This document breaks the Better Auth migration into phases and implementation ta
 - **Status**: Pending
 - **Depends on**: Phase 3
 - **Estimate**: M
-- **Description**: Remove all `aws-amplify`, `@aws-amplify/ui-react`, `@aws-amplify/adapter-nextjs` imports and code paths.
+- **Description**: Remove all `aws-amplify`, `@aws-amplify/ui-react`, `@aws-amplify/adapter-nextjs` imports and code paths, and delete any temporary build shims related to Amplify (e.g. prebuild scripts that create `amplify_outputs.json`).
 - **Acceptance**:
   - Codebase builds and runs with no Amplify imports.
   - `npm ls aws-amplify` and related packages fail (not installed).
@@ -232,7 +232,7 @@ This document breaks the Better Auth migration into phases and implementation ta
 - **Status**: Pending
 - **Depends on**: 4.1
 - **Estimate**: S
-- **Description**: Remove Amplify CLI commands from CI and ensure Better Auth + Postgres/Drizzle environment is correctly configured.
+- **Description**: Remove Amplify CLI commands and mock `amplify_outputs.json` steps from CI, and ensure Better Auth + Postgres/Drizzle environment is correctly configured.
 - **Acceptance**:
   - PR checks succeed without any Amplify-related steps.
 
