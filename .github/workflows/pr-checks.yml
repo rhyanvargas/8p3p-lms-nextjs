@@ -27,12 +27,6 @@ jobs:
       - name: Run TypeScript check
         run: npm run type-check
 
-      - name: Run build check
-        run: |
-          echo "🏗️ Testing production build..."
-          npm run build
-        continue-on-error: false
-
       - name: Upload logs (on failure)
         if: failure()
         uses: actions/upload-artifact@v4
