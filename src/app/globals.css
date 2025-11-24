@@ -288,13 +288,4 @@
 }
 
 @layer components {
-	/* Amplify UI Component Overrides */
-	[data-amplify-authenticator] {
-		--amplify-components-button-primary-background-color: var(--brand-blue-hex);
-		--amplify-components-button-link-color: var(--brand-gold-hex);
-		--amplify-components-fieldcontrol-focus-box-shadow: 0 0 0 2px
-			var(--brand-gold-hex);
-		--amplify-components-tabs-item-active-border-color: var(--brand-gold-hex);
-		font-family: var(--font-display);
-	}
 }

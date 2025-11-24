@@ -271,3 +271,14 @@ This document breaks the Better Auth migration into phases and implementation ta
 - **Acceptance**:
   - Checklist completed.
   - Feature marked as ready in tracking tools.
+
+### Task 5.4 – Post-Migration Auth Hardening (Middleware + RSC + Client)
+
+- **Status**: Pending
+- **Depends on**: Phases 1–4
+- **Estimate**: S–M
+- **Description**: Refine auth architecture layering between middleware, server components, and client wrappers after Better Auth migration.
+- **Acceptance**:
+  - A shared server-side helper (for example, `requireAuth`) is used by protected server components to obtain the current user/session and redirect unauthenticated users to `/login`.
+  - Protected server components (such as the dashboard page) no longer access `session.user` without going through this helper, and call Better Auth session APIs at most once per render path.
+  - Middleware remains responsible for optimistic global redirects, and client auth wrappers (such as `ProtectedRoute`) focus on UX concerns (loading states, redirect-after-login) rather than core authorization rules.
