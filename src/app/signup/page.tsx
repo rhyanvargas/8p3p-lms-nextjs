@@ -1,12 +1,12 @@
-import { LoginForm } from "@/components/auth/login-form";
 import { Navbar } from "@/components/ui/navbar";
+import { SignupForm } from "@/components/auth/signup-form";
 
-export default function LoginPage() {
+export default function SignupPage() {
 	return (
 		<div className="bg-primary">
 			<Navbar />
 			<div className="min-h-screen flex items-center justify-center">
-				<LoginForm className="max-w-sm" />
+				<SignupForm className="max-w-sm" />
 			</div>
 		</div>
 	);
