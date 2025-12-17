@@ -29,6 +29,33 @@ node scripts/fetch-mux-vtt.js
 - Captions/subtitles generated in Mux
 - Track ID from Mux dashboard
 
+### 🎯 Tavus Configuration Management
+
+**Single Source of Truth**: Automatically syncs `src/lib/tavus/config.ts` with Tavus API.
+
+#### Quick Start
+```bash
+# 1. Edit src/lib/tavus/config.ts
+# 2. Run the update script
+./scripts/update-tavus-config.sh
+```
+
+#### Available Scripts
+- `update-tavus-config.sh` - Updates both objectives and guardrails (recommended)
+- `update-tavus-objectives.sh` - Updates objectives only
+- `update-tavus-guardrails.sh` - Updates guardrails only
+- `extract-tavus-config.mjs` - Helper that parses TypeScript config to JSON
+
+**📚 Full Documentation**: See [TAVUS_SCRIPTS_README.md](./TAVUS_SCRIPTS_README.md) for detailed usage, troubleshooting, and examples.
+
+**Key Features**:
+- ✅ Automatically reads from TypeScript config
+- ✅ No manual JSON editing required
+- ✅ Version controlled configuration
+- ✅ macOS and Linux compatible
+
+---
+
 ### ✅ Quality Gates
 
 #### `pre-commit.sh`

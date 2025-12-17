@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth-server";
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
 	try {
-		// Server-side auth check
-		const user = await requireAuth();
+		// Server-side auth check via Better Auth session
+		const user = await requireAuth(request.headers as Headers);
 
 		if (!user) {
 			return NextResponse.json(
@@ -16,8 +16,9 @@ export async function GET(_request: NextRequest) {
 		return NextResponse.json({
 			success: true,
 			user: {
-				userId: user.userId,
-				username: user.username,
+				id: user.id,
+				email: user.email,
+				name: user.name,
 			},
 		});
 	} catch {

@@ -1,40 +1,26 @@
-import { createServerRunner } from "@aws-amplify/adapter-nextjs";
-import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth/server";
-import { cookies } from "next/headers";
-import outputs from "../../amplify_outputs.json";
+import { auth } from "./auth";
 
-export const { runWithAmplifyServerContext } = createServerRunner({
-	config: outputs,
-});
-
-export async function getAuthenticatedUser() {
-	try {
-		const currentUser = await runWithAmplifyServerContext({
-			nextServerContext: { cookies },
-			operation: (contextSpec) => getCurrentUser(contextSpec),
-		});
-		return currentUser;
-	} catch {
-		return null;
-	}
+async function getSessionFromHeaders(headers: Headers) {
+	const session = await auth.api.getSession({
+		headers,
+	});
+	return session;
 }
 
-export async function isAuthenticated(): Promise<boolean> {
-	try {
-		const session = await runWithAmplifyServerContext({
-			nextServerContext: { cookies },
-			operation: (contextSpec) => fetchAuthSession(contextSpec),
-		});
-		return !!session.tokens?.accessToken;
-	} catch {
-		return false;
-	}
+export async function getAuthenticatedUser(headers: Headers) {
+	const session = await getSessionFromHeaders(headers);
+	return session?.user ?? null;
 }
 
-export async function requireAuth() {
-	const authenticated = await isAuthenticated();
-	if (!authenticated) {
+export async function isAuthenticated(headers: Headers): Promise<boolean> {
+	const session = await getSessionFromHeaders(headers);
+	return !!session?.user;
+}
+
+export async function requireAuth(headers: Headers) {
+	const user = await getAuthenticatedUser(headers);
+	if (!user) {
 		throw new Error("Authentication required");
 	}
-	return await getAuthenticatedUser();
+	return user;
 }

@@ -1,6 +1,6 @@
 import { getCourseBySlug } from "@/lib/course-utils";
-import { Button } from "@/components/ui/button";
 import { CourseOverview } from "@/components/course/course-overview";
+import { BackButton } from "@/components/navigation/back-button";
 
 interface CoursePageProps {
 	params: Promise<{
@@ -24,7 +24,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
 					The course you&apos;re looking for doesn&apos;t exist or has been
 					removed.
 				</p>
-				<Button onClick={() => window.history.back()}>Go Back</Button>
+				<BackButton />
 			</div>
 		);
 	}

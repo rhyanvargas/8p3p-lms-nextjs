@@ -2,14 +2,13 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, UserIcon, LogOut } from "lucide-react";
-import { useAuthenticator } from "@aws-amplify/ui-react";
-import { signOut } from "aws-amplify/auth";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { authClient } from "@/lib/auth-client";
 import {
 	Sheet,
 	SheetContent,
@@ -76,11 +75,14 @@ const mobileAuthNavButtons: NavItem[] = [
 export function Navbar() {
 	const pathname = usePathname();
 	const isMobile = useIsMobile();
-	const { authStatus } = useAuthenticator();
+	const router = useRouter();
+	const { data: session } = authClient.useSession();
+	const isAuthenticated = !!session?.user;
 
 	const handleSignOut = async () => {
 		try {
-			await signOut();
+			await authClient.signOut();
+			router.push("/login");
 		} catch (error) {
 			console.error("Error signing out:", error);
 		}
@@ -111,7 +113,7 @@ export function Navbar() {
 								"text-sm font-medium transition-colors hover:text-accent/80",
 								pathname === item.href
 									? "text-white font-semibold"
-									: authStatus === "authenticated"
+									: isAuthenticated
 										? "text-white/60 hover:text-white/80"
 										: "text-white"
 							)}
@@ -123,7 +125,7 @@ export function Navbar() {
 
 				{/* Right side - Auth-aware buttons */}
 				<div className="flex items-center space-x-2">
-					{authStatus === "authenticated" ? (
+					{isAuthenticated ? (
 						<>
 							{authNavButtons.map((item) =>
 								item.title === "Logout" ? (
@@ -193,14 +195,14 @@ export function Navbar() {
 											href={item.href}
 											className={cn(
 												"block px-2 py-1 text-lg hover:bg-brand-light-blue",
-												authStatus === "authenticated" ? "opacity-60" : ""
+												isAuthenticated ? "opacity-60" : ""
 											)}
 										>
 											{item.title}
 										</Link>
 									))}
 									<div className="flex flex-col px-2 py-2 gap-2">
-										{authStatus === "authenticated" ? (
+										{isAuthenticated ? (
 											<>
 												{mobileAuthNavButtons.map((item) =>
 													item.title === "Logout" ? (

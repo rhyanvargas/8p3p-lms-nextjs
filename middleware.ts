@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { runWithAmplifyServerContext } from "@/lib/auth-server";
-import { fetchAuthSession } from "aws-amplify/auth/server";
+import { auth } from "@/lib/auth";
 
 const protectedRoutes = ["/dashboard", "/courses"];
 const authRoutes = ["/login"];
@@ -18,17 +17,10 @@ export async function middleware(request: NextRequest) {
 	}
 
 	try {
-		const authenticated = await runWithAmplifyServerContext({
-			nextServerContext: { request, response },
-			operation: async (contextSpec) => {
-				try {
-					const session = await fetchAuthSession(contextSpec);
-					return !!session.tokens?.accessToken;
-				} catch {
-					return false;
-				}
-			},
+		const session = await auth.api.getSession({
+			headers: request.headers,
 		});
+		const authenticated = !!session?.user;
 
 		const isProtectedRoute = protectedRoutes.some((route) =>
 			request.nextUrl.pathname.startsWith(route)

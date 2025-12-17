@@ -1,7 +1,6 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { CourseCard } from "@/components/ui/course-card";
 import { QuizResultsTable } from "@/components/ui/quiz-results-table";
 import { CommunityFeed } from "@/components/ui/community-feed";
@@ -12,48 +11,23 @@ import { WidgetCard } from "@/components/ui/widget-card";
 import { courses, quizResults, communityPosts } from "@/lib/mock-data";
 import { getTotalChapters, getCompletedChapters } from "@/lib/course-utils";
 
-interface UserWithAttributes {
-	username: string;
-	userId: string;
-	attributes?: {
-		given_name?: string;
-		email?: string;
-		picture?: string;
-	};
-}
+export default async function Page() {
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
 
-export default function Page() {
-	const [user, setUser] = useState<UserWithAttributes | null>(null);
-	const [loading, setLoading] = useState(true);
+	if (!session?.user) {
+		redirect("/login");
+	}
 
-	useEffect(() => {
-		const fetchUser = async () => {
-			try {
-				const currentUser = await getCurrentUser();
-				const userAttributes = await fetchUserAttributes();
-				console.log("User object:", currentUser);
-				console.log("User attributes:", userAttributes);
-				setUser({ ...currentUser, attributes: userAttributes });
-			} catch (error) {
-				console.log("User not authenticated:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchUser();
-	}, []);
-
-	const displayName =
-		user?.attributes?.given_name ||
-		user?.attributes?.email ||
-		user?.username ||
-		"User";
+	const user = session.user;
+	const displayName = user.name || user.email || "User";
 	const initials = displayName
 		.split(" ")
 		.map((n: string) => n[0])
 		.join("")
 		.toUpperCase();
-	const profilePicture = user?.attributes?.picture;
+	const profilePicture = user.image ?? undefined;
 
 	return (
 		<div className="container mx-auto py-8 px-4">
@@ -61,7 +35,7 @@ export default function Page() {
 			<div className="flex justify-between items-center mb-8">
 				<div>
 					<h1 className="text-2xl font-bold">
-						{loading ? "Welcome back..." : `Welcome back, ${displayName}`}
+						{`Welcome back, ${displayName}`}
 					</h1>
 					<p className="text-muted-foreground">
 						Continue your EMDR training journey where you left off.
@@ -72,12 +46,10 @@ export default function Page() {
 						{profilePicture && (
 							<AvatarImage src={profilePicture} alt={displayName} />
 						)}
-						<AvatarFallback>{loading ? "..." : initials}</AvatarFallback>
+						<AvatarFallback>{initials}</AvatarFallback>
 					</Avatar>
 					<div>
-						<p className="font-medium">
-							{loading ? "Loading..." : displayName}
-						</p>
+						<p className="font-medium">{displayName}</p>
 						<p className="text-sm text-muted-foreground">Student</p>
 					</div>
 				</div>
@@ -106,28 +78,16 @@ export default function Page() {
 			{/* Dashboard Widgets */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 				{/* Quiz Results */}
-				<WidgetCard
-					title="Recent Quiz Results"
-					showViewAll={true}
-					onViewAll={() => console.log("View all results clicked")}
-				>
+				<WidgetCard title="Recent Quiz Results" showViewAll={true}>
 					<div className="">
 						<QuizResultsTable results={quizResults} showViewAll={false} />
 					</div>
 				</WidgetCard>
 
 				{/* Community Feed */}
-				<WidgetCard
-					title="Community Feed"
-					showViewAll={true}
-					onViewAll={() => console.log("View more posts clicked")}
-				>
+				<WidgetCard title="Community Feed" showViewAll={true}>
 					<CommunityFeed
 						posts={communityPosts}
-						onPostSubmit={(content) => console.log("New post:", content)}
-						onLike={(postId) => console.log("Liked post:", postId)}
-						onComment={(postId) => console.log("Comment on post:", postId)}
-						onViewMore={() => console.log("View more posts clicked")}
 						showTitle={false}
 						showViewMoreButton={false}
 					/>

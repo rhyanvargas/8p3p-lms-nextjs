@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import { ChapterQuiz } from "./chapter-quiz";
+import { LearningCheckBase } from "./learning-check-base";
 import { Button } from "@/components/ui/button";
 import { Course, Section, Chapter } from "@/lib/mock-data";
 import {
@@ -11,11 +12,9 @@ import {
 	generateChapterSlug,
 	getNextChapter,
 } from "@/lib/course-utils";
-import {
-	InteractiveVideoPlayer,
-	createTranscriptFromScript,
-	parseVTT,
-} from "@/components/video";
+import { InteractiveVideoPlayer } from "@/components/video/interactive-video-player";
+import { createTranscriptFromScript } from "@/components/video/interactive-video-player";
+import { parseVTT } from "@/lib/utils/vtt-parser";
 
 interface ChapterContentProps {
 	course: Course;
@@ -32,6 +31,12 @@ export function ChapterContent({
 
 	// Generate slugs for navigation
 	const courseSlug = generateCourseSlug(course.id, course.title);
+
+	// Handler for when quiz is completed (for future use/analytics)
+	const handleQuizComplete = (passed: boolean, score: number) => {
+		console.log("Quiz completed:", { passed, score, chapterId: chapter.id });
+		// TODO: In production, update user progress in database
+	};
 
 	// Get next section for navigation
 	const nextSection = getNextChapter(course.id, chapter.id, section.id);
@@ -61,15 +66,15 @@ export function ChapterContent({
 	};
 
 	return (
-		<div className="container mx-auto px-4 py-6 max-w-7xl">
+		<div className="container mx-auto px-4 py-6 lg:px-6 xl:max-w-7xl">
 			{/* Section Header */}
 			<div className="mb-8">
 				<h1 className="text-3xl font-bold mb-2">{section.title}</h1>
 				<p className="text-muted-foreground">{section.learningObjective}</p>
 			</div>
 
-			{section.sectionType === "video" ? (
-				<div className="bg-white border border-gray-200 rounded-lg p-4">
+			<div className="bg-white border border-gray-200 rounded-lg p-4">
+				{section.sectionType === "video" ? (
 					<InteractiveVideoPlayer
 						src={section.videoUrl}
 						showTranscript={!!(section.videoVTT || section.videoScript)}
@@ -77,16 +82,14 @@ export function ChapterContent({
 							section.videoVTT
 								? parseVTT(section.videoVTT)
 								: section.videoScript
-								? createTranscriptFromScript(section.videoScript, 90)
-								: []
+									? createTranscriptFromScript(section.videoScript, 90)
+									: []
 						}
 						layout="default"
 						autoPlay={false}
 						muted={false}
 					/>
-				</div>
-			) : section.sectionType === "quiz" ? (
-				<div className="mb-8">
+				) : section.sectionType === "quiz" ? (
 					<ChapterQuiz
 						quiz={{
 							id: section.quiz!.id,
@@ -95,31 +98,26 @@ export function ChapterContent({
 							questions: section.quiz!.questions,
 							passingScore: section.quiz!.passingScore,
 						}}
+						chapterId={chapter.id}
+						chapterTitle={chapter.title}
+						onQuizComplete={handleQuizComplete}
 					/>
-				</div>
-			) : (
-				/* Default Layout for Other Section Types (AI Avatar, etc.) */
-				<div className="mb-8">
-					<div className="bg-white border border-gray-200 rounded-lg p-4">
-						<p>Content for {section.sectionType} sections coming soon...</p>
+				) : section.sectionType === "ai_avatar" ? (
+					<div className="">
+						<LearningCheckBase
+							chapterId={chapter.id}
+							chapterTitle={chapter.title}
+						/>
 					</div>
-				</div>
-			)}
-
-			{/* Quiz Section - Show after video content if available */}
-			{section.sectionType === "video" && section.quiz && (
-				<div className="mt-8">
-					<ChapterQuiz
-						quiz={{
-							id: section.quiz.id,
-							title: section.quiz.title,
-							description: section.quiz.description,
-							questions: section.quiz.questions,
-							passingScore: section.quiz.passingScore,
-						}}
-					/>
-				</div>
-			)}
+				) : (
+					/* Default Layout for Other Section Types */
+					<div className="mb-8">
+						<div className="bg-white border border-gray-200 rounded-lg p-4">
+							<p>Content for {section.sectionType} sections coming soon...</p>
+						</div>
+					</div>
+				)}
+			</div>
 
 			{/* Navigation */}
 			{nextSection && (

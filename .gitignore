@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# logs
+/logs/*
+
 # next.js
 /.next/
 /out/
@@ -52,10 +55,10 @@ amplifyconfiguration*
 logs/*
 
 # windsurf
-.windsurf/*
-!.windsurf/rules/
-.windsurf/rules/*
-!.windsurf/rules/project-standards.md
+# .windsurf/*
+# !.windsurf/rules/
+# .windsurf/rules/*
+# !.windsurf/rules/project-standards.md
 
 # next-video
 videos/*
@@ -69,4 +72,5 @@ scripts/*-output.json
 scripts/*.log
 
 # specs archive (historical files not tracked)
-specs/archive/
+**/archive/
+
